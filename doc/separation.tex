@@ -105,6 +105,30 @@ Carlisle Rainey\symbolfootnote[2]{Carlisle Rainey is Assistant Professor of Poli
 \newpage
 \doublespace
 
+\section*{The Logistic Regression Model}
+
+Political scientists commonly use logistic regression to model the probability of an event of interest. In the typical situation, the researcher uses an $n \times k + 1$ design matrix $X$ consisting of an intercept and $k$ covariates to model a vector $n$ of binary outcomes $y$, where $y_i \in \{0, 1\}$ using the model $\text{Pr}(y_i) = \text{Pr}(y_i = 1 | X) = \dfrac{1}{1 + e^{-X_i\beta}}$, where $\beta$ is a parameter vector of length $k + 1$. 
+
+Using this model, it is straightforward to calculate the likelihood function 
+
+\begin{equation}\nonumber
+\text{Pr}(y | \beta) = L(\beta | y) = \displaystyle \prod_{i = 1}^n \left[\left( \dfrac{1}{1 + e^{-X_i\beta}}\right)^{y_i} + \left( \dfrac{1}{1 + e^{-X_i\beta}}\right)^{1 - y_i}\right]\text{.}
+\end{equation}
+
+\noindent As usual, one can take the natural logarithm of both sides to calculate the log-likelihood function 
+
+\begin{equation}\nonumber
+\log L(\beta | y) = \displaystyle \sum_{i = 1}^n \left[y_i \log \left( \dfrac{1}{1 + e^{-X_i\beta}}\right) + (1 - y_i) \log \left( \dfrac{1}{1 + e^{-X_i\beta}}\right)\right]
+\end{equation}
+
+\noindent and take the derivatives of the log-likelihood function to obtain the score function
+
+\begin{equation}\nonumber
+\dfrac{\partial \log L(\beta | y)}{\partial \beta} = \displaystyle \sum_{i = 1}^n\left(y_i - \dfrac{1}{1 + e^{-X_i\beta}}\right)X_i\text{.}
+\end{equation}
+
+Researchers routinely obtain estimates $\hat{\beta}$ of the model parameters $\beta$ by setting the score function equal to zero and solving for $\beta$ (i.e., maximizing the likelihood of the observed data) and estimate the standard errors are by calculating the square root of the diagonal of the inverse of Fisher's information matrix evaluated at $\hat{\beta}$ (i.e., calculate the curvature around the maximum of the likelihood function to obtain an estimate of the uncertainty of the estimate). While this approach works quite well in most applications, it fails in a situation known as separation \citep{Zorn2005}.
+
 \section*{The Importance of the Prior}
 
 Choosing a reasonable prior distribution is crucial for dealing with separation in a substantively meaningful manner. In many cases, the data (though the likelihood) swamp the contribution of the prior. However, in the case of separation such that $s_i$ perfectly predicts events, the likelihood determines the shape of the left-hand side of the posterior distribution and the prior (symmetric about zero) determines the shape of the right hand side of the posterior.
