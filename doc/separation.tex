@@ -129,6 +129,50 @@ Using this model, it is straightforward to calculate the likelihood function
 
 Researchers routinely obtain estimates $\hat{\beta}$ of the model parameters $\beta$ by setting the score function equal to zero and solving for $\beta$ (i.e., maximizing the likelihood of the observed data) and estimate the standard errors are by calculating the square root of the diagonal of the inverse of Fisher's information matrix evaluated at $\hat{\beta}$ (i.e., calculate the curvature around the maximum of the likelihood function to obtain an estimate of the uncertainty of the estimate). While this approach works quite well in most applications, it fails in a situation known as separation \citep{Zorn2005}.
 
+\section*{Separation}
+
+Separation occurs in models of binary outcome data when one explanatory variable (or perhaps a combination of explanatory variables, see \cite{LesaffreAlbert1989}) perfectly predicts zeros, ones, or both. \textit{Complete separation} occurs when the ``problematic'' explanatory variable $s$ (for \textit{s}eparating explanatory variable) perfectly predicts both zeros and ones and \textit{quasicomplete separation} occurs when $s$ perfectly predicts either zeros or ones, but not both (\citealt{AlbertAnderson1984, Zorn2005}). \textit{Overlap}, the ideal case, occurs when no explanatory variable (or combination) perfectly predicts zeros or ones. In this situation, the usual maximum likelihood estimates exist and provide reasonable estimates of parameters. However, under complete or quasicomplete separation, maximum likelihood estimates do not exist (\citealt{AlbertAnderson1984, Zorn2005}).
+
+Complete separation occurs when a covariate perfectly predicts zeros and ones. For example, suppose an explanatory variable $s$ , such that $y = 0$ for $s > 0.5$ and $y = 0$ for $s \leq 0.5$. This corresponds to the middle panel of Figure \ref{fig:illustrating_separation}.  To maximize the likelihood of the observed data, the ``S''-shaped logistic regression curve must assign probabilities of zero when $s \leq 0.5$ and probabilities of one when $s > 0.5$. Since the logistic regression curve lies strictly between zero and one, this likelihood cannot be achieved. However, it can be approached asymptotically as the coefficient for $s$ approaches infinity. Thus, the likelihood function under complete separation is monotonic (has no maximum) and a finite maximum likelihood estimate does not exist.
+
+Quasicomplete separation occurs when a covariate perfectly predicts zeros \textit{or} ones. Figure \ref{fig:illustrating_separation} shows an example pattern in the right panel, where $y$ always equals zero when $s$ equals zero. This situation occurs often in applied political science research with binary inputs. For example, \cite{Gelmanetal2008} find no African-American respondents in their data support Barry Goldwater in 1964, leading to a maximum likelihood estimate of negative infinity for the coefficients for the indicator of African-American respondents. Similarly, \cite{Rauchhaus2009} (see \citealt{BellMiller2014}) finds no instances of states with nuclear weapons engaging in war with each other. In this case, the estimated coefficient for the variable indicating symmetric nuclear dyads (in which both states possess nuclear weapons) equals negative infinity. To maximize the likelihood in this situations, the model must assign probabilities of zero to observations for which $s = 1$ (African-American respondents or symmetric nuclear dyads, in these examples). Again, because the logistic regression curve lies strictly above zero, this cannot happen, though it can be approached asymptotically as the coefficient for $s$ goes to negative infinity. As with complete separation, the likelihood function under quasicomplete separation is monotonic (has no maximum) and a finite maximum likelihood estimate does not exist.
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale = 1]{figs/illustrate-separation.pdf}
+%\vspace{-10mm}
+\end{center}
+\caption{This figure illustrates overlap, complete separation, and quasicomplete separation as defined by \cite{AlbertAnderson1984}. The maximum likelihood estimates only exist under overlap. Under complete and quasicomplete separation, maximum likelihood fails, returning infinite estimates and standard errors.}\label{fig:illustrating_separation}
+\end{figure}
+
+Along coefficient estimates under separation are infinite in theory, the hill-climbing algorithms approximate the infinite estimates with large, finite values that increase with the precision of the algorithm. Table \ref{tab:illustrating_separation} shows the estimates from R's \texttt{glm()} function for each of the hypothetical data sets in Figure \ref{fig:illustrating_separation}. To illustrate the problem, I vary the convergence tolerance between $\epsilon = 10^{-8}$ (the default) and $\epsilon = 10^{-16}$. With the default tolerance, \texttt{glm()} returns very large estimates and standard errors. There is no finite maximum, but the likelihood is flat enough around the large estimates to satisfy the algorithm, given the default tolerance. With the more sensitive tolerance of $\epsilon = 10^{-16}$, the algorithm converges even closer to infinity, but still returns finite estimates. This is a failure of maximum likelihood, because estimates of infinity are usually implausible (i.e., there is always some, though perhaps tiny, probability of a zero or one in any given situation, see \citealt{HeinzeSchemper2002}). 
+
+\begin{table}[H]
+\begin{center}
+\begin{footnotesize}
+\begin{tabular}{l c c | c c | c c }
+\hline
+ & \multicolumn{2}{c}{Overlap}&\multicolumn{2}{c}{Complete Separation}&\multicolumn{2}{c}{Quasicomplete Separation}\\
+               & $\epsilon = 10^{-8}$ & $\epsilon = 10^{-16}$ & $\epsilon = 10^{-8}$ & $\epsilon = 10^{-16}$ & $\epsilon = 10^{-8}$ & $\epsilon = 10^{-16}$ \\
+\hline
+constant    & $-17.05$ & $-17.05$ & $-739.27$     & $-739.27$     & $-19.57$    & $-26.57$     \\
+               & $(5.79)$      & $(5.79)$      & $(139744.58)$ & $(139744.58)$ & $(1520.85)$ & $(50363.70)$ \\
+x              & $34.19$  & $34.19$  & $1483.21$     & $1483.21$     & $18.90$     & $25.90$      \\
+               & $(11.92)$     & $(11.92)$     & $(280801.40)$ & $(280801.40)$ & $(1520.85)$ & $(50363.70)$ \\
+\hline
+Log Likelihood & -9.74         & -9.74         & 0.00          & 0.00          & -32.05      & -32.05       \\
+Num. obs.      & 100           & 100           & 100           & 100           & 100         & 100          \\
+\hline
+\multicolumn{7}{l}{Standard errors in parentheses.}
+\end{tabular}
+\caption{A table providing estimates based on the data shown in Figure \ref{fig:illustrating_separation} using the R function \texttt{glm()} varying the convergence tolerance under overlap, complete separation, and quasicomplete separation. Notice that the estimation algorithm returns estimates and standard errors arbitrarily close to infinity under both types of separation as the tolerances shrinks to zero.}
+\label{tab:illustrating_separation}
+\end{footnotesize}
+\end{center}
+\end{table}
+
+Perhaps more starkly, notice  that the strong pattern in the middle panel of Figure \ref{fig:illustrating_separation} does not produce statistically significant result. This is because the likelihood is essentially flat around the ``maximum'' found by the hill-climbing algorithm. As the region around the maximum flattens, the estimates of the standard errors increases. Thus, separation leads to implausible large estimates \textit{and} standard errors. Notice, for example, that while the data in the middle and right panel would almost never occur under the null hypothesis of no relationship, none of the estimates are statistically significant.
+
 \section*{The Importance of the Prior}
 
 Choosing a reasonable prior distribution is crucial for dealing with separation in a substantively meaningful manner. In many cases, the data (though the likelihood) swamp the contribution of the prior. However, in the case of separation such that $s_i$ perfectly predicts events, the likelihood determines the shape of the left-hand side of the posterior distribution and the prior (symmetric about zero) determines the shape of the right hand side of the posterior.
