@@ -1,4 +1,4 @@
-lp <- function(beta, X, y) {
+lp.firth <- function(beta, X, y) {
   p <- plogis(matrix(X%*%beta))
   W <- Matrix(0, nrow = length(p), ncol = length(p))
   diag(W) <- p*(1 - p)
@@ -19,7 +19,7 @@ firth <- function(f, data, burnin = 500, mcmc = 1000, thin = 1,
   init <- rep(0, ncol(X))
   cat("Computing proposal distribution...\n")
   V <- logistf(f, d)$var
-  mcmc <- MCMCmetrop1R(fun = lp, theta.init = init, 
+  mcmc <- MCMCmetrop1R(fun = lp.firth, theta.init = init, 
                        X = X, y = y, V = V, burnin = burnin,
                        mcmc = mcmc, thin = thin,
                        tune = tune, verbose = verbose)

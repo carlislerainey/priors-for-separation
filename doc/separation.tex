@@ -201,6 +201,21 @@ But \citep{HeinzeSchemper2002} and \cite{Zorn2005} point out that this asymptoti
 
 However, \cite{Firth1993} did not propose his prior to solve the separation problem. Instead, his purpose was to reduce the well-known small sample bias in logistic regression models. And while it is true that Firth's correction does provide finite estimates under separation, it remains an open question as to whether this automatic prior, designed for other purposes, provides a reasonable estimate of the uncertain of the estimates.
 
+\subsection*{The Cauchy Prior}
+
+Indeed, \cite{Gelmanetal2008} note that Firth's application of Jeffreys' prior is not easily interpretable as an actual application of prior information because the prior $p(\beta) = |I(\beta)|^\frac{1}{2}$. Instead, they suggest an informative prior that, like Jeffreys' prior, bounds the estimates away from positive and negative infinity but has a scale parameter $\sigma$ that allows researchers to choose the amount of prior information provided to the model. They suggest using the Cauchy distribution as priors for the model coefficients.\footnote{Though \cite{Gelmanetal2008} allow for various user-defined prior distributions, they suggest a Cauchy prior centered at zero with scale of 2.5 as a default for appropriately rescaled variables. They suggest rescaling binary inputs to have mean zero and rescaling continuous inputs to have a mean of zero and a standard deviation of one half before estimating the model.}
+
+The Cauchy distribution resembles a normal distribution, but has much heavier tails (it is equivalent to a $t$ distribution with one degree of freedom), which captures the prior belief that the effect is probably smaller, but has some chance of being quite large.
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale = .8]{figs/illustrate-prior-density.pdf}
+\caption{This figure compares the Normal(2.5) and Cauchy(2.5) prior distributions. Notice that the Cauchy distribution has a similar shape to a Normal distribution, but has much heavier tails. Substantively, this prior notes that the coefficient is likely close to zero (e.g. $|\beta| < 2$), but might be quite large (e.g., $|\beta| > 5$).}\label{fig:illustrate-prior-density}
+\end{center}
+\end{figure}
+
+The posterior distribution is not easily available analytically, but one can easily use MCMC to simulate from the posterior distribution. \footnote{\citep{Gelmanetal2008} obtain standard errors of their estimates by simply calculating the curvature around the posterior mode. They note that although the entire posterior distribution can be computed using MCMC methods, ``it is desirable to have quick calculations that returns a point estimate of the regression coefficients and the standard errors'' (p. 1366). They note that this approximation ``works well in statistical practice and, in addition, recognizes the approximate nature of the model itself.'' However, our purpose is to accurately characterize the uncertainty of the estimates, and asymptotic approximations can underestimate credible intervals by quite a bit.} To facilitate this estimation, I have written an R function, \texttt{cauchy}, to obtain posterior simulations.\footnote{The R package \texttt{MCMCpack} offers some potential to sample from the posterior distribution via a Metropolis-Hastings algorithm with little custom software via the \texttt{MCMClogit()} function. However, the default proposal distribution relies on the large-sample covariance matrix for the parameter estimates. This covariance matrix, of course, is not useful since the variances for the separated variables are much too large. As far as I can tell, the contribution of the large-sample covariance matrix to the proposal distribution is not easily modified. For this reason, I have written custom samplers that use a Metropolis-Hastings algorithm to obtain posterior simulations.} Once a researcher has the MCMC simulations, she can obtain the $(1 - \alpha)100\%$ Bayesian credible interval for parameters by summarizing the simulations.
+
 \section*{The Importance of the Prior}
 
 Choosing a reasonable prior distribution is crucial for dealing with separation in a substantively meaningful manner. In many cases, the data (though the likelihood) swamp the contribution of the prior. However, in the case of separation such that $s_i$ perfectly predicts events, the likelihood determines the shape of the left-hand side of the posterior distribution and the prior (symmetric about zero) determines the shape of the right hand side of the posterior.
@@ -247,6 +262,8 @@ Figure \ref{fig:matters-ci} shows how the choice of prior impacts the 90\% credi
 \end{figure}
 
 This leads us to conclude that the choice of prior matters--it affects the inferences that we draw from the data. It is not sufficient to rely on the prior distribution designed as a default for other purposes. Instead, we must rely on prior distributions that represent actual prior information about the likely magnitude of the coefficients.
+
+
 
 \clearpage
 \bibliographystyle{apsr_fs}
