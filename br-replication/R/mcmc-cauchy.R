@@ -39,14 +39,14 @@ cauchy <- function(f, data, scale.int = 10, scale.coef = 2.5,
   return(mcmc)
 }
 
-# test
-set.seed(1234)
-n <- 1000
-x1 <- runif(n, -1, 1)
-X <- cbind(1, x1)
-beta <- c(-1, 1)
-y <- rbinom(n, 1, plogis(X%*%beta))
-d <- data.frame(x1, y)
-m1 <- cauchy(y ~ x1, d, mcmc = 1000, verbose = 10)
-plot(m1)
+# # test
+# set.seed(1234)
+# n <- 1000
+# x1 <- runif(n, -1, 1)
+# X <- cbind(1, x1)
+# beta <- c(-1, 1)
+# y <- rbinom(n, 1, plogis(X%*%beta))
+# d <- data.frame(x1, y)
+# m1 <- cauchy(y ~ x1, d, mcmc = 1000, verbose = 10)
+# plot(m1)
 
