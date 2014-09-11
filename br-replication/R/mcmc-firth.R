@@ -11,16 +11,18 @@ firth <- function(f, data, burnin = 500, mcmc = 1000, thin = 1,
                   tune = 1, verbose = 1000) {
   require(MCMCpack)
   require(Matrix)
+  require(logistf)
   mf <- model.frame(f, data) 
   y <- model.response(mf)
   X <- model.matrix(f, data)
   X <- Matrix(X)
   init <- rep(0, ncol(X))
+  cat("Computing proposal distribution...\n")
+  V <- logistf(f, d)$var
   mcmc <- MCMCmetrop1R(fun = lp, theta.init = init, 
-                       X = X, y = y, burnin = burnin,
+                       X = X, y = y, V = V, burnin = burnin,
                        mcmc = mcmc, thin = thin,
-                       tune = tune, verbose = verbose,
-                       optim.control = list(reltol = 1e-2))
+                       tune = tune, verbose = verbose)
   return(mcmc)
 }
 
