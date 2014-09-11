@@ -11,23 +11,17 @@ cauchy <- function(f, data, scale.int = 10, scale.coef = 2.5,
                         tune = 1, verbose = 100) {
   require(MCMCpack)
   require(Matrix)
+  require(arm)
   mf <- model.frame(f, data) 
   y <- model.response(mf)
   X <- model.matrix(f, data)
   X <- Matrix(X)
   init <- rep(0, ncol(X))
   cat("Computing proposal distribution...\n")
-  mle <- optim(par = init, fn = lp.cauchy, 
-               X = X, y = y, 
-               scale.int = scale.int, 
-               scale.coef = scale.coef,
-               method = "BFGS", 
-               hessian = TRUE,
-               control = list(fnscale = -1, 
-                              reltol = 1e-16,
-                              maxit = 5000,
-                              trace = 1))
-  V <- solve(-mle$hessian)
+  mle <- bayesglm(f, data = d, family = binomial,
+                  prior.scale.for.intercept = scale.int,
+                  prior.scale = scale.coef)
+  V <- vcov(mle)
   print(mle$par)
   print(V)
   mcmc <- MCMCmetrop1R(fun = lp.cauchy, theta.init = init, 
@@ -39,14 +33,14 @@ cauchy <- function(f, data, scale.int = 10, scale.coef = 2.5,
   return(mcmc)
 }
 
-# # test
-# set.seed(1234)
-# n <- 1000
-# x1 <- runif(n, -1, 1)
-# X <- cbind(1, x1)
-# beta <- c(-1, 1)
-# y <- rbinom(n, 1, plogis(X%*%beta))
-# d <- data.frame(x1, y)
-# m1 <- cauchy(y ~ x1, d, mcmc = 1000, verbose = 10)
-# plot(m1)
+# test
+set.seed(1234)
+n <- 1000
+x1 <- runif(n, -1, 1)
+X <- cbind(1, x1)
+beta <- c(-1, 1)
+y <- rbinom(n, 1, plogis(X%*%beta))
+d <- data.frame(x1, y)
+m1 <- cauchy(y ~ x1, d, mcmc = 1000, verbose = 10)
+plot(m1)
 
