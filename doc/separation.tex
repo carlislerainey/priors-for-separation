@@ -264,6 +264,15 @@ Figure \ref{fig:matters-ci} shows how the choice of prior impacts the 90\% credi
 This leads us to conclude that the choice of prior matters--it affects the inferences that we draw from the data. It is not sufficient to rely on the prior distribution designed as a default for other purposes. Instead, we must rely on prior distributions that represent actual prior information about the likely magnitude of the coefficients.
 
 
+\section*{Choosing an Appropriate Prior Distribution}
+
+While it is often sufficient to rely on default priors, this is not the case if one is interested in obtaining reasonable measures of uncertainty under separation. Indeed, I have shown that the width of the 90\% credible interval and the posterior mean depend largely on the prior one chooses in the replication of \cite{BarrilleauxRainey2014}. This implies that f a researcher relies on default priors alone, she might under- or over-represent her confidence in the magnitude of the effect.
+
+\subsection*{Prior Predictive Checks}
+
+One method of assessing the reasonableness of the prior distribution is ``prior predictive checks,'' in which the researcher asks herself whether the prior distribution (combined with the model) provides plausible relationships among the variables and rules out any implausible relationships. The goal is to place prior weight on \textit{plausible} parameter values. For example, partisanship might have only a negligible effect on governors' decisions to oppose expansion. This is inconsistent with the hypothesis proposed by \cite{BarrilleauxRainey2014}, but it offers a \emph{plausible} alternative. On the other hand, I can \textit{a priori} rule out Democrats being 100\% likely to support the expansion and/or Republicans being 100\% likely to oppose--there is always some chance of Democratic governors opposing the expansion and Republican governors supporting it. However, the trick is to use substantive knowledge of the process to decide which effects are implausible large and 
+
+In the case of separation, we need to focus on using the prior distribution to rule out only \textit{some} implausible values. For example, if no Democratic governors oppose the expansion, then we do not need to worry about ruling out large \textit{positive} effects for Democratic partisanship, since the likelihood component of the model effectively rules out these implausible effects (e.g., large positive effects of Democratic partisanship on the probability of opposing the expansion are unlikely to generate data in which no Democrat opposes the expansion). We do, on the other hand, need to worry about ruling out the large \textit{negative} effects, since the likelihood cannot effectively rule out the implausibly large negative effects (e.g., the larger the negative effect, the more likely the observed separation will occur). See Theorem \cite{thm:impact} for a more formal treatment of this intuition.
 
 \clearpage
 \bibliographystyle{apsr_fs}
