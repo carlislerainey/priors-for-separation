@@ -17,7 +17,7 @@ library(coda)
 # set seed
 set.seed(8742570)
 
-d <- read.csv("bm-replication/data/bm-small.csv")
+d <- read.csv("bm-replication/data/bm.csv")
 d <- d[, c("warl2", "onenukedyad", "twonukedyad", "logCapabilityRatio", "Ally",
            "SmlDemocracy", "SmlDependence", "logDistance", "Contiguity",
            "MajorPower", "NIGOs")]
@@ -44,7 +44,10 @@ tune[3] <- 1.2
 
 # cauchy prior + mcmc
 m.cauchy.mcmc <- cauchy(f, d, mcmc = 50000, burnin = 10000, thin = 1, tune = tune, verbose = 100)
+save(m.cauchy.mcmc, file = paste("output/cauchy", Sys.time()))
 
 # firth prior + mcmc
-m.firth.mcmc <- firth(f, d, mcmc = 100, burnin = 10, thin = 1, tune = tune, verbose = 100)
+m.firth.mcmc <- firth(f, d, mcmc = 50000, burnin = 10000, thin = 1, tune = tune, verbose = 100)
+save(m.firth.mcmc, file = paste("output/firth", Sys.time()))
+
 
