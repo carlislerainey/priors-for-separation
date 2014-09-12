@@ -1,8 +1,8 @@
-# clear working directory
-rm(list = ls())
-
 # set working directory
-setwd("~/Dropbox/projects/priors-for-separation")
+# setwd("~/Dropbox/projects/priors-for-separation")
+
+# clear working directory
+# rm(list = ls())
 
 # load firth function
 source("br-replication/R/mcmc-firth.R")
@@ -15,7 +15,7 @@ library(arm)
 library(coda)
 
 # set seed
-set.seed(8742570)
+# set.seed(8742570)
 
 d <- read.csv("bm-replication/data/bm.csv")
 d <- d[, c("warl2", "onenukedyad", "twonukedyad", "logCapabilityRatio", "Ally",

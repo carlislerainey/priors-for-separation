@@ -1,11 +1,36 @@
+# set working directory
+setwd("~/Dropbox/projects/priors-for-separation")
+
+# clear working directory
+rm(list = ls())
+
+# load packages
+library(coda)
+library(compactr)
+
+# load mcmc simulations
+load("safe/cauchy1.RData"); cauchy1 <- m.cauchy.mcmc
+load("safe/cauchy2.RData"); cauchy2 <- m.cauchy.mcmc
+load("safe/firth1.RData"); firth1 <- m.firth.mcmc
+rm(m.cauchy.mcmc, m.firth.mcmc)
+
+m.cauchy.mcmc <- mcmc.list(cauchy1, cauchy2)
+m.firth.mcmc <- firth1
+#traceplot(m.cauchy.mcmc)
+#traceplot(m.firth.mcmc)
+gelman.diag(m.cauchy.mcmc)
+
 #pdf("doc/figs/bm-density.pdf", height = 3, width = 4)
 par(mfrow = c(1,1), mar = c(3,4,1,1), oma = c(0,0,0,0))
+
+cauchy.sims <- as.vector(as.array(m.cauchy.mcmc)[, 3, ])
 d.firth <- density(m.firth.mcmc[, 3], adjust = 1.5)
-d.cauchy <- density(m.cauchy.mcmc[, 3], adjust = 1.5)
-eplot(xlim = mm(c(d.firth$x, d.cauchy$x)), mm(c(d.firth$y, d.cauchy$y)),
+d.cauchy <- density(cauchy.sims, adjust = 1.5)
+eplot(xlim = c(-20, max(c(d.firth$x, d.cauchy$x))), mm(c(d.firth$y, d.cauchy$y)),
       xlab = "Coefficient for Two-Nuke Dyad",
       ylab = "Posterior Density",
       ylabpos = 2.5)
+abline(v = 0, col = "grey50")
 lines(d.firth, lwd = 2, col = 1)
 lines(d.cauchy, lwd = 2, col = 2, lty = 1)
 legend(x = par("usr")[1], y = par("usr")[4], xjust = 0, yjust = 1,
@@ -47,7 +72,7 @@ abline(v = 0, lty = 2)
 sims <- m.firth.mcmc[, 3]
 sumry(sims, 4, "Jeffreys'")
 # Cauchy(2.5)
-sims <- m.cauchy.mcmc[, 3]
+sims <- as.vector(as.array(m.cauchy.mcmc)[, 3, ])
 sumry(sims, 2, "Cauchy(2.5)")
 
 legend(x = par("usr")[2], y = par("usr")[4], xjust = 1, yjust = 1,
