@@ -16,20 +16,21 @@ cauchy <- function(f, data, scale.int = 10, scale.coef = 2.5,
   y <- model.response(mf)
   X <- model.matrix(f, data)
   X <- Matrix(X)
-  init <- rep(0, ncol(X))
+  init <- rnorm(ncol(X), 0, 2)
   cat("Computing proposal distribution...\n")
   mle <- bayesglm(f, data = d, family = binomial,
                   prior.scale.for.intercept = scale.int,
                   prior.scale = scale.coef)
   V <- vcov(mle)
-  print(mle$par)
-  print(V)
+  print(summary(mle))
+  seed <- round(runif(1, 0, 100000))
   mcmc <- MCMCmetrop1R(fun = lp.cauchy, theta.init = init, 
                        scale.int = scale.int,
                        scale.coef = scale.coef,
                        X = X, y = y, burnin = burnin,
                        mcmc = mcmc, thin = thin, V = V,
-                       tune = tune, verbose = verbose)
+                       tune = tune, seed = seed, 
+                       verbose = verbose)
   return(mcmc)
 }
 
