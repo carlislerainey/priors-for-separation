@@ -12,5 +12,6 @@
 *.bib.bak
 notes*
 outline*
+output
 !separation.pdf
 !.gitignore
