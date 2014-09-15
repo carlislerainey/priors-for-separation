@@ -7,6 +7,7 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{calrsfs}
 \usepackage{rotating}
 \usepackage{dcolumn}
 \usepackage{longtable}
@@ -276,18 +277,42 @@ When facing separation, our goal is to choose a prior distribution that satisfie
 \end{enumerate}
 
 
-
 \subsection*{Prior Predictive Checks}
 
-One method of assessing the reasonableness of the prior distribution is ``prior predictive checks,'' in which the researcher asks herself whether the prior distribution (combined with the model) provides plausible relationships among the variables and rules out any implausible relationships. The goal is to place prior weight on \textit{plausible} parameter values. For example, partisanship might have only a negligible effect on governors' decisions to oppose expansion. This is inconsistent with the hypothesis proposed by \cite{BarrilleauxRainey2014}, but it offers a \emph{plausible} alternative. On the other hand, I can \textit{a priori} rule out Democrats being 100\% likely to support the expansion and/or Republicans being 100\% likely to oppose--there is always some chance of Democratic governors opposing the expansion and Republican governors supporting it. However, the trick is to use substantive knowledge of the process to decide which effects are implausible large and which are not.
+One method of assessing the reasonableness of the prior distribution is ``prior predictive checks,'' in which the researcher asks herself whether the prior distribution (combined with the model) produces a distribution for the data that matches her prior beliefs. Under the Bayesian framework, the researcher has a fully specified model $p(y_{new}|\theta)p(\theta)$ and can thus simulate data from the model prior to observing the data. The distribution of the unobserved outcome $y_{new}$ is given by $p(y_{new}) = \int p(y_{new} | \theta)p(\theta) d\theta$ \citep{Box1980}. In practice, this process involves Clarify-like simulation \citep{KingTomzWittenberg2000}, but rather than using the asymptotic posterior (e.g., $\beta_{sim} \sim N\left[\hat{\beta}^{mle}, I(\hat{\beta}^{mle})^{-1}\right]$), researchers simulate the model parameters from the prior distribution. Just as when using simulation to interpret the estimates, researchers can use simulation to interpret the prior distribution.
 
-In the case of separation, we need to focus on using the prior distribution to rule out only \textit{some} implausible values. For example, if no Democratic governors oppose the expansion, then we do not need to worry about ruling out large \textit{positive} effects for Democratic partisanship, since the likelihood component of the model effectively rules out these implausible effects (e.g., large positive effects of Democratic partisanship on the probability of opposing the expansion are unlikely to generate data in which no Democrat opposes the expansion). We do, on the other hand, need to worry about ruling out the large \textit{negative} effects, since the likelihood cannot effectively rule out the implausibly large negative effects (e.g., the larger the negative effect, the more likely the observed separation will occur). See Theorem \cite{thm:impact} for a more formal treatment of this intuition.
+In many applications, the data swamp the prior so that changes in the prior distribution lead to only small changes in the inferences. In the case of separation, this is also the case, except for the separating variable in the direction of the separation. The likelihood makes a large contribution to the posterior for the non-separated coefficients and to the separated coefficient against the direction of the separation. However, the choice of the prior distribution has a large impact on the prior distribution for the separated coefficient in the direction of the separation.
 
-I suggest limiting the focus in two ways:
+Thus, in handling separation, we need to focusing on choosing reasonable prior distribution for the coefficient of the separating variable that assigned higher probabilities to more plausible estimates and lower probabilities to less plausible estimates.
+
+For example, partisanship might have only a negligible effect on governors' decisions to oppose expansion. This is inconsistent with the hypothesis proposed by \cite{BarrilleauxRainey2014}, but it offers a \emph{plausible} alternative. On the other hand, we can \textit{a priori} rule out Democrats being 100\% likely to support the expansion and/or Republicans being 100\% likely to oppose--there is always some chance of Democratic governors opposing the expansion and Republican governors supporting it. However, the trick is to use substantive knowledge of the process to decide which effects are implausible large and which are not.
+
+ the we need to focus on using the prior distribution to rule out only implausible values in the direction of the separation [ctk: I need to define the direction of the separation]. For example, if no Democratic governors oppose the expansion, then we do not need to worry about ruling out large \textit{positive} effects for Democratic partisanship, since the likelihood component of the model effectively rules out these implausible effects (e.g., large positive effects of Democratic partisanship on the probability of opposing the expansion are unlikely to generate data in which no Democrat opposes the expansion). We do, on the other hand, need to worry about ruling out the large \textit{negative} effects, since the likelihood cannot effectively rule out the implausibly large negative effects (e.g., the larger the negative effect, the more likely the observed separation will occur). See Theorem \ref{thm:impact} for a more formal treatment of this intuition.
+
+Steps for choosing a reasonable prior for $\beta_s$.
 \begin{enumerate}
-\item Treat non-separated estimates as fixed at their MLE estimates. [elaborate]
-\item Focus on the prior distribution in the direction of the separation. [elaborate]
+\item Estimate the model coefficient using maximum likelihood, giving the coefficient vector $\hat{\beta}^{mle}$. Include the separating variable $s_i$ in the model. Of course, this leads to implausible estimates for $\beta_s$, but our goal here is to choose reasonable values at which to fix the other parameters. 
+\item Choose a prior distribution $p(\beta_s)$ for the separating variable $s$. 
+\item Choose a number of simulations $n_{sims}$ to perform (e.g., $n_{sims} \geq 1,000$) and for $i$ in 1 to $n_{sims}$ (e.g., $n_{sims} \geq 1,000$), do the following:
+	\begin{enumerate}
+	\item Simulate $\tilde{\beta}^{[i]}_s \sim p(\beta_s)$.
+	\item Replace $\hat{\beta}_s^{mle}$ in $\hat{\beta}^{mle}$ with $\tilde{\beta}^{[i]}_s$, yielding the vector $\tilde{\beta}^{[i]}$.
+	\item Calculate the store the quantity of interest $q^{[i]} = q\left(\tilde{\beta}^{[i]}\right)$. This quantity of interest might be a first-difference or risk-ratio, for example.
+	\end{enumerate}
+\item Summarize the simulations $q^{[i]}$ using quantiles, histograms, or density plots. If the prior is inadequate, then update the prior distribution $p(\beta_s)$.
 \end{enumerate}
+
+\section*{Application: Nuclear Proliferation and Conflict}
+
+I recent debate emerged in the conflict literature around the effect of nuclear weapons on the probability of war in a dyad. \cite{Rauchhaus2009} hypothesizes that ``[t]he probability of major war between two states will decrease if both states possess nuclear weapons (p. 262).'' Summarizing his empirical results, Rauchhaus writes:
+
+\begin{quote} 
+The hypotheses on nuclear symmetry find strong empirical support. The probability of a major war between two states is found to decrease when both states possess nuclear weapons (p. 269).
+\end{quote}
+
+Despite using the same data, \cite{BellMiller2014} claim that ``nonnuclear dyads are in fact no more likely to fight wars than nonnuclear dyads (p. 9).'' The disagreement hinges in part on whether and how to handle separation.\footnote{\cite{BellMiller2014} also disagree with a coding decision \cite{Rauchhaus2009}, but that portion of their argument is less relevant to my purpose, which is to illustrate how one might choose a reasonable prior distribution and highlight its importance.} \cite{Rauchhaus2009} ignores the separation and estimate that nonnuclear dyads are about 2.7 million times more likely to go to war than symmetric nuclear dyads. \cite{BellMiller2014}, on the other hand, use Jeffreys' (\citeyear{1946}) invariant prior, as suggested by \cite{Zorn2005}, and estimate that nonnuclear dyads are only about 1.6 times more likely to engage in war.
+
+
 
 \clearpage
 \bibliographystyle{apsr_fs}
