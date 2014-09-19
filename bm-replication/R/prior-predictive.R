@@ -74,6 +74,7 @@ add.arrow <- function(p) {
 library(compactr)
 xlim0 <- log(c(1, 100000))
 ylim0 <- c(0, max(c(h1$counts, h2$counts, h3$counts, h4$counts)))
+pdf("doc/figs/bm-pppd-rr.pdf", height = 4, width = 7)
 par(mfrow = c(2,2), mar = c(.75,.75,.75,.75), oma = c(2,3,1,1))
 eplot(xlim = xlim0, ylim = ylim0,
       xlab = "Risk-Ratio (Log Scale)",
@@ -96,6 +97,7 @@ add.arrow(skep.p.trunc)
 aplot("Enthusiastic Normal(0, 8) Prior")
 plot(h4, add = TRUE, col = "grey50", border = NA)
 add.arrow(enth.p.trunc)
+dev.off()
 
 
 Q <- round(rbind(my.p$Q[, "risk-ratio"],
