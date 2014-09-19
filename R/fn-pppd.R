@@ -1,3 +1,29 @@
+# # set working directory
+# setwd("~/Dropbox/projects/priors-for-separation")
+# 
+# # clear working directory
+# rm(list = ls())
+# 
+# # set seed
+# # set.seed(8742570)
+# 
+# d <- read.csv("bm-replication/data/bm-small.csv")
+# d <- d[, c("warl2", "onenukedyad", "twonukedyad", "logCapabilityRatio", "Ally",
+#            "SmlDemocracy", "SmlDependence", "logDistance", "Contiguity",
+#            "MajorPower", "NIGOs")]
+# d <- na.omit(d)
+# 
+# # set formula (w/o twonekedyad)
+# f <- warl2 ~ onenukedyad + twonukedyad + logCapabilityRatio + 
+#   Ally + SmlDemocracy + SmlDependence + logDistance + 
+#   Contiguity + MajorPower + NIGOs
+# 
+# # parameters 
+# s <- "twonukedyad"
+# s.at <- 0
+# s.at.lo <-  FALSE
+# prior.sims <- rcauchy(10000, 0, 1)
+
 
 pppd <- function(f, d, prior.sims, s, s.at, s.at.lo = TRUE) {
   # f - a logitistic regression model
@@ -7,9 +33,11 @@ pppd <- function(f, d, prior.sims, s, s.at, s.at.lo = TRUE) {
   #        should be set before computing the baseline chance of success.
   # s.at.lo - treat s.at as the low value when computing QIs? Defaults to
   #           TRUE. If FALSE, the s.at is treated as the high value.
-
   require(ggplot2)
   require(gridExtra)
+  # set temporary options
+  options.restore <- options()
+  options("scipen" = 12)
   # estimate b.hat.mle
   mle <- glm(f, d, family = "binomial", x = TRUE)
   # create matrix at which to calculate the baseline
@@ -28,32 +56,57 @@ pppd <- function(f, d, prior.sims, s, s.at, s.at.lo = TRUE) {
   pr0 <- rep(plogis(baseline), length(prior.sims))
   pr1 <- plogis(baseline + prior.sims)
   if (s.at.lo == TRUE) {
-    sims.fd <- pr1 - pr0
-    sims.rr <- pr1/pr0
+    fd <- pr1 - pr0
+    rr <- pr1/pr0
   }
   if (s.at.lo == FALSE) {
-    sims.fd <- pr0 - pr1
-    sims.rr <- pr0/pr1
+    fd <- pr0 - pr1
+    rr <- pr0/pr1
+  }
+  # check for infinite risk ratios.
+  if (max(rr) == Inf) {
+    cat(paste("\n\n####### WARNING #######\n\n",
+              "Of the ", 
+              length(prior.sims), 
+              " prior simulations, ",
+              sum(rr == Inf), " (", round(100*sum(rr == Inf)/length(prior.sims), 2), "%)",
+              " produced risk-ratios of infinity.\nThe largest ", 
+              ceiling(300*sum(rr == Inf)/length(prior.sims)), "% of simulations are being dropped.\n\n", sep = ""))
+    keep <- rr <= quantile(rr, 1 - ceiling(300*sum(rr == Inf)/length(prior.sims))/100)
+    pr0 <- pr0[keep]
+    pr1 <- pr1[keep]
+    rr <- rr[keep]
+    fd <- fd[keep]
   }
   # generate plots
-  p1 <- qplot(pr1, 
-        xlab = "probability") + ggtitle("PPPD of Probability")
-  p2 <- qplot(pr1, log = "x",
-        xlab = "probability") + ggtitle("PPPD of Probability")
-  p3 <- qplot(sims.rr,
-        xlab = "risk-ratio")
-  p4 <- qplot(sims.rr, log = "x",
-        xlab = "risk-ratio")
-  p5 <- qplot(sims.fd,
-        xlab = "first-difference")
-  grid.arrange(p1, p2, p3, p4, p5, ncol=2)
-  # define a qt function
+  plots <- list()
+  print(range(pr1))
+  plots$pr1 <- qplot(pr1,
+              xlab = "probability") + ggtitle("PPPD of Probability")
+  print(range(log(pr1)))
+  plots$log.pr1 <- qplot(pr1, log = "x",
+              xlab = "probability") + ggtitle("PPPD of Probability (Log Scale)")
+  print(range(rr))
+  plots$rr <- qplot(rr,
+              xlab = "risk-ratio") + ggtitle("PPPD of Risk-Ratio")
+  print(range(log(rr)))
+  plots$log.rr <- qplot(rr, log = "x",
+              xlab = "risk-ratio") + ggtitle("PPPD of Risk-Ratio (Log Scale)")
+  print(range(fd))
+  plots$fd <- qplot(fd,
+              xlab = "first-difference") + ggtitle("PPPD of First-Difference")
+  grid.arrange(plots$pr1, 
+               plots$log.pr1, 
+               plots$rr,
+               plots$log.rr,
+               plots$fd, ncol=2)
+  # define a qt function to compute the deciles
   qt <- function(x) {
     quantile(x, 1:9/10)
   }
   q.pr <- qt(pr1)
-  q.rr <- qt(sims.rr)
-  q.fd <- qt(sims.fd)
+  q.rr <- qt(rr)
+  q.fd <- qt(fd)
   Q <- cbind(q.pr, q.rr, q.fd)
   colnames(Q) <- c("probability", "risk-ratio", "first-difference")
   print(Q, digits = 2)
@@ -61,9 +114,12 @@ pppd <- function(f, d, prior.sims, s, s.at, s.at.lo = TRUE) {
   ret <- list(mle, mle, 
               pr0 = pr0,
               pr1 = pr1, 
-              sims.rr = sims.rr,
-              sims.fd = sims.fd,
+              rr = rr,
+              fd = fd,
               Q = Q,
-              direction = direction)
+              direction = direction,
+              plots = plots)
   return(ret)
+  # restore options
+  options(options.restore)
 }
