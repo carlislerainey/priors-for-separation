@@ -16,7 +16,7 @@ firth <- function(f, data, burnin = 500, mcmc = 1000, thin = 1,
   y <- model.response(mf)
   X <- model.matrix(f, data)
   X <- Matrix(X)
-  init <- rnorm(ncol(X), 0, 2)
+  init <- rnorm(ncol(X), 0, 1)
   cat("Computing proposal distribution...\n")
   V <- logistf(f, d)$var
   mcmc <- MCMCmetrop1R(fun = lp.firth, theta.init = init, 
