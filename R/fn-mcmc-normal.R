@@ -26,7 +26,7 @@ lp.normal <- function(beta, which.var.sep, sd, X, y) {
 normal <- function(f, data, sep.var, sd = 4.5,
                    n.sims = 1000, n.burnin = 500,
                    n.thin = 1, n.chains = 3,
-                   tune = 1, verbose = 100) {
+                   tune = 1) {
   require(MCMCpack)
   require(Matrix)
   require(arm)
@@ -46,18 +46,20 @@ normal <- function(f, data, sep.var, sd = 4.5,
   #print(summary(mle))
   mcmc.chains <- mcmc.list()
   mcmc <- NULL
-  seed <- runif(6, 100000, 999999)  
+  l.seed <- runif(6, 100000, 999999)
+  init.seed <- runif(n.chains, 100000, 999999)
   run.mcmc <- function(x) {
-    init <- rnorm(ncol(X), 0, 2)
+    set.seed(init.seed[x])
+    init <- rnorm(ncol(X), coef(mle), 2)
     mcmc <- MCMCmetrop1R(fun = lp.normal, 
                          theta.init = init,  V = V,
                          sd = sd, which.var.sep = which.var.sep, X = X, y = y, 
                          thin = n.thin, burnin = n.burnin, mcmc = n.sims,
-                         tune = tune, verbose = verbose,
-                         seed = list(seed, x))
+                         tune = tune, verbose = 0,
+                         seed = list(l.seed, x))
     return(mcmc)
   }
-  cat(paste("\nRunning ", n.chains, " chains in parallel--this may take a while...", sep = ""))
+  cat(paste("\nRunning ", n.chains, " chains in parallel of ", n.sims + n.burnin, " iterations each--this may take a while...", sep = ""))
   mcmc.chains <- mclapply(1:n.chains, run.mcmc, mc.cores = 3)
   cat(paste("\nFinished running chains!\n", sep = ""))
   mcmc.chains <- as.mcmc.list(mcmc.chains)
@@ -69,11 +71,11 @@ normal <- function(f, data, sep.var, sd = 4.5,
   cat(paste("\nChecking convergence...\n", sep = ""))
   if (R.hat[[2]] <= 1.02) {
     cat(paste("\nThe multivariate R-hat statistic of ", round(R.hat[[2]], 2), 
-              " suggests that the chains have converged.\n", sep = ""))
+              " suggests that the chains have converged.\n\n", sep = ""))
   }
   if (R.hat[[2]] > 1.02) {
     cat(paste("\n######## WARNING: #########\n\nThe multivariate R-hat statistic of ", round(R.hat[[2]], 2), 
-              " suggests that the chains have NOT converged.\n", sep = ""))
+              " suggests that the chains have NOT converged.\n\n", sep = ""))
   }
   res <- list(mcmc.chains = mcmc.chains,
               mcmc = mcmc,
