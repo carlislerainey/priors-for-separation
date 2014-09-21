@@ -108,5 +108,21 @@ rownames(Q) <- c("Informative Normal(0, 4.5) Prior",
                  "Gelman's Default Cauchy(0, 2.5) Prior",
                  "Skeptical Normal(0, 2) Prior",
                  "Enthusiastic Normal(0, 8) Prior")
+pretty.Q <- matrix(prettyNum(Q, big.mark = ",", digits = 8, format = "fg", flag = " "), nrow = nrow(Q)); pretty.Q
+rownames(pretty.Q) <- rownames(Q)
+colnames(pretty.Q) <- colnames(Q)
 library(xtable)
-xtable(Q, align = rep("c", ncol(Q) + 1))
+tab <- xtable(pretty.Q, align = c("|", rep("c", ncol(Q) + 1), "|"),
+              caption = "This table provides the deciles prior predictive distribution for the 
+                  risk-ratio of war in nonnuclear and nuclear dyads. The risk-ratio is 
+                  tells us how many times more likely war is in non-nuclear dyads compared 
+                  to nuclear dyads. Notice that that the, informative prior suggests a median 
+                  risk-ratio of about 20, which is a large, but plausible effect. Gelman's 
+                  proposed default prior suggests a slightly smaller median ratio of about 13, 
+                  but also allows very large effects. The skeptical prior suggests a median 
+                  ratio of about 4 and the enthusiastic prior suggests a median ratio of over 
+                  200.",
+              label = "tab:bm-pppd-deciles")
+print(tab, table.placement = "H", size = "scriptsize",
+      file = "doc/tabs/bm-pppd-deciles.tex")
+
