@@ -12,7 +12,7 @@ library(compactr)
 
 
 # create functions
-## find mode, median, mean, 90% cci, and 90% hpd and add to plot
+## find median and 90% hpd and add to plot
 sumry <- function(sims, ht, lab = NA) {
   q <- quantile(sims, c(.05, .95))
   hpd <- HPDinterval(mcmc(sims), prob = .9)[1:2]
@@ -32,6 +32,13 @@ sumry <- function(sims, ht, lab = NA) {
   print(paste("mode = ", round(post.mode, 1)))
   print(paste("median = ", round(post.median, 1)))
   print(paste("mean = ", round(post.mean, 1)))
+}
+# find and return median and 90% hpd
+num.sumry <- function(sims, ht, lab = NA) {
+  hpd <- HPDinterval(mcmc(sims), prob = .9)[1:2]
+  post.median <- median(sims)
+  s <- round(c(hpd[1], post.median, hpd[2]), 1)
+  return(s)
 }
 # plot posteior density and HPD for coefficients
 plot.posterior.density <- function(sims) {
@@ -120,7 +127,8 @@ pdf("doc/figs/bm-coef.pdf", height = 3.5, width = 6)
 par(mfrow = c(1,1), mar = c(4,1,1,1), oma = c(0,0,0,0))
 eplot(xlim = c(-15, 1), ylim = c(1.75, 6.5),
       anny = FALSE,
-      xlab = "Coefficient for Two-Nuke Dyad")
+      xlabpos = 2.5,
+      xlab = "Posterior Median and 90% HPD for\nCoefficient of Symmetric Nuclear Dyads")
 abline(v = 0, col = "grey80")
 sumry(inf.sims, 6, "Informative Normal(0, 4.5) Prior")
 sumry(skep.sims, 5, "Skeptical Normal(0, 2) Prior")
@@ -134,7 +142,7 @@ pdf("doc/figs/bm-posterior-density.pdf", height = 3.75, width = 8)
 par(mfrow = c(2, 3), mar = c(1,1,1,1), oma = c(2,3,1,1))
 eplot(xlim = c(-20, max(c(d.inf$x, d.skep$x, d.enth$x, d.zorn$x, d.gelman$x))), 
       mm(c(d.inf$y, d.skep$y, d.enth$y, d.zorn$y, d.gelman$y)),
-      xlab = "Coefficient for Two-Nuke Dyad",
+      xlab = "Coefficient of Symmetric Nuclear Dyads",
       ylab = "Posterior Density",
       ylabpos = 2.5,
       main = "Informative Normal(0, 4.5) Prior")
@@ -155,7 +163,7 @@ pdf("doc/figs/bm-rr.pdf", height = 3.5, width = 6)
 par(mfrow = c(1,1), mar = c(4,1,1,1), oma = c(0,0,0,0))
 eplot(xlim = c(0.1, 1000000), ylim = c(1.75, 6.5),
       anny = FALSE,
-      xlab = "Posterior Risk-Ratio of War in Nonnuclear Dyads\nCompared to Nuclear Dyads",
+      xlab = "Posterior Distribution of Risk-Ratio of War in Nonnuclear Dyads\nCompared to Symmetric Nuclear Dyads",
       xlabpos = 2.5,
       log = "x",
       xat = 10^(-1:6),
@@ -167,3 +175,29 @@ sumry(enth.rr.sims, 4, "Enthusiastic Normal(0, 8) Prior")
 sumry(zorn.rr.sims, 3, "Zorn's Default Jefferys' Prior")
 sumry(gelman.rr.sims, 2, "Gelman's Default Cauchy(0, 2.5) Prior")
 dev.off()
+
+# table summarizing hpd and median
+S <- matrix(NA, nrow = 5, ncol = 3)
+S[1, ] <- num.sumry(inf.rr.sims)
+S[2, ] <- num.sumry(skep.rr.sims)
+S[3, ] <- num.sumry(enth.rr.sims)
+S[4, ] <- num.sumry(zorn.rr.sims)
+S[5, ] <- num.sumry(gelman.rr.sims)
+colnames(S) <- c("Lower-Bound of 90% HPD",
+                 "Posterior Median",
+                 "Upper-Bound of 90% HPD")
+rownames(S) <- c("Informative Normal(0, 4.5) Prior",
+                 "Skeptical Normal(0, 2) Prior",
+                 "Enthusiastic Normal(0, 8) Prior",
+                 "Zorn's Default Jeffreys' Prior",
+                 "Gelman's Default Cauchy(0, 2.5) Prior")
+pretty.S <- matrix(prettyNum(S, big.mark = ",", format = "fg", flag = " "), nrow = nrow(S)); pretty.S
+rownames(pretty.S) <- rownames(S)
+colnames(pretty.S) <- colnames(S)
+library(xtable)
+tab <- xtable(pretty.S, align = c("|", rep("c", ncol(S) + 1), "|"),
+              caption = "This table provides lower- and upper-bounds for the 90% HPD and posterior medians 
+              for the five prior distributions I consider.",
+              label = "tab:bm-pppd-deciles")
+print(tab, table.placement = "H", size = "scriptsize",
+      file = "doc/tabs/bm-posterior-rr-summary.tex")
