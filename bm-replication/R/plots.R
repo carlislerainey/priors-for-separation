@@ -2,85 +2,168 @@
 setwd("~/Dropbox/projects/priors-for-separation")
 
 # clear working directory
-rm(list = ls())
+# rm(list = ls())
 
 # load packages
 library(coda)
+library(devtools)
+#install_github("carlislerainey/compactr")
 library(compactr)
 
-# load mcmc simulations
-load("safe/cauchy1.RData"); cauchy1 <- m.cauchy.mcmc
-load("safe/cauchy2.RData"); cauchy2 <- m.cauchy.mcmc
-load("safe/firth1.RData"); firth1 <- m.firth.mcmc
-rm(m.cauchy.mcmc, m.firth.mcmc)
 
-m.cauchy.mcmc <- mcmc.list(cauchy1, cauchy2)
-m.firth.mcmc <- firth1
-#traceplot(m.cauchy.mcmc)
-#traceplot(m.firth.mcmc)
-gelman.diag(m.cauchy.mcmc)
-
-#pdf("doc/figs/bm-density.pdf", height = 3, width = 4)
-par(mfrow = c(1,1), mar = c(3,4,1,1), oma = c(0,0,0,0))
-
-cauchy.sims <- as.vector(as.array(m.cauchy.mcmc)[, 3, ])
-d.firth <- density(m.firth.mcmc[, 3], adjust = 1.5)
-d.cauchy <- density(cauchy.sims, adjust = 1.5)
-eplot(xlim = c(-20, max(c(d.firth$x, d.cauchy$x))), mm(c(d.firth$y, d.cauchy$y)),
-      xlab = "Coefficient for Two-Nuke Dyad",
-      ylab = "Posterior Density",
-      ylabpos = 2.5)
-abline(v = 0, col = "grey50")
-lines(d.firth, lwd = 2, col = 1)
-lines(d.cauchy, lwd = 2, col = 2, lty = 1)
-legend(x = par("usr")[1], y = par("usr")[4], xjust = 0, yjust = 1,
-       legend = c("Jeffreys'",
-                  "Cauchy(2.5)"),
-       lty = 1,
-       lwd = 2,
-       col = 1:2, 
-       cex = .8,
-       bty = "n")
-#dev.off()
-
+# create functions
+## find mode, median, mean, 90% cci, and 90% hpd and add to plot
 sumry <- function(sims, ht, lab = NA) {
   q <- quantile(sims, c(.05, .95))
-  lines(q, c(ht, ht), lwd = 2)
+  hpd <- HPDinterval(mcmc(sims), prob = .9)[1:2]
+  lines(hpd, c(ht, ht), lwd = 2)
+  #points(hpd, c(ht, ht), pch = 4)
   d <- density(sims, adjust = 1.5)
   i.max <- which.max(d$y)
   post.mode <- d$x[i.max]
   post.mean <- mean(sims)
   post.median <- median(sims)
-  points(post.mode, ht, pch = 19)
-  points(post.median, ht, pch = 21, bg = "white")
-  points(post.mean, ht, pch = 4)
-  text(post.mean, ht, lab, pos = 3, cex = .7)
+  #points(post.mode, ht, pch = 22, bg = "white")
+  #points(post.median, ht, pch = 24, bg = "grey")
+  points(post.median, ht, pch = 21, bg = "black", cex = .7)
+  text(post.median, ht, lab, pos = 3, cex = .7)
+  print(paste("HPD = ", round(hpd, 1)))
   print(paste("CI = ", round(q, 1)))
   print(paste("mode = ", round(post.mode, 1)))
   print(paste("median = ", round(post.median, 1)))
   print(paste("mean = ", round(post.mean, 1)))
-  
+}
+# plot posteior density and HPD for coefficients
+plot.posterior.density <- function(sims) {
+  dens <- density(sims)
+  hpd <- HPDinterval(mcmc(sims), prob = .9)
+  lo <- hpd[1]
+  hi <- hpd[2]
+  x <- dens$x[dens$x < hi & dens$x > lo]
+  y <- dens$y[dens$x < hi & dens$x > lo]
+  zeros <- rep(0, length(y))
+  polygon(c(x, rev(x)), c(y, zeros), col = "grey80", lty = 0)
+  abline(v = 0, col = "grey40")
+  lines(dens, lwd = 2)
+}
+## simulate quantities of interest
+simulate.qi <- function(x.hi, x.lo, mcmc) {
+  p.hi <- plogis(c(x.hi%*%t(mcmc)))
+  p.lo <- plogis(c(x.lo%*%t(mcmc)))
+  fd <- p.hi - p.lo
+  rr <- p.hi/p.lo
+  ret <- list(p.hi = p.hi,
+              p.lo = p.lo,
+              fd = fd,
+              rr = rr)
 }
 
-#pdf("doc/figs/bm-ci.pdf", height = 3, width = 4)
-par(mfrow = c(1,1), mar = c(3,1,1,1), oma = c(0,0,0,0))
-eplot(xlim = c(-15, 1), ylim = c(.75, 4.5),
+# load mcmc simulations
+load("safe/cauchy1.RData"); m.gelman <- m.cauchy.mcmc
+load("safe/firth1.RData"); m.zorn <- m.firth.mcmc
+load("safe/m-me.RData"); m.inf <- m.me
+load("safe/m-skep.RData")
+load("safe/m-enth.RData")
+rm(m.cauchy.mcmc, m.firth.mcmc, m.me)
+
+# pull out twonukedyad coefficients
+inf.sims <- m.inf$mcmc[, "c.twonukedyad"]
+skep.sims <- m.skep$mcmc[, "c.twonukedyad"]
+enth.sims <- m.enth$mcmc[, "c.twonukedyad"]
+zorn.sims <- m.zorn[, 3]
+gelman.sims <- m.gelman[, 3]
+
+# calculate densities
+d.inf <- density(inf.sims)
+d.skep <- density(skep.sims)
+d.enth <- density(enth.sims)
+d.zorn <- density(zorn.sims)
+d.gelman <- density(gelman.sims)
+
+# simulate quantities of interest
+# ## load and clean data
+# d <- read.csv("bm-replication/data/bm.csv")
+# d <- d[, c("warl2", "onenukedyad", "twonukedyad", "logCapabilityRatio", "Ally",
+#            "SmlDemocracy", "SmlDependence", "logDistance", "Contiguity",
+#            "MajorPower", "NIGOs")]
+# d <- na.omit(d)
+## rescale variables
+d$c.onenukedyad <- rescale(d$onenukedyad)
+d$c.twonukedyad <- rescale(d$twonukedyad)
+d$c.logCapabilityRatio <- rescale(d$logCapabilityRatio)
+d$c.Ally <- rescale(d$Ally)
+d$c.SmlDemocracy <- rescale(d$SmlDemocracy)
+d$c.SmlDependence <- rescale(d$SmlDependence)
+d$c.logDistance <- rescale(d$logDistance)
+d$c.Contiguity<- rescale(d$Contiguity)
+d$c.MajorPower <- rescale(d$MajorPower)
+d$c.NIGOs <- rescale(d$NIGOs)
+## set formula
+f <- warl2 ~ c.onenukedyad + c.twonukedyad + c.logCapabilityRatio + 
+  c.Ally + c.SmlDemocracy + c.SmlDependence + c.logDistance + 
+  c.Contiguity + c.MajorPower + c.NIGOs
+## build model matrix
+mf <- model.frame(f, d)
+y <- model.response(mf)
+X <- model.matrix(f, d)
+x.nonukes <- x.twonukes <- apply(X, 2, median)
+x.twonukes["c.twonukedyad"] <- max(d$c.twonukedyad)
+## compute risk-ratios
+inf.rr.sims <- simulate.qi(x.nonukes, x.twonukes, m.inf$mcmc)$rr
+skep.rr.sims <- simulate.qi(x.nonukes, x.twonukes, m.skep$mcmc)$rr
+enth.rr.sims <- simulate.qi(x.nonukes, x.twonukes, m.enth$mcmc)$rr
+gelman.rr.sims <- simulate.qi(x.nonukes, x.twonukes, m.gelman)$rr
+zorn.rr.sims <- simulate.qi(x.nonukes, x.twonukes, m.zorn)$rr
+
+# coefficient plot 
+pdf("doc/figs/bm-coef.pdf", height = 3.5, width = 6)
+par(mfrow = c(1,1), mar = c(4,1,1,1), oma = c(0,0,0,0))
+eplot(xlim = c(-15, 1), ylim = c(1.75, 6.5),
       anny = FALSE,
       xlab = "Coefficient for Two-Nuke Dyad")
-abline(v = 0, lty = 2)
-# Jeffreys
-sims <- m.firth.mcmc[, 3]
-sumry(sims, 4, "Jeffreys'")
-# Cauchy(2.5)
-sims <- as.vector(as.array(m.cauchy.mcmc)[, 3, ])
-sumry(sims, 2, "Cauchy(2.5)")
+abline(v = 0, col = "grey80")
+sumry(inf.sims, 6, "Informative Normal(0, 4.5) Prior")
+sumry(skep.sims, 5, "Skeptical Normal(0, 2) Prior")
+sumry(enth.sims, 4, "Enthusiastic Normal(0, 8) Prior")
+sumry(zorn.sims, 3, "Zorn's Default Jefferys' Invariant Prior")
+sumry(gelman.sims, 2, "Gelman's Default Cauchy(0, 2.5) Prior")
+dev.off()
 
-legend(x = par("usr")[2], y = par("usr")[4], xjust = 1, yjust = 1,
-       legend = c("mode",
-                  "median",
-                  "mean"),
-       pch = c(19, 21, 4),
-       bg = "white", 
-       cex = .8,
-       bty = "n")
-#dev.off()
+# density plot
+pdf("doc/figs/bm-posterior-density.pdf", height = 3.75, width = 8)
+par(mfrow = c(2, 3), mar = c(1,1,1,1), oma = c(2,3,1,1))
+eplot(xlim = c(-20, max(c(d.inf$x, d.skep$x, d.enth$x, d.zorn$x, d.gelman$x))), 
+      mm(c(d.inf$y, d.skep$y, d.enth$y, d.zorn$y, d.gelman$y)),
+      xlab = "Coefficient for Two-Nuke Dyad",
+      ylab = "Posterior Density",
+      ylabpos = 2.5,
+      main = "Informative Normal(0, 4.5) Prior")
+plot.posterior.density(inf.sims)
+aplot("Skeptical Normal(0, 2) Prior")
+plot.posterior.density(skep.sims)
+aplot("Enthusiastic Normal(0, 8) Prior")
+plot.posterior.density(enth.sims)
+addxaxis()
+aplot("Zorn's Default Jeffreys' Prior")
+plot.posterior.density(zorn.sims)
+aplot("Gelman's Default Cauchy(0, 2.5) Prior")
+plot.posterior.density(gelman.sims)
+dev.off()
+
+# risk-ratio plot 
+pdf("doc/figs/bm-rr.pdf", height = 3.5, width = 6)
+par(mfrow = c(1,1), mar = c(4,1,1,1), oma = c(0,0,0,0))
+eplot(xlim = c(0.1, 1000000), ylim = c(1.75, 6.5),
+      anny = FALSE,
+      xlab = "Posterior Risk-Ratio of War in Nonnuclear Dyads\nCompared to Nuclear Dyads",
+      xlabpos = 2.5,
+      log = "x",
+      xat = 10^(-1:6),
+      xticklab = c("0.1", "1", "10", "100", "1,000", "10,000", "100,000", "1,000,000"))
+abline(v = 1, col = "grey80")
+sumry(inf.rr.sims, 6, "Informative Normal(0, 4.5) Prior")
+sumry(skep.rr.sims, 5, "Skeptical Normal(0, 2) Prior")
+sumry(enth.rr.sims, 4, "Enthusiastic Normal(0, 8) Prior")
+sumry(zorn.rr.sims, 3, "Zorn's Default Jefferys' Prior")
+sumry(gelman.rr.sims, 2, "Gelman's Default Cauchy(0, 2.5) Prior")
+dev.off()
