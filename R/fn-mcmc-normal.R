@@ -39,7 +39,6 @@ normal <- function(f, data, sep.var, sd = 4.5,
    stop(paste(sep.var,  " is not a variable in the model", sep = ""))
   }
   which.var.sep <- which(colnames(X) == sep.var)
-  init <- rnorm(ncol(X), 0, 2)
   cat("\nComputing proposal distribution...\n")
   mle <- bayesglm(f, data = d, family = binomial)
   V <- vcov(mle)
@@ -50,7 +49,7 @@ normal <- function(f, data, sep.var, sd = 4.5,
   init.seed <- runif(n.chains, 100000, 999999)
   run.mcmc <- function(x) {
     set.seed(init.seed[x])
-    init <- rnorm(ncol(X), coef(mle), 2)
+    init <- rnorm(ncol(X), coef(mle), 1)
     mcmc <- MCMCmetrop1R(fun = lp.normal, 
                          theta.init = init,  V = V,
                          sd = sd, which.var.sep = which.var.sep, X = X, y = y, 
