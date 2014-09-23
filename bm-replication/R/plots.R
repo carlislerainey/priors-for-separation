@@ -6,6 +6,7 @@ setwd("~/Dropbox/projects/priors-for-separation")
 
 # load packages
 library(coda)
+library(arm)
 library(devtools)
 #install_github("carlislerainey/compactr")
 library(compactr)
@@ -32,6 +33,8 @@ sumry <- function(sims, ht, lab = NA) {
   print(paste("mode = ", round(post.mode, 1)))
   print(paste("median = ", round(post.median, 1)))
   print(paste("mean = ", round(post.mean, 1)))
+  s <- round(c(hpd[1], post.median, hpd[2]), 1)
+  return(s)
 }
 # find and return median and 90% hpd
 num.sumry <- function(sims, ht, lab = NA) {
@@ -169,11 +172,26 @@ eplot(xlim = c(0.1, 1000000), ylim = c(1.75, 6.5),
       xat = 10^(-1:6),
       xticklab = c("0.1", "1", "10", "100", "1,000", "10,000", "100,000", "1,000,000"))
 abline(v = 1, col = "grey80")
-sumry(inf.rr.sims, 6, "Informative Normal(0, 4.5) Prior")
-sumry(skep.rr.sims, 5, "Skeptical Normal(0, 2) Prior")
-sumry(enth.rr.sims, 4, "Enthusiastic Normal(0, 8) Prior")
-sumry(zorn.rr.sims, 3, "Zorn's Default Jefferys' Prior")
-sumry(gelman.rr.sims, 2, "Gelman's Default Cauchy(0, 2.5) Prior")
+s <- sumry(inf.rr.sims, 6, "Informative Normal(0, 4.5) Prior")
+text(s[1], 5.85, s[1], cex = .5)
+text(s[2], 5.85, s[2], cex = .5)
+text(s[3], 5.85, s[3], cex = .5)
+s <- sumry(skep.rr.sims, 5, "Skeptical Normal(0, 2) Prior")
+text(s[1], 4.85, s[1], cex = .5)
+text(s[2], 4.85, s[2], cex = .5)
+text(s[3], 4.85, s[3], cex = .5)
+s <- sumry(enth.rr.sims, 4, "Enthusiastic Normal(0, 8) Prior")
+text(s[1], 3.85, s[1], cex = .5)
+text(s[2], 3.85, s[2], cex = .5)
+text(s[3], 3.85, s[3], cex = .5)
+s <- sumry(zorn.rr.sims, 3, "Zorn's Default Jefferys' Prior")
+text(s[1], 2.85, s[1], cex = .5)
+text(s[2], 2.85, s[2], cex = .5)
+text(s[3], 2.85, s[3], cex = .5)
+s <- sumry(gelman.rr.sims, 2, "Gelman's Default Cauchy(0, 2.5) Prior")
+text(s[1], 1.85, s[1], cex = .5)
+text(s[2], 1.85, s[2], cex = .5)
+text(s[3], 1.85, s[3], cex = .5)
 dev.off()
 
 # table summarizing hpd and median
@@ -201,3 +219,30 @@ tab <- xtable(pretty.S, align = c("|", rep("c", ncol(S) + 1), "|"),
               label = "tab:bm-pppd-deciles")
 print(tab, table.placement = "H", size = "scriptsize",
       file = "doc/tabs/bm-posterior-rr-summary.tex")
+
+# posterior probability plot
+labs <- rev(c("Informative Normal(0, 4.5) Prior",
+  "Skeptical Normal(0, 2) Prior",
+  "Enthusiastic Normal(0, 8) Prior",
+  "Zorn's Default Jeffreys' Prior",
+  "Gelman's Default Cauchy(0, 2.5) Prior"))
+pdf("doc/figs/bm-pr-hypothesis.pdf", height = 3.5, width = 6)
+par(mfrow = c(1,1), mar = c(4,1,1,1), oma = c(0,0,0,0), xaxs = "i")
+eplot(xlim = c(0, 1), ylim = c(0.5, 5.5),
+      anny = FALSE,
+      xlab = "Pr(RR > 1)")
+pr.h <- function(sims, ht) {
+  p <- mean(sims > 1)
+  lines(c(0, p), c(ht, ht), lwd = 3)
+  points(p, ht, pch = 19, cex = .8)
+  text(0, ht + .2, labs[ht], pos = 4, cex = .7)
+  text(p, ht, round(p, 2), pos = 3, cex = .6)
+}
+pr.h(inf.rr.sims, 5)
+pr.h(skep.rr.sims, 4)
+pr.h(enth.rr.sims, 3)
+pr.h(zorn.rr.sims, 2)
+pr.h(gelman.rr.sims, 1)
+dev.off()
+
+
