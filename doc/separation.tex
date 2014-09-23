@@ -313,7 +313,13 @@ I recent debate emerged in the conflict literature around the effect of nuclear 
 The hypotheses on nuclear symmetry find strong empirical support. The probability of a major war between two states is found to decrease when both states possess nuclear weapons (p. 269).
 \end{quote}
 
-Despite using the same data, \cite{BellMiller2014} claim that ``nonnuclear dyads are in fact no more likely to fight wars than nonnuclear dyads (p. 9).'' Their disagreement hinges, in part, on whether and how to handle separation.\footnote{\cite{BellMiller2014} also disagree with a coding decision of \cite{Rauchhaus2009}, but that portion of their argument is less relevant to my purpose. Instead, my goal is to illustrate how one might choose a reasonable prior distribution and highlight the importance of the choice of prior.} \cite{Rauchhaus2009} ignores the separation and estimate that nonnuclear dyads are about 2.7 million times more likely to go to war than symmetric nuclear dyads. \cite{BellMiller2014}, on the other hand, use Jeffreys' (\citeyear{1946}) invariant prior, as suggested by \cite{Zorn2005}, and estimate that nonnuclear dyads are only about 1.6 times more likely to engage in war. Because these authors use very different prior distributions, they reach very different conclusions. This raises important questions. First, if we build a reasonable, informative prior distribution, does it support Rauchhaus' position of a meaningful effect or Bell and Miller's position of essentially no effect? Second, how robust is the conclusion to a range of more and less informative prior distributions?
+Despite using the same data, \cite{BellMiller2014} claim that ``nonnuclear dyads are in fact no more likely to fight wars than nonnuclear dyads (p. 9).'' Their disagreement hinges, in part, on whether and how to handle separation, because no nuclear dyad in Rauchhaus data engage in war.\footnote{\cite{BellMiller2014} also disagree with a coding decision of \cite{Rauchhaus2009}, but that portion of their argument is less relevant to my purpose. Instead, my goal is to illustrate how one might choose a reasonable prior distribution and highlight the importance of the choice of prior.} \cite{Rauchhaus2009} ignores the separation and estimate that nonnuclear dyads are about 2.7 million times more likely to go to war than symmetric nuclear dyads. \cite{BellMiller2014}, on the other hand, use Jeffreys' (\citeyear{1946}) invariant prior, as suggested by \cite{Zorn2005}, and estimate that nonnuclear dyads are only about 1.6 times more likely to engage in war. Because these authors use very different prior distributions, they reach very different conclusions. This raises important questions. First, if we build a reasonable, informative prior distribution, does it support Rauchhaus' position of a meaningful effect or Bell and Miller's position of essentially no effect? Second, how robust is the conclusion to a range of more and less informative prior distributions?
+
+\subsection*{Prior}
+
+The first step in dealing with the separation in a principled manner is to choose a prior distribution. As discussed about, choose a prior distribution for a multivariate model is a complicated decision. However, the likelihood is highly informative about all coefficients except for the indicator of symmetric nuclear dyads (which perfectly predicts the absence of war and thus produces a estimate of minus infinity in theory and an implausibly large, negative estimates in practice). The likelihood is also highly informative about the estimate falling below zero, because these data would be extremely unlikely if nuclear weapons made war \emph{more} likely. However, the prior must crucially prior information about the plausibility of certain negative effects of nuclear weapons on the probability of conflict. 
+
+To choose a reasonable prior, I follow steps 1-4 above to generate a partial prior predictive distribution for the risk-ratio discussed in detail by \cite{BellMiller2014}. I experimented with a range of prior distributions, from a varieties of families, but settled on the normal family. After some experimentation, I selected a normal distribution with mean zero and standard deviation 4.5 serve as an informative prior and represent my own prior beliefs. To evaluate the robustness of any statistical claims to the choice of prior. I also selected a normal distribution with mean zero and standard deviation 2 to serve as a skeptical prior that might be held by someone who beliefs that any pacifying effects of nuclear weapons is small or nil. Finally, I selected a normal distribution with mean zero and standard deviation 2 to serve as a optimistic prior that might be held by someone who beliefs that the pacifying effects of nuclear weapons might be quite large. Because the likelihood is highly informative about the other parameters in the model, I place an (improper) flat prior for these parameters. Figure \ref{fig:bm-pppd-hist} shows the PPPDs for the informative, skeptical, and enthusiastic prior distributions, along with Gelman's suggested default Cauchy prior centered at zero with scale 2.5. For convenience, Table \ref{tab:bm-pppd-deciles} provides the deciles of the PPPDs shown in Figure \ref{fig:bm-pppd-hist}. 
 
 \begin{figure}[H]
 \begin{center}
@@ -324,30 +330,55 @@ Despite using the same data, \cite{BellMiller2014} claim that ``nonnuclear dyads
 
 \input{tabs/bm-pppd-deciles.tex}
 
-\begin{figure}[H]
-\begin{center}
-\includegraphics[scale = .8]{figs/bm-posterior-density.pdf}
-\caption{here}\label{fig:bm-posterior-density}
-\end{center}
-\end{figure}
+Notice that the skeptical prior suggests that risk-ratios above and below 4 are equally likely (i.e., 50th percentile of the PPPD is 3.9), while the enthusiastic prior suggests that effects above and below 220 are equally likely. The informative prior, on the other hand, suggests (more reasonably, in my view) that the effect is equally likely to fall above and below 20. These three prior distributions (along with the defaults suggested by \cite{Zorn2005} and \cite{Gelmanetal2008}) provide a range of distributions to represent a range of prior beliefs.
+
+\subsection*{Posterior}
+
+Figure \ref{fig:bm-posterior-density} shows the posterior distributions from the informative, skeptical, enthusiastic, and two default prior distributions. The areas shaded grey indicate the 90\% highest posterior density (HPD) intervals, akin to a 90\% confidence interval.\footnote{Obviously, we could define many intervals that have 90\% chance of containing the true parameter. However, the HPD interval is theoretically appealing because it is the \emph{shortest} of these intervals. See \citet[esp. pp. 48-51]{Gill2008} and \citet[esp. p. 448]{CasellaBerger2003}.} Notice that the location (e.g., peak or model), shape, scale, and HPD interval depend on the choice of prior. While the magnitude of these effects cannot be easily interpreted, notice that the Gelman's suggested default prior is somewhat similar to the informative prior, but Zorn's suggested default is quite similar to the \emph{skeptical} prior. Thus, when dealing with separation, these distributions illustrate that the prior is not an unimportant choose. Instead, it is critical to obtaining reasonable inferences.
 
 \begin{figure}[H]
 \begin{center}
-\includegraphics[scale = .8]{figs/bm-coef.pdf}
-\caption{here}\label{fig:bm-coef}
+\includegraphics[scale = .8]{figs/bm-posterior-density.pdf}
+\caption{This figure shows the posterior distribution for the logit coefficient using each of the five prior distributions.  The grey shading indicates the 90\% highest posterior density (HPD) . Notice that the choice of prior has a large effect on the inferences. For example, the enthusiastic prior suggests the ratio might be as large as -13, while the skeptical prior suggests the ratio might be as large as -4. Importantly, notice the similarity between the posterior from Zorn's suggested default and the skeptical prior, in terms of their peak (i.e., mode), shape, and highest posterior density.}\label{fig:bm-posterior-density}
 \end{center}
 \end{figure}
+
+I now turn to the posterior distribution of the risk-ratios--the key quantity of interest in the debate between \cite{BellMiller2014} and \cite{Rauchhaus2009}. Figure \ref{fig:bm-rr} presents the posterior medians and the 90\% HPD intervals for each prior. While an initial glance at the figure shows substantial variation in the point estimates and the width of the intervals, notice that these are plotted on the log scale (otherwise the wider intervals dominate the plot). Notice that the informative prior suggests the true risk-ratio has about a 90\% chance of falling between about 0.1 and about 2000, with a posterior median of about 25.\footnote{It is worth pointing out that these wide confidence interval suggest that, although the HPD intervals overlap zero, these data do not warrant a conclusion of ``no effect'' (see \citealt{Rainey2014}).} The skeptical prior, on the other hand, suggests the risk-ratio has about a 90\% chance of falling between 0.1 and 30, with a posterior median of about 4. The enthusiastic prior suggests the risk-ratio has about a 90\% chance of falling between 0.1 and 500,000. The inferences from these priors are \emph{very} different. Further, while the 90\% HPD interval is \emph{much} narrower than the informative prior, and the posterior median of Zorn's suggested default prior is smaller than the \emph{skeptical} prior. For out particular application, Gelman's suggested default more closely matches the informative prior, but in another application, Zorn's suggested default might correspond more closely to a carefully-chosen, informative prior.
+
+%\begin{figure}[H]
+%\begin{center}
+%\includegraphics[scale = .8]{figs/bm-coef.pdf}
+%\caption{}\label{fig:bm-coef}
+%\end{center}
+%\end{figure}
 
 \begin{figure}[H]
 \begin{center}
 \includegraphics[scale = .8]{figs/bm-rr.pdf}
-\caption{here}\label{fig:bm-rr}
+\caption{This figure shows the posterior median and 90\% highest posterior density (HPD) for the risk-ratio using each of the five prior distributions \emph{on the log scale}. Notice that the choice of prior has a huge effect on the inferences about the risk-ratio. For example, the skeptical prior suggests the ratio might be as large as 31, while the enthusiastic prior suggests the ratio might be as large as 500,000. Also, notice that the posterior median from Zorn's proposed default prior is \emph{smaller} than the posterior median from the skeptical prior.}\label{fig:bm-rr}
 \end{center}
 \end{figure}
 
-\input{tabs/bm-posterior-rr-summary.tex}
+%\input{tabs/bm-posterior-rr-summary.tex}
 
+Finally, I use the posterior distributions from each prior to calculate the probability that the presence of nuclear weapons make war less likely (i.e., the probability that the risk-ratios show in Figure \ref{fig:bm-rr} are greater than one). Recall Rauchhaus' hypothesis that nuclear weapons decrease the chance of war. These probabilities can be thought of as the probability that Rauchhaus' hypothesis is correct. Following the standard of $p-value \leq 0.05$ as offering strong evidence against the null, it is reasonable to take $Pr(RR > 1) \geq 0.95$ as strong evidence for the research hypothesis. Figure \ref{fig:bm-rr} shows the probability that the hypothesis is correct for each prior distribution. Notice that while only the enthusiastic prior falls above the 0.95 standard, the evidence for the claim is at least suggestive. Perhaps most importantly for my purposes, Zorn's suggested default leads to the \emph{least} evidence in favor of Rauchhaus' hypothesis--even the skeptical prior provides more evidence for Rauchhaus' claim.
 
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale = .8]{figs/bm-pr-hypothesis.pdf}
+\caption{This figure shows the posterior probability of the hypothesis that nonnuclear dyads are \emph{more} likely to engage in war than symmetric nuclear dyads for each of the five prior distribution. From a hypothesis testing perspective, the evidence for the hypothesis is borderline or suggestive for each prior. However, notice that the skeptical prior, perhaps held by a skeptical researcher who believes the pacifying effect of nuclear weapons is small or nil, yields \emph{greater} evidence for the hypothesis than Jeffreys' invariant prior suggested as a default by \cite{Zorn2005}.}\label{fig:bm-pr-hypothesis}
+\end{center}
+\end{figure}
+
+\subsection*{Implications}
+
+This reanalysis shows how much the choice of prior can matter for substantive conclusions. Even the predominant default priors used to deal with separation can provide very different inferences than a carefully-chosen, informative prior. For this example, Zorn's default prior suggested a point estimate about seven times smaller and a 90\% HPD interval about 20 times narrower than the informative prior.
+
+What does this mean for applied researchers? I suggest two implications.
+\begin{enumerate}
+\item When facing separation, the choice of prior matters. Researchers must carefully choose a prior that represents actual prior information, otherwise, the point and interval estimates will be too large.
+\item In addition to carefully choosing an informative prior, researchers should show how the inferences change for a range of prior distributions. In the debate between \cite{BellMiller2014} and \cite{Rauchhaus2009}, the choice of prior almost completely drives the inferences about the likely magnitude of the risk-ratio. Thus, to the extent that there is disagreement about the prior, there will be disagreement about the results.
+\end{enumerate}
 
 \clearpage
 \bibliographystyle{apsr_fs}
