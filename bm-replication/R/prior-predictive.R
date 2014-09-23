@@ -7,7 +7,6 @@ rm(list = ls())
 # load packages
 library(compactr)
 library(arm)
-library(metRology)
 
 # set seed
 # set.seed(8742570)
