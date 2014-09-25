@@ -59,7 +59,7 @@ normal <- function(f, data, sep.var, sd = 4.5,
     return(mcmc)
   }
   cat(paste("\nRunning ", n.chains, " chains in parallel of ", n.sims + n.burnin, " iterations each--this may take a while...", sep = ""))
-  mcmc.chains <- mclapply(1:n.chains, run.mcmc, mc.cores = 3)
+  mcmc.chains <- mclapply(1:n.chains, run.mcmc, mc.cores = n.chains)
   cat(paste("\nFinished running chains!\n", sep = ""))
   mcmc.chains <- as.mcmc.list(mcmc.chains)
   for (i in 1:n.chains) {  
