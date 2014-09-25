@@ -230,19 +230,26 @@ The likelihood has an ``S''-shape that approaches a limit as the parameter coeff
 
 \subsection*{The Impact of the Prior in Theory}
 
-Suppose that an explanatory variable $s_i$ perfectly predicts a binary outcome variable $y_i = 1$, such that whenever $s_i = 1$, $y_i = 1$, but when $s_i = 0$, $y_i$ might equal zero or one. \cite{AlbertAnderson1984} refer to this situation as quasicomplete separation. Suppose further an additional set of covariates $X_i$ and the analyst wishes to obtain plausible estimates of coefficients the model $Pr(y_i =1) = \text{logit}^{-1}(\alpha + \delta s_i + X_i \beta)$. It is easy to find plausible estimates of $\beta$ using the techniques discussed above (even maximum likelihood usually provides reasonable estimates of these parameters), but finding plausible estimates of $\alpha$ and $\delta$ proves more difficult because maximum likelihood suggests estimates of $-\infty$ and $+\infty$, respectively. In order to obtain a plausible estimate of $\delta$ (which will, in turn, provide a plausible estimate of $\alpha$), the researcher must introduce prior information into the model. My purpose here is to characterize how this prior information impacts the posterior distribution.
+Suppose that an explanatory variable $s_i$ perfectly predicts a binary outcome variable $y_i = 1$, such that whenever $s_i = 1$, $y_i = 1$, but when $s_i = 0$, $y_i$ might equal zero or one. \cite{AlbertAnderson1984} refer to this situation as quasicomplete separation. Suppose further an additional set of covariates $X_i$ and the analyst wishes to obtain plausible estimates of coefficients the model
+\begin{equation*}
+Pr(y_i =1) = \text{logit}^{-1}(\beta_{cons} + \beta_s s_i +  \beta_1 x_{i1} + \beta_2 x_{i2} + ... + \beta_k x_{ik}). 
+\end{equation*}
+\noindent It is easy to find plausible estimates for the coefficients of $x1, x2, ..., x_k$ using the maximum likelihood, but finding plausible estimates of $\beta_{cons}$ and $\beta_{s}$ proves more difficult because maximum likelihood suggests estimates of $-\infty$ and $+\infty$, respectively. In order to obtain a plausible estimate of $\beta_{s}$ (which will, in turn, provide a plausible estimate of $\beta_{cons}$), the researcher must introduce prior information into the model. My purpose here is to characterize how this prior information impacts the posterior distribution.
 
-In the general situation, the analyst is interested in computing and characterizing the posterior distribution of the coefficient for $s_i$ given the data. Using Bayes' Rule, this posterior depends on the likelihood and the prior, so that $p(\delta, \beta | y) = p(y|\beta, \delta)p(\beta, \delta)$.\footnote{If we wanted only the posterior distribution of the scalar $\delta$, we could integrate out the parameter vector $\beta$, giving $p(\delta | y) = \int_{-\infty}^{\infty} p(y|\beta, \delta)p(\beta, \delta)d\beta$.} In particular, the analyst might have in mind a family of priors centered at and monotonically decreasing away from zero with varying scale $\sigma$, so that $p(\delta) = p(\delta | \sigma)$. Suppose that for a particular $\delta^* \geq 0$ the prior distribution is decreasing in $\delta$ at a decreasing rate. Intuitively, this assumption of a $\delta^*$ allows the result to generalize to many common distributions.\footnote{In particular, if the prior distribution is in the form of a double-exponential, which lacks ``shoulders,'' then $\delta^* = 0$. However, the most common prior distributions used in applied work, such as the normal, $t$, and Jeffreys', have ``shoulders'' such that $\delta^* > 0$. In this case, the exact curvature of the distribution in the region $[0, \delta^*]$ affects the relative impact of the prior.} 
-Finally, suppose that the informativeness of the prior distribution depends on scale parameter $\sigma$ that is chosen by the researcher and ``flattens'' the prior $p(\delta) = p(\delta | \sigma)$, such that as $\sigma$ increases, the rate a which the prior descends to zero decreases.
+In the general situation, the analyst is interested in computing and characterizing the posterior distribution of the coefficient for $s_i$ given the data. Using Bayes' Rule, the posterior distribution of $\beta = \langle \beta_{cons}, \beta_{s}, \beta_1, \beta_2, ..., \beta_k \rangle$ depends on the likelihood and the prior, so that $p(\beta | y) = p(y|\beta)p(\beta)$.\footnote{If we wanted only the posterior distribution of the scalar $\beta_s$, we could integrate out the other coefficients $\beta_{-s}$, giving $p(\beta_s | y) = \int_{-\infty}^{\infty} p(y|\beta)p(\beta)d\beta_{-s}$.} In particular, the analyst might have in mind a family of priors centered at and monotonically decreasing away from zero with varying scale $\sigma$, so that $p(\beta_s) = p(\beta_s | \sigma)$. Suppose that for a particular $\beta_s^* \geq 0$ the prior distribution is decreasing in $\beta_s$ at a decreasing rate. Intuitively, this assumption of a $\beta_s^*$ allows the result to generalize to many common distributions.\footnote{In particular, if the prior distribution is in the form of a double-exponential, which lacks ``shoulders,'' then $\beta_s^* = 0$. However, the most common prior distributions used in applied work, such as the normal and $t$ distributions, have ``shoulders'' such that $\beta_s^* > 0$. In this case, the exact curvature of the distribution in the region $[0, \beta_s^*]$ affects the relative impact of the prior.} Finally, suppose that the informativeness of the prior distribution depends on the scale parameter $\sigma$ that is chosen by the researcher and ``flattens'' the prior $p(\beta_s) = p(\beta_s | \sigma)$, such that as $\sigma$ increases, the rate at which the prior descends to zero decreases.
 
 \begin{restatable}{theorem}{impact}\label{thm:impact}
-The impact of the researchers choice of $\sigma$ on the posterior distribution $p(\delta | y)$ is increasing in $\delta$ for $\delta> \delta^*$. 
+The impact of the researchers choice of $\sigma$ on the posterior distribution $p(\beta_s | y)$ is increasing in $\beta_s$ for $\beta_s > \beta_s^*$. 
 \end{restatable}
+
+\begin{proof}\renewcommand{\qedsymbol}{}
+See the Technical Appendix.
+\end{proof}
 
 In many cases, researchers summarize the posterior distribution by providing the 5th and 95th percentiles and a measure of centrality, such as the median.
 
 \begin{quote}
-\textsc{Practical Implication of Theorem \ref{thm:impact}:} Under quasicomplete separation where $x_i$ perfectly predicts $y_i = 1$, the prior has a small impact on the lower bound of the 90\% credible interval, a moderate impact on the measures of the location of the posterior (i.e., mean, median, and mode), and a large impact on the upper-bound of the credible interval.
+\textsc{Practical Implication of Theorem \ref{thm:impact}:} When the direction of the separation is \emph{positive}, the prior has a small impact on the lower bound of the 90\% credible interval, a moderate impact on the measures of the location of the posterior (i.e., mean, median, and mode), and a large impact on the upper-bound of the credible interval. When the direction of the separation is \emph{negative}, the prior has a large impact on the lower bound of the 90\% credible interval, a moderate impact on the measures of the location of the posterior (i.e., mean, median, and mode), and a small impact on the upper-bound of the credible interval.
 \end{quote}
 
 \subsection*{The Impact of the Prior in Practice}
@@ -395,43 +402,49 @@ What does this mean for applied researchers? I suggest two implications.
 \clearpage
 \begin{appendix}
 \begin{center}
-\LARGE{\textbf{Online Appendix}}\vspace{4mm}
+\LARGE{\textbf{Technical Appendix}}\vspace{4mm}
 \end{center}
 
 \section*{Proof of Theorem \ref{thm:impact}}
+
+Assume the logit model
+\begin{equation*}
+Pr(y_i =1) = \text{logit}^{-1}(\beta_{cons} + \beta_s s_i +  \beta_1 x_{i1} + \beta_2 x_{i2} + ... + \beta_k x_{ik}),
+\end{equation*}
+and let $\beta = \langle \beta_{cons}, \beta_{s}, \beta_1, \beta_2, ..., \beta_k \rangle$ and $\beta_{-s} = \langle \beta_{cons},\beta_1, \beta_2, ..., \beta_k \rangle$.
 
 \begin{assumption}[Separation]
 Suppose quasicomplete separation such that $s_i$ perfectly predicts $y_i = 1$. 
 \end{assumption}
 
 \begin{assumption}[Prior Shape]
-Suppose that the researcher computes the posterior distribution $p(\beta | y) = p(y | \beta)p(\beta)$ such that for a particular $\beta^* \geq 0$ the prior distribution is decreasing at a decreasing rate.
+Suppose that the researcher computes the posterior distribution $p(\beta_s | y) = \int p(y | \beta)p(\beta)d \beta_{-s}$ such that for a particular $\beta_s^* \geq 0$ the prior distribution $p(\beta_s) = \int p(\beta) d\beta_{-s}$is decreasing at a decreasing rate.
 \end{assumption}
 
-Intuitively, this assumption of a $\beta^*$ allows the result to generalize to a range of common distributions. In particular, if the prior distribution is in the form of a double-exponential, which lacks ``shoulders,'' then $\beta^* = 0$. However, the most common prior distributions used in applied work, such as the normal, $t$, and Jeffreys', have ``shoulders'' such that $\beta^* > 0$. In this case, the exact curvature of the distribution in the region $[0, \beta^*]$ affects the relative impact of the prior.
+Intuitively, this assumption of a $\beta_s^*$ allows the result to generalize to a range of common distributions. In particular, if the prior distribution is in the form of a double-exponential, which lacks ``shoulders,'' then $\beta^* = 0$. However, the most common prior distributions used in applied work, such as the normal and $t$ distributions, have ``shoulders'' such that $\beta_s^* > 0$. In this case, the exact curvature of the distribution in the region $[0, \beta_s^*]$ affects the relative impact of the prior.
 
 \begin{assumption}[Scale Parameter]
-Suppose finally the that informativeness of the prior distribution depends on scale parameter $\sigma$ ``flattens'' the prior $p(\beta) = p(\beta | \sigma)$, such that as $\sigma$ increases, the rate a which the prior descends to zero decreases.
+Suppose finally the that informativeness of the prior distribution depends on scale parameter $\sigma$ ``flattens'' the prior $p(\beta_s) = p(\beta_s | \sigma)$, such that as $\sigma$ increases, the rate a which the prior descends to zero decreases.
 \end{assumption}
 
-$\sigma$ is chosen by the researcher based on prior information about the likely values of the coefficients.
+In practice, $\sigma$ is chosen by the researcher based on prior information about the likely values of the coefficients.
 
 Before proving Theorem \ref{thm:impact}, it is helpful to show several initial results.
 
 \begin{lemma}\label{thm:L1}
-$\dfrac{\partial p(y | \beta)}{\partial \beta} > 0$ for all $\beta$. 
+$\dfrac{\partial p(y | \beta_s)}{\partial \beta_s} > 0$ for all $\beta_s$. 
 \end{lemma}
 
 \begin{proof}[Proof of Lemma \ref{thm:L1}]
-The quantity $p(y | \beta)$ is the probability of observing $y$ (i.e., an outcome variable separated by $s$). Increasing values of $\beta$ make this separation increasingly likely. Thus, $p(y | \beta)$ is increasing in $\beta$ so that $\dfrac{\partial p(y | \beta)}{\partial \beta} > 0$. 
+The quantity $p(y | \beta)$ is the probability of observing $y$ (i.e., an outcome variable separated by $s$). Increasing values of $\beta_s$ make this separation increasingly likely. Thus, $p(y | \beta)$ is increasing in $\beta_s$ so that $\dfrac{\partial p(y | \beta)}{\partial \beta_s} > 0$. 
 \end{proof}
 
 \begin{lemma}\label{thm:L2}
-$p(\beta | \sigma) > 0$ for all $\beta$.
+$p(\beta_s | \sigma) > 0$ for all $\beta_s$.
 \end{lemma}
 
 \begin{proof}[Proof of Lemma \ref{thm:L2}]
-The quantity $p(\beta | \sigma)$ is a probability distribution defined to have support over the real line and thus $p(\beta | \sigma) > 0$ for all $\beta$. 
+The quantity $p(\beta_s | \sigma)$ is a probability distribution defined to have support over the real line and thus $p(\beta | \sigma) > 0$ for all $\beta$. 
 \end{proof}
 
 \begin{lemma}\label{thm:L3}
@@ -439,25 +452,27 @@ $p(y | \beta) > 0$ for all $\beta$.
 \end{lemma}
 
 \begin{proof}[Proof of Lemma \ref{thm:L3}]
-The quantity $p(y | \beta)$ is a probability and thus bounded between zero and one. As long as data lie within the support of the probability model, this quantity lies strictly above zero. Since the theorem defines the data as such, $p(y | \beta) > 0$.
+The quantity $p(y | \beta)$ is a probability density and thus bounded between zero and one. As long as data lie within the support of the probability model, this quantity lies strictly above zero. Since the theorem defines the data as such, $p(y | \beta) > 0$.
 \end{proof}
 
 \begin{lemma}\label{thm:L4}
-$\dfrac{\partial^2 p(\beta | \sigma)}{\partial \beta \partial \sigma}$ for $\beta > \beta^*$.
+$\dfrac{\partial^2 p(\beta_s | \sigma)}{\partial \beta_s \partial \sigma}$ for $\beta > \beta^*$.
 \end{lemma}
 
 \begin{proof}[Proof of Lemma \ref{thm:L4}]
-By assumption, the prior density is decreasing at a decreasing rate in $\beta$ for all $\beta > \beta^*$. Also by assumption, the scale parameter $\sigma$ controls the rate at which $\beta$ decreases such that increasing $\sigma$ leads to a slower rate of decrease. These two assumptions together imply that $\dfrac{\partial^2 p(\beta | \sigma)}{\partial \beta \partial \sigma}$ for $\beta > \beta^*$.
+By assumption, the prior density is decreasing at a decreasing rate in $\beta_s$ for all $\beta_s > \beta_s^*$. Also by assumption, the scale parameter $\sigma$ controls the rate at which $\beta_s$ decreases such that increasing $\sigma$ leads to a slower rate of decrease. These two assumptions together imply that $\dfrac{\partial^2 p(\beta_s | \sigma)}{\partial \beta_s \partial \sigma}$ for $\beta_s > \beta_s^*$.
 \end{proof}
 
 Now recall Theorem \ref{thm:impact}:
 
 \impact*
 
-\begin{proof}[Proof of Theorem \ref{thm:impact}]
-To show that the effect of $\sigma$ is increasing in $\beta$, I simply need to show that $\dfrac{\partial^2 p(\beta | y)}{\partial \beta \partial \sigma} > 0$ for $\beta > \beta^*$. 
+[ctk: I need to check that this proof makes sense in light of an arbitrary prior $p(\beta_{-s})$.]
 
-Recall that the posterior $p(\beta | y)$ is proportional to the likelihood $p(y | \beta)$ times the prior $\beta(\beta | \sigma)$, so that $p(\beta | y) \propto p(y|\beta)p(\beta | \sigma)$. First, we can use the product rule to obtain the derivative of $p(\beta | y)$ so that 
+\begin{proof}[Proof of Theorem \ref{thm:impact}]
+To show that the effect of $\sigma$ is increasing in $\beta_s$, I simply need to show that $\dfrac{\partial^2 p(\beta_s | y)}{\partial \beta_s \partial \sigma} > 0$ for $\beta > \beta^*$. 
+
+Recall that the posterior $p(\beta | y)$ is proportional to the likelihood $p(y | \beta)$ times the prior $p(\beta | \sigma)$, so that $p(\beta | y) \propto p(y|\beta)p(\beta | \sigma)$. First, we can use the product rule to obtain the derivative of $p(\beta | y)$ so that 
 
 \begin{equation}\nonumber
 \dfrac{\partial p(\beta | y)}{\partial \beta} \propto \dfrac{\partial p(y | \beta)}{\partial \beta} p(\beta | \sigma) + p(y | \beta)\dfrac{\partial p(\beta | \sigma)}{\partial \beta \partial}\text{}.
