@@ -6,42 +6,72 @@ lp.cauchy <- function(beta, scale.coef, scale.int, X, y) {
   return(loglik)
 }
 
-cauchy <- function(f, data, scale.int = 10, scale.coef = 2.5,
-                        burnin = 500, mcmc = 1000, thin = 1,
-                        tune = 1, verbose = 100) {
+cauchy <- function(f, data, 
+                   scale.int = 10, scale.coef = 2.5,
+                   n.sims = 1000, n.burnin = 500,
+                   n.thin = 1, n.chains = 3, n.cores = n.chains,
+                   tune = 1) {
   require(MCMCpack)
   require(Matrix)
   require(arm)
+  require(parallel)
   mf <- model.frame(f, data) 
   y <- model.response(mf)
   X <- model.matrix(f, data)
   X <- Matrix(X)
-  init <- rnorm(ncol(X), 0, 1)
-  cat("Computing proposal distribution...\n")
-  mle <- bayesglm(f, data = d, family = binomial,
-                  prior.scale.for.intercept = scale.int,
-                  prior.scale = scale.coef)
+  cat("\nComputing proposal distribution...\n")
+  mle <- bayesglm(f, data = d, family = binomial)
   V <- vcov(mle)
-  print(summary(mle))
-  seed <- round(runif(1, 0, 100000))
-  mcmc <- MCMCmetrop1R(fun = lp.cauchy, theta.init = init, 
-                       scale.int = scale.int,
-                       scale.coef = scale.coef,
-                       X = X, y = y, burnin = burnin,
-                       mcmc = mcmc, thin = thin, V = V,
-                       tune = tune, seed = seed, 
-                       verbose = verbose)
-  return(mcmc)
+  #print(summary(mle))
+  mcmc.chains <- mcmc.list()
+  mcmc <- NULL
+  l.seed <- runif(6, 100000, 999999)
+  init.seed <- runif(n.chains, 100000, 999999)
+  run.mcmc <- function(x) {
+    set.seed(init.seed[x])
+    init <- rnorm(ncol(X), coef(mle), 10)
+    mcmc <- MCMCmetrop1R(fun = lp.cauchy, 
+                         theta.init = init,  V = V,
+                         scale.coef = scale.coef, scale.int = scale.int, 
+                         X = X, y = y, 
+                         thin = n.thin, burnin = n.burnin, mcmc = n.sims,
+                         tune = tune, verbose = 0,
+                         seed = list(l.seed, x))
+    return(mcmc)
+  }
+  cat(paste("\nRunning ", n.chains, " chains in parallel of ", n.sims + n.burnin, " iterations each--this may take a while...", sep = ""))
+  mcmc.chains <- mclapply(1:n.chains, run.mcmc, mc.cores = n.cores)
+  cat(paste("\nFinished running chains!\n", sep = ""))
+  mcmc.chains <- as.mcmc.list(mcmc.chains)
+  for (i in 1:n.chains) {  
+    mcmc <- rbind(mcmc, mcmc.chains[[i]])
+  }
+  colnames(mcmc) <- colnames(X)
+  R.hat <- gelman.diag(mcmc.chains)
+  cat(paste("\nChecking convergence...\n", sep = ""))
+  if (R.hat[[2]] <= 1.02) {
+    cat(paste("\nThe multivariate R-hat statistic of ", round(R.hat[[2]], 2), 
+              " suggests that the chains have converged.\n\n", sep = ""))
+  }
+  if (R.hat[[2]] > 1.02) {
+    cat(paste("\n######## WARNING: #########\n\nThe multivariate R-hat statistic of ", round(R.hat[[2]], 2), 
+              " suggests that the chains have NOT converged.\n\n", sep = ""))
+  }
+  res <- list(mcmc.chains = mcmc.chains,
+              mcmc = mcmc,
+              R.hat = R.hat)
+  return(res)
 }
 
-# # test
-# set.seed(1234)
-# n <- 1000
-# x1 <- runif(n, -1, 1)
-# X <- cbind(1, x1)
-# beta <- c(-1, 1)
-# y <- rbinom(n, 1, plogis(X%*%beta))
-# d <- data.frame(x1, y)
-# m1 <- cauchy(y ~ x1, d, mcmc = 1000, verbose = 10)
-# plot(m1)
+# test
+set.seed(1234)
+n <- 100
+x1 <- rbinom(n, 1, .5)
+X <- cbind(1, x1)
+beta <- c(-1, 1)
+y <- rbinom(n, 1, plogis(X%*%beta))
+y[x1 == 1] <- 1
+d <- data.frame(x1, y)
+m1 <- cauchy(y ~ x1, d, n.sims = 1000, n.burnin = 0, n.chains = 4)
+plot(m1$mcmc.chains)
 
