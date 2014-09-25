@@ -29,7 +29,7 @@ cauchy <- function(f, data,
   init.seed <- runif(n.chains, 100000, 999999)
   run.mcmc <- function(x) {
     set.seed(init.seed[x])
-    init <- rnorm(ncol(X), coef(mle), 10)
+    init <- rnorm(ncol(X), coef(mle), 1)
     mcmc <- MCMCmetrop1R(fun = lp.cauchy, 
                          theta.init = init,  V = V,
                          scale.coef = scale.coef, scale.int = scale.int, 
