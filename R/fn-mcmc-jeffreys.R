@@ -1,4 +1,4 @@
-lp.firth <- function(beta, X, y) {
+lp.jeffreys <- function(beta, X, y) {
   p <- plogis(matrix(X%*%beta))
   W <- Matrix(0, nrow = length(p), ncol = length(p))
   diag(W) <- p*(1 - p)
@@ -7,8 +7,8 @@ lp.firth <- function(beta, X, y) {
   return(loglik)
 }
 
-firth <- function(f, data, burnin = 500, mcmc = 1000, thin = 1,
-                  tune = 1, verbose = 1000) {
+jeffreys <- function(f, data, n.sims = 1000, n.burnin = 100, n.thin = 1,
+                  tune = 1, n.chains = 3, n.cores = n.chains) {
   require(MCMCpack)
   require(Matrix)
   require(logistf)
@@ -28,7 +28,7 @@ firth <- function(f, data, burnin = 500, mcmc = 1000, thin = 1,
   run.mcmc <- function(x) {
     set.seed(init.seed[x])
     init <- rnorm(ncol(X), coef(mle), 1)
-    mcmc <- MCMCmetrop1R(fun = lp.firth, 
+    mcmc <- MCMCmetrop1R(fun = lp.jeffreys, 
                          theta.init = init,  V = V,
                          X = X, y = y, 
                          thin = n.thin, burnin = n.burnin, mcmc = n.sims,
@@ -60,15 +60,15 @@ firth <- function(f, data, burnin = 500, mcmc = 1000, thin = 1,
   return(res)
 }
 
-# # test
-# set.seed(1234)
-# n <- 100
-# x1 <- rbinom(n, 1, .5)
-# X <- cbind(1, x1)
-# beta <- c(-1, 1)
-# y <- rbinom(n, 1, plogis(X%*%beta))
-# y[x1 == 1] <- 1
-# d <- data.frame(x1, y)
-# m1 <- cauchy(y ~ x1, d, n.sims = 1000, n.burnin = 0, n.chains = 4)
-# plot(m1$mcmc.chains)
+# test
+set.seed(1234)
+n <- 100
+x1 <- rbinom(n, 1, .5)
+X <- cbind(1, x1)
+beta <- c(-1, 1)
+y <- rbinom(n, 1, plogis(X%*%beta))
+y[x1 == 1] <- 1
+d <- data.frame(x1, y)
+m1 <- jeffreys(y ~ x1, d, n.sims = 100, n.burnin = 10, n.chains = 4)
+plot(m1$mcmc.chains)
 
