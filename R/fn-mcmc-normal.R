@@ -26,7 +26,7 @@ lp.normal <- function(beta, which.var.sep, sd, X, y) {
 normal <- function(f, data, sep.var, sd = 4.5,
                    n.sims = 1000, n.burnin = 500,
                    n.thin = 1, n.chains = 3,
-                   tune = 1) {
+                   n.cores = n.chains, tune = 1) {
   require(MCMCpack)
   require(Matrix)
   require(arm)
@@ -59,7 +59,7 @@ normal <- function(f, data, sep.var, sd = 4.5,
     return(mcmc)
   }
   cat(paste("\nRunning ", n.chains, " chains in parallel of ", n.sims + n.burnin, " iterations each--this may take a while...", sep = ""))
-  mcmc.chains <- mclapply(1:n.chains, run.mcmc, mc.cores = n.chains)
+  mcmc.chains <- mclapply(1:n.chains, run.mcmc, mc.cores = n.cores)
   cat(paste("\nFinished running chains!\n", sep = ""))
   mcmc.chains <- as.mcmc.list(mcmc.chains)
   for (i in 1:n.chains) {  
