@@ -63,15 +63,15 @@ cauchy <- function(f, data,
   return(res)
 }
 
-# test
-set.seed(1234)
-n <- 100
-x1 <- rbinom(n, 1, .5)
-X <- cbind(1, x1)
-beta <- c(-1, 1)
-y <- rbinom(n, 1, plogis(X%*%beta))
-y[x1 == 1] <- 1
-d <- data.frame(x1, y)
-m1 <- cauchy(y ~ x1, d, n.sims = 1000, n.burnin = 0, n.chains = 4)
-plot(m1$mcmc.chains)
+# # test
+# set.seed(1234)
+# n <- 100
+# x1 <- rbinom(n, 1, .5)
+# X <- cbind(1, x1)
+# beta <- c(-1, 1)
+# y <- rbinom(n, 1, plogis(X%*%beta))
+# y[x1 == 1] <- 1
+# d <- data.frame(x1, y)
+# m1 <- cauchy(y ~ x1, d, n.sims = 1000, n.burnin = 0, n.chains = 4)
+# plot(m1$mcmc.chains)
 
