@@ -33,6 +33,9 @@ mean(zorn.sims)
 median(gelman.sims)/median(zorn.sims)
 mean(gelman.sims)/mean(zorn.sims)
 
+# compare the posterior spreads
+quantile(zorn.sims, c(.05, .95))
+
 # functions
 ## find median and 90% hpd and add to plot
 sumry <- function(sims, ht, lab = NA) {
