@@ -37,10 +37,6 @@ skep.p <- pppd(f = f, d = d, prior.sims = ps, s = "twonukedyad", s.at = 0, s.at.
 ps <- rnorm(10000, 0, 8)
 enth.p <- pppd(f = f, d = d, prior.sims = ps, s = "twonukedyad", s.at = 0, s.at.lo = FALSE)
 
-# gelman's prior
-ps <- rcauchy(10000, 0, 2.5)
-gel.p <- pppd(f = f, d = d, prior.sims = ps, s = "twonukedyad", s.at = 0, s.at.lo = FALSE)
-
 x.max <- 100000
 trunc.my.rr <- my.p$rr[my.p$rr < x.max]
 trunc.gel.rr <- gel.p$rr[gel.p$rr < x.max]
@@ -73,8 +69,8 @@ add.arrow <- function(p) {
 library(compactr)
 xlim0 <- log(c(1, 100000))
 ylim0 <- c(0, max(c(h1$counts, h2$counts, h3$counts, h4$counts)))
-pdf("doc/figs/bm-pppd-hist.pdf", height = 4, width = 7)
-par(mfrow = c(2,2), mar = c(.75,.75,.75,.75), oma = c(2,3,1,1))
+pdf("doc/figs/bm-pppd-hist.pdf", height = 2.5, width = 7)
+par(mfrow = c(1,3), mar = c(.75,.75,.75,.75), oma = c(2,3,1,1))
 eplot(xlim = xlim0, ylim = ylim0,
       xlab = "Risk-Ratio (Log Scale)",
       ylab = "Counts",
@@ -84,10 +80,6 @@ eplot(xlim = xlim0, ylim = ylim0,
       main = "Informative Normal(0, 4.5) Prior")
 plot(h1, add = TRUE, col = "grey50", border = NA)
 add.arrow(my.p.trunc)
-
-aplot("Gelman's Default Cauchy(0, 2.5) Prior")
-plot(h2, add = TRUE, col = "grey50", border = NA)
-add.arrow(gel.p.trunc)
 
 aplot("Skeptical Normal(0, 2) Prior")
 plot(h3, add = TRUE, col = "grey50", border = NA)
@@ -104,7 +96,6 @@ Q <- round(rbind(my.p$Q[, "risk-ratio"],
       skep.p$Q[, "risk-ratio"],
       enth.p$Q[, "risk-ratio"]), 1)
 rownames(Q) <- c("Informative Normal(0, 4.5) Prior",
-                 "Gelman's Default Cauchy(0, 2.5) Prior",
                  "Skeptical Normal(0, 2) Prior",
                  "Enthusiastic Normal(0, 8) Prior")
 pretty.Q <- matrix(prettyNum(Q, big.mark = ",", digits = 8, format = "fg", flag = " "), nrow = nrow(Q)); pretty.Q
@@ -116,9 +107,7 @@ tab <- xtable(pretty.Q, align = c("|", rep("c", ncol(Q) + 1), "|"),
                   risk-ratio of war in nonnuclear and nuclear dyads. The risk-ratio is 
                   tells us how many times more likely war is in non-nuclear dyads compared 
                   to nuclear dyads. Notice that that the, informative prior suggests a median 
-                  risk-ratio of about 20, which is a large, but plausible effect. Gelman's 
-                  proposed default prior suggests a slightly smaller median ratio of about 13, 
-                  but also allows very large effects. The skeptical prior suggests a median 
+                  risk-ratio of about 20, which is a large, but plausible effect. The skeptical prior suggests a median 
                   ratio of about 4 and the enthusiastic prior suggests a median ratio of over 
                   200.",
               label = "tab:bm-pppd-deciles")

@@ -411,13 +411,19 @@ Finally, I use the posterior distributions from each prior to calculate the prob
 \end{center}
 \end{figure}
 
-\subsection*{Implications}
+\subsection*{Conclusion}
 
-The application illustrates what Theorem \ref{thm:impact} proves--under separation, the choice of prior affects substantive conclusions. Even the predominant default priors used to deal with separation can provide very different inferences. A carefully-chosen, informative prior is an essential part of obtaining reasonable inferences under separation. What does this mean for applied researchers? I suggest two implications:
+Separation is a relatively common situation in political science. It is also an unusual ``problem'' in political science because the effects in the sample are ``too big'' for maximum likelihood. In this situation, dropping the separating variables (i.e., deliberate specification bias) and interpreting the implausible coefficients and standard errors are particularly unattractive options. But even the most principled solution to date, the incorporation of prior information via default priors (\citealt{Zorn2005}, \citealt{Gelmanetal2008}), have shortcomings.
+
+First, the normal approximations necessary to simulate from these default prior distributions perform poorly. While it is possible to use profile likelihood methods to obtain more accurate confidence intervals for the coefficients (\citealt{Zorn2005}, \cite{HeinzeSchemper2002}, \cite{McCullaghNelder1989}), it is difficult to translate these intervals into confidence intervals for quantities of interest. I provide the computational tools to simulate directly from the posterior using both Zorn's (\citeyear{Zorn2005}) and Gelman et al.'s Zorn's (\citeyear{Gelmanetal2008}) suggested default priors.
+
+Second, the application illustrates what Theorem \ref{thm:impact} proves--under separation, the choice of prior affects substantive conclusions. Even the predominant default priors used to deal with separation can provide very different inferences. A carefully-chosen, informative prior is an essential part of obtaining reasonable inferences under separation. What does this mean for applied researchers? I suggest two implications:
 \begin{enumerate}
 \item When facing separation, the choice of prior matters. Researchers must carefully choose a prior that represents actual prior information, otherwise, the point and interval estimates will be too large.
 \item In addition to carefully choosing an informative prior that represents her own beliefs, the researcher should show how the inferences change for a range of prior distributions. In the debate between \cite{BellMiller2014} and \cite{Rauchhaus2009}, the choice of prior almost completely drives the inferences about the likely magnitude of the risk-ratio. Thus, to the extent that there is disagreement about the prior, there will be disagreement about the results. In particular, I suggest that researchers report the key quantities of interest for a highly skeptical prior, an enthusiastic prior, and the two default priors suggested by \cite{Zorn2005} and \cite{Gelmanetal2008}.
 \end{enumerate}
+
+When facing separation, researchers must \emph{carefully} choose a prior distribution to rule out implausibly large effects. This paper introduces the concept of a partial prior predictive distribution and the associated computational tools to help researchers choose a prior distribution that represents actual prior information for their particular research problem. By presenting results from a range of prior distributions, including an informative prior, researchers can increases the transparency, credibility, and accuracy of their inferences when dealing with separation.
 
 \clearpage
 \bibliographystyle{apsr_fs}
