@@ -7,6 +7,8 @@ rm(list = ls())
 # load packages
 library(compactr)
 library(arm)
+library(devtools)
+install_github("carlislerainey/compactr")
 
 # set seed
 # set.seed(8742570)
@@ -39,18 +41,15 @@ enth.p <- pppd(f = f, d = d, prior.sims = ps, s = "twonukedyad", s.at = 0, s.at.
 
 x.max <- 100000
 trunc.my.rr <- my.p$rr[my.p$rr < x.max]
-trunc.gel.rr <- gel.p$rr[gel.p$rr < x.max]
 trunc.skep.rr <- skep.p$rr[skep.p$rr < x.max]
 trunc.enth.rr <- enth.p$rr[enth.p$rr < x.max]
 my.p.trunc <- sum(my.p$rr > x.max)/length(my.p$rr)
-gel.p.trunc <- sum(gel.p$rr > x.max)/length(gel.p$rr)
 skep.p.trunc <- sum(skep.p$rr > x.max)/length(skep.p$rr)
 enth.p.trunc <- sum(enth.p$rr > x.max)/length(enth.p$rr)
 
 
 breaks <- seq(log(1), log(x.max), length.out = 20)
 h1 <- hist(log(trunc.my.rr), breaks = breaks)
-h2 <- hist(log(trunc.gel.rr), breaks = breaks)
 h3 <- hist(log(trunc.skep.rr), breaks = breaks)
 h4 <- hist(log(trunc.enth.rr), breaks = breaks)
 
@@ -68,8 +67,8 @@ add.arrow <- function(p) {
 
 library(compactr)
 xlim0 <- log(c(1, 100000))
-ylim0 <- c(0, max(c(h1$counts, h2$counts, h3$counts, h4$counts)))
-pdf("doc/figs/bm-pppd-hist.pdf", height = 2.5, width = 7)
+ylim0 <- c(0, max(c(h1$counts, h3$counts, h4$counts)))
+pdf("doc/figs/bm-pppd-hist.pdf", height = 2, width = 8)
 par(mfrow = c(1,3), mar = c(.75,.75,.75,.75), oma = c(2,3,1,1))
 eplot(xlim = xlim0, ylim = ylim0,
       xlab = "Risk-Ratio (Log Scale)",
@@ -92,7 +91,6 @@ dev.off()
 
 
 Q <- round(rbind(my.p$Q[, "risk-ratio"],
-      gel.p$Q[, "risk-ratio"],
       skep.p$Q[, "risk-ratio"],
       enth.p$Q[, "risk-ratio"]), 1)
 rownames(Q) <- c("Informative Normal(0, 4.5) Prior",
