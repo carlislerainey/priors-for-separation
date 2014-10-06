@@ -91,12 +91,12 @@ d.zorn <- density(zorn.sims)
 d.gelman <- density(gelman.sims)
 
 # simulate quantities of interest
-# ## load and clean data
-# d <- read.csv("bm-replication/data/bm.csv")
-# d <- d[, c("warl2", "onenukedyad", "twonukedyad", "logCapabilityRatio", "Ally",
-#            "SmlDemocracy", "SmlDependence", "logDistance", "Contiguity",
-#            "MajorPower", "NIGOs")]
-# d <- na.omit(d)
+## load and clean data
+d <- read.csv("bm-replication/data/bm.csv")
+d <- d[, c("warl2", "onenukedyad", "twonukedyad", "logCapabilityRatio", "Ally",
+           "SmlDemocracy", "SmlDependence", "logDistance", "Contiguity",
+           "MajorPower", "NIGOs")]
+d <- na.omit(d)
 ## rescale variables
 d$c.onenukedyad <- rescale(d$onenukedyad)
 d$c.twonukedyad <- rescale(d$twonukedyad)
@@ -137,7 +137,7 @@ sumry(inf.sims, 6, "Informative Normal(0, 4.5) Prior")
 sumry(skep.sims, 5, "Skeptical Normal(0, 2) Prior")
 sumry(enth.sims, 4, "Enthusiastic Normal(0, 8) Prior")
 sumry(zorn.sims, 3, "Zorn's Default Jefferys' Invariant Prior")
-sumry(gelman.sims, 2, "Gelman's Default Cauchy(0, 2.5) Prior")
+sumry(gelman.sims, 2, "Gelman et al.'s Default Cauchy(0, 2.5) Prior")
 dev.off()
 
 # density plot
@@ -157,7 +157,7 @@ plot.posterior.density(enth.sims)
 addxaxis()
 aplot("Zorn's Default Jeffreys' Prior")
 plot.posterior.density(zorn.sims)
-aplot("Gelman's Default Cauchy(0, 2.5) Prior")
+aplot("Gelman et al.'s Default Cauchy(0, 2.5) Prior")
 plot.posterior.density(gelman.sims)
 dev.off()
 
@@ -188,7 +188,7 @@ s <- sumry(zorn.rr.sims, 3, "Zorn's Default Jefferys' Prior")
 text(s[1], 2.85, s[1], cex = .5)
 text(s[2], 2.85, s[2], cex = .5)
 text(s[3], 2.85, s[3], cex = .5)
-s <- sumry(gelman.rr.sims, 2, "Gelman's Default Cauchy(0, 2.5) Prior")
+s <- sumry(gelman.rr.sims, 2, "Gelman et al.'s Default Cauchy(0, 2.5) Prior")
 text(s[1], 1.85, s[1], cex = .5)
 text(s[2], 1.85, s[2], cex = .5)
 text(s[3], 1.85, s[3], cex = .5)
@@ -208,7 +208,7 @@ rownames(S) <- c("Informative Normal(0, 4.5) Prior",
                  "Skeptical Normal(0, 2) Prior",
                  "Enthusiastic Normal(0, 8) Prior",
                  "Zorn's Default Jeffreys' Prior",
-                 "Gelman's Default Cauchy(0, 2.5) Prior")
+                 "Gelman et al.'s Default Cauchy(0, 2.5) Prior")
 pretty.S <- matrix(prettyNum(S, big.mark = ",", format = "fg", flag = " "), nrow = nrow(S)); pretty.S
 rownames(pretty.S) <- rownames(S)
 colnames(pretty.S) <- colnames(S)
@@ -225,7 +225,7 @@ labs <- rev(c("Informative Normal(0, 4.5) Prior",
   "Skeptical Normal(0, 2) Prior",
   "Enthusiastic Normal(0, 8) Prior",
   "Zorn's Default Jeffreys' Prior",
-  "Gelman's Default Cauchy(0, 2.5) Prior"))
+  "Gelman et al.'s Default Cauchy(0, 2.5) Prior"))
 pdf("doc/figs/bm-pr-hypothesis.pdf", height = 3.5, width = 6)
 par(mfrow = c(1,1), mar = c(4,1,1,1), oma = c(0,0,0,0), xaxs = "i")
 eplot(xlim = c(0, 1), ylim = c(0.5, 5.5),
