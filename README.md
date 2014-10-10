@@ -1,4 +1,4 @@
-In-progress manuscript, code, and data for the paper tentatively titled "Reasonable Measures of Uncertainty Under Separation."
+In-progress manuscript, code, and data for the paper tentatively titled "Dealing with Separation in Logistic Regression Models."
 
 Here's the main point: 
 
@@ -8,6 +8,6 @@ When dealing with separation under logistic regression, you had better choose yo
 
 And here's a working abstract:
 
-> When facing data sets with small numbers of observations or ``rare events,'' political scientists often encounter important explanatory variables that perfectly predict binary events or non-events. In this situation, maximum likelihood provides implausible estimates and the researcher must incorporate some form of prior information in the estimation. The most sophisticated research uses Jeffreys' invariant prior to stabilize the estimates. While Jeffreys' prior has the advantage of being automatic, I show that, in many cases, it offers too much prior information, providing confidence intervals that are much too narrow. I show that the choice of a more reasonable prior can lead to different substantive conclusions about the likely magnitude of an effect and I offer practice advice for choosing a prior distribution that represents actual prior information.
+> When facing small numbers of observations or ``rare events,'' political scientists often encounter separation, in which important explanatory variables perfectly predict binary events or non-events. In this situation, maximum likelihood provides implausible estimates and the researcher must incorporate some form of prior information into the model. The most sophisticated research uses Jeffreys' invariant prior to stabilize the estimates. While Jeffreys' prior has the advantage of being automatic, I show that it often provides too much prior information, producing point estimates that are too small and confidence intervals that are too narrow. To help researchers choose a more reasonable prior distribution, I introduce the concept of a partial prior predictive distribution and develop the tools required to compute the partial prior predictive distribution, estimate the subsequent model, and summarize the results.
 
 If you have any comments or suggestions, please [open an issue](https://github.com/carlislerainey/priors-for-separatioin/issues) or just [e-mail](mailto:carlislerainey@gmail.com) me.
