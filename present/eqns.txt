@@ -1,0 +1,92 @@
+
+
+\noindent For 
+\begin{enumerate}
+\item a monotonic likelihood $p(y | \beta)$ decreasing in $\beta_s$, 
+\item a proper prior distribution $p(\beta | \sigma)$, and 
+\item a large, negative $\beta_s$, 
+\end{enumerate}
+the posterior distribution of $\beta_s$ is proportional to the prior distribution for $\beta_s$, so that $p(\beta_s | y) \propto p(\beta_s | \sigma)$.
+
+############
+\begin{enumerate}
+\item Choose a prior distribution $p(\beta_s)$.
+\item Estimate the model coefficients $\hat{\beta}^{mle}$. 
+\item For $i$ in 1 to $n_{sims}$, do the following:
+	\begin{enumerate}
+    \item Simulate $\tilde{\beta}^{[i]}_s \sim p(\beta_s)$.
+	\item Replace $\hat{\beta}_s^{mle}$ in $\hat{\beta}^{mle}$ with $\tilde{\beta}^{[i]}_s$, yielding the vector $\tilde{\beta}^{[i]}$.
+	\item Calculate and store the quantity of interest $\tilde{q}^{[i]} = q\left(\tilde{\beta}^{[i]}\right)$.
+	\end{enumerate}
+\item Keep only the simulations in the direction of the separation.
+\item Summarize the simulations $\tilde{q}$ using quantiles, histograms, or density plots. 
+\item If the prior is inadequate, then update the prior distribution $p(\beta_s)$.
+\end{enumerate}
+#############
+
+\left(\begin{array}{ccccc}
+\sigma_{11} & \sigma_{12} & \sigma_{13} & \hdots & \sigma_{1k}\\
+\sigma_{21} & \sigma_{22} & \sigma_{23} & \hdots & \sigma_{2k}\\
+\sigma_{31} & \sigma_{32} & \sigma_{33} & \hdots & \sigma_{3k}\\
+\vdots & \vdots & \vdots & \ddots & \vdots\\\
+\sigma_{k1} & \sigma_{k2} & \sigma_{k3} & \hdots & \sigma_{kk}
+\end{array}\right)
+###########
+\begin{align*}
+\beta_1 &\approx \hat{\beta}_1^{mle}\\
+\beta_2 &\approx \hat{\beta}_2^{mle}\\
+&~~\vdots\\
+\beta_k &\approx \hat{\beta}_k^{mle}\\
+%\beta_s < 0
+\end{align*}
+###########
+\beta_s < 0
+############
+Pr(y_i) = \Lambda(\beta_{c} + \beta_s s_i + \beta_1 x_{i1} + ... + \beta_k x_{ik})
+###########
+p^*(y_{new}) = \int_{-\infty}^{0} p(y_{new} | \beta_s, \hat{\beta}_{-s}^{mle})p(\beta_s | \beta_s \leq 0)d(\beta_s)
+############
+# appendix proof
+############
+
+\begin{proof}
+Due to separation, $p(y|\beta)$ is monotonic increasing in $\beta_s$ to a limit $\underline{\mathscr{L}}$, so that $\displaystyle \lim_{\beta_s \to \infty} p(y | \beta_s) = \underline{\mathscr{L}}$. By Bayes' rule, 
+\begin{equation*}
+p(\beta | y) = \dfrac{p(y | \beta)p(\beta | \sigma)}{\int\limits_{-\infty}^{\infty}p(y | \beta)p(\beta | \sigma)d\beta} = \dfrac{p(y | \beta)p(\beta | \sigma)}{\underbrace{p(y | \sigma)}_{\text{constant w.r.t. }\beta}}. 
+\end{equation*}
+Integrating out the other parameters $\beta_{-s} = \langle \beta_{cons}, \beta_1, \beta_2, ..., \beta_k \rangle$ to obtain the posterior distribution of $\beta_s$, 
+\begin{equation}\label{eqn:int-post}
+p(\beta_s | y) = \dfrac{\int\limits_{-\infty}^{\infty}p(y | \beta)p(\beta | \sigma)d\beta_{-s}}{p(y | \sigma)}, 
+\end{equation}
+and the prior distribution of $\beta_s$, 
+\begin{equation*}
+p(\beta_s | \sigma) = \int\limits_{-\infty}^{\infty}p(\beta | \sigma)d\beta_{-s}.
+\end{equation*}
+Notice that $p(\beta_s | y) \propto p(\beta_s | \sigma)$ iff $\dfrac{p(\beta_s | y)}{p(\beta_s | \sigma)} = k$, where the constant $k \neq 0$.Thus, Theorem 1 implies that
+\begin{equation*}
+\lim _{\beta_s \to \infty} \dfrac{p(\beta_s | y)}{p(\beta_s | \sigma)} = k
+\end{equation*}
+Substituting in Equation 1,
+\begin{equation*}
+\lim _{\beta_s \to \infty} \dfrac{\frac{\int\limits_{-\infty}^{\infty}p(y | \beta)p(\beta | \sigma)d\beta_{-s}}{p(y | \sigma)}}{p(\beta_s | \sigma)} = k.
+\end{equation*}
+Multiplying both sides by $p(y | \sigma)$, which is constant with respect to $\beta$, 
+\begin{equation*}
+\lim _{\beta_s \to \infty} \dfrac{\int\limits_{-\infty}^{\infty}p(y | \beta)p(\beta | \sigma)d\beta_{-s}}{p(\beta_s | \sigma)} = kp(y | \sigma).
+\end{equation*}
+Setting $\int\limits_{-\infty}^{\infty}p(y | \beta)p(\beta | \sigma)d\beta_{-s} = p(y | \beta_s) p(\beta_s | \sigma)$, 
+\begin{equation*}
+\lim _{\beta_s \to \infty} \dfrac{p(y | \beta_s) p(\beta_s | \sigma)}{ p(\beta_s | \sigma)} = kp(y | \sigma).
+\end{equation*}
+Canceling $p(\beta_s | \sigma)$ in the numerator and denominator,
+\begin{equation*}
+\lim _{\beta_s \to \infty} p(y | \beta_s) = kp(y | \sigma).
+\end{equation*}
+Recalling that $\displaystyle \lim_{\beta_s \to \infty} p(y | \beta) = \underline{\mathscr{L}}$ and substituting,
+\begin{equation*}
+\underline{\mathscr{L}}= kp(y | \sigma),
+\end{equation*}
+which implies that $k = \dfrac{p(y | \sigma)}{\underline{\mathscr{L}}}$, which is a positive constant.
+\end{proof}
+
+

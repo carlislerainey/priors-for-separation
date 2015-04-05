@@ -1,0 +1,79 @@
+\documentclass[handout]{beamer}
+
+% math packages
+\usepackage{amssymb}
+
+% theme
+\usetheme{Rochester}
+\usecolortheme{dove}
+\usefonttheme{default}
+
+% make the title BIG
+\setbeamerfont{title}{series=\bfseries,size=\Huge, parent=structure}
+
+% remove the side title header
+\setbeamertemplate{headline}{}
+
+%gets rid of bottom navigation bars
+\setbeamertemplate{footline}{}
+
+%gets rid of navigation symbols
+\setbeamertemplate{navigation symbols}{}
+
+% define "head" commands for transitions
+\newcommand{\headone}{\centering \bf \Huge}
+\newcommand{\headtwo}{\centering \bf \LARGE}
+\newcommand{\headthree}{\centering \bf \Large}
+
+% define a "spaceit" command for spacing between paragraphs
+\newcommand{\spaceit}{\vspace{10mm}}
+
+% define a "red" command to make text red.
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\newcommand{\blue}[1]{\textcolor{blue}{#1}}
+
+
+% simply the style of the lists
+\setbeamertemplate{itemize items}[default]
+\setbeamertemplate{enumerate items}[default]
+
+% increase the default spacing between equations
+\setlength{\jot}{5pt}
+
+% custom color for "blockcode"
+\usepackage{fancyvrb,color}
+
+% Set up fonts the way I like
+%\usepackage{tgpagella}
+%\usepackage[T1]{fontenc}
+%\usepackage[T1]{fontenc}
+%\usepackage[bitstream-charter]{mathdesign}
+\usefonttheme{serif}
+
+% Allow restating theorems (for the Appendix)
+\usepackage{thmtools}
+\usepackage{thm-restate}
+\usepackage{cleveref}
+
+\DefineVerbatimEnvironment{blockcode}
+  {Verbatim}
+  {formatcom=\color{blue}}
+
+
+\begin{document}
+
+\frame{
+For a monotonic likelihood $p(y | \beta)$ increasing in $\beta_s$, proper prior distribution $p(\beta | \sigma)$, and large $\beta_s$, the posterior distribution of $\beta_s$ is proportional to the prior distribution for $\beta_s$, so that $p(\beta_s | y) \propto p(\beta_s | \sigma)$.
+}
+
+\frame{
+$p(y_{new}) = \int\limits_{-\infty}^{\infty} p(y_{new} | \beta)p(\beta)d(\beta)$
+}
+
+\frame{
+$p^*(y_{new}) = \int_{-\infty}^{0} p(y_{news} | \beta_s, \hat{\beta}_{-s}^{mle})p(\beta_s | \beta_s \leq 0)d(\beta_s)$
+}
+
+\end{document}
+
+\end{document}
