@@ -110,8 +110,8 @@ zeros <- rep(0, length(b1))
 library(compactr)
 
 # normal + lik + post
-pdf("figs/bm-post.pdf", height = 4, width = 6)
-par(mfrow = c(2, 1), mar = c(.5, .5, .5, .5), oma = c(2, 0, 0, 0), xaxs = "r", yaxs = "r")
+pdf("figs/bm-post.pdf", height = 2, width = 7)
+par(mfrow = c(1, 2), mar = c(.5, .5, .5, .5), oma = c(2, 0, 0, 0), xaxs = "r", yaxs = "r")
 eplot(xlim = 1.04*mm(b1), ylim = c(0, 1.2),
       xlab = "Coefficient for Democratic Governor",
       anny = FALSE)
@@ -133,3 +133,70 @@ text(3, .75, "Cauchy\nPrior", cex = 1, pos = 3, col = col1)
 polygon(c(b1, rev(b1)), c(post1/max(post1), zeros), col = col2a, lty = 0)
 text(b1[which(post1 == max(post1))], 1, "Posterior", cex = 1, pos = 3, col = col2)
 dev.off()
+
+
+# cauchy prior + mcmc
+#y <- rep(NA, 50)
+data(politics_and_need_rescaled)
+d_rsd <- politics_and_need_rescaled
+d_rsd$dem_governor <- -d_rsd$gop_governor
+f2 <- oppose_expansion ~ dem_governor + percent_favorable_aca + gop_leg +
+	percent_uninsured + bal2012 + multiplier + percent_nonwhite + percent_metro
+y <- d_rsd$oppose_expansion
+X <- model.matrix(f2, d_rsd)
+n <- length(y)
+K <- ncol(X)
+scale <- 2.5
+jags.data <- list("y", "X", "n", "K", "scale")
+jags.params <- "beta"
+m.cauchy.mle <- bayesglm(f2, data = d_rsd, family = "binomial")
+b.hat <- coef(m.cauchy.mle)
+V.hat <- vcov(m.cauchy.mle)
+jags.inits <- function() {
+	list("beta" = mvrnorm(1, b.hat, 3*V.hat))
+}
+
+set.seed(1234)
+library(R2jags)
+m.cauchy <- jags(data = jags.data,
+           param = jags.params,
+           inits = jags.inits,
+           DIC = FALSE,
+           model = "R/cauchy_logit.bugs",
+           n.chains = 3,
+           n.iter = 50000,
+					 n.burnin = 1000)
+
+mcmc <- m.cauchy$BUGSoutput$sims.matrix[, 2]
+library(coda)
+ci <- HPDinterval(as.mcmc(mcmc))
+find_mode <- function(x) {
+	dens <- density(x, n = 5000)
+	mode <- dens$x[which(dens$y == max(dens$y))]
+	mode <- median(mode)
+	return(mode)
+}
+est <- find_mode(mcmc)
+
+abs(ci[1] - ci[2])/abs(m.firth$ci.lower[2] - m.firth$ci.upper[2])
+
+pdf("figs/cauchy-jeffreys.pdf", height = 3, width = 5)
+par(mfrow = c(1, 1), mar = c(3.5, 1, .1, 1), oma = c(0, 0, 0, 0))
+eplot(xlim = c(-28, 1), ylim = c(.2, 2.8),
+			xlab = "Coefficient for Democratic Governor",
+			anny = FALSE)
+# Cauchy prior
+points(est, 1, pch = 19)
+lines(ci, c(1, 1), lwd = 3)
+text(est, 1, "Cauchy", pos = 3, cex = .8)
+# Jeffreys' prior
+points(m.firth$coefficients[2], 2, pch = 19)
+lines(c(m.firth$ci.lower[2], m.firth$ci.upper[2]), c(2, 2), lwd = 3)
+text(m.firth$coefficients[2], 2, "Jeffreys'", pos = 3, cex = .8)
+dev.off()
+
+
+
+
+
+
