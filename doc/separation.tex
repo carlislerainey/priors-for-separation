@@ -135,18 +135,6 @@ Political scientists commonly use logistic regression to model the probability o
 \text{Pr}(y | \beta) = L(\beta | y) = \displaystyle \prod_{i = 1}^n \left[\left( \dfrac{1}{1 + e^{-X_i\beta}}\right)^{y_i}\left( \dfrac{1}{1 + e^{-X_i\beta}}\right)^{1 - y_i}\right]\text{.}
 \end{equation}
 
-%\noindent As usual, one can take the natural logarithm of both sides to calculate the log-likelihood function 
-%
-%\begin{equation}\nonumber
-%\log L(\beta | y) = \displaystyle \sum_{i = 1}^n \left[y_i \log \left( \dfrac{1}{1 + e^{-X_i\beta}}\right) + (1 - y_i) \log \left( \dfrac{1}{1 + e^{-X_i\beta}}\right)\right]
-%\end{equation}
-%
-%\noindent and take the derivatives of the log-likelihood function to obtain the score function
-%
-%\begin{equation}\nonumber
-%\dfrac{\partial \log L(\beta | y)}{\partial \beta} = \displaystyle \sum_{i = 1}^n\left(y_i - \dfrac{1}{1 + e^{-X_i\beta}}\right)X_i\text{.}
-%\end{equation}
-
 Researchers routinely obtain the maximum likelihood estimate $\hat{\beta}^{mle}$ of the model parameters $\beta$ by finding the vector $\beta$ that maximizes $L$ (i.e., maximizing the likelihood of the observed data). While this approach works quite well in most applications, it fails in a situation known as separation \citep{Zorn2005}.
 
 \section*{Separation}
@@ -160,40 +148,6 @@ Quasicomplete separation occurs when $s_i$ perfectly predicts \emph{either} zero
 For example, \cite{BarrilleauxRainey2014} find that no Democratic governors opposed the Medicaid expansion under the Affordable Care Act, leading to a maximum likelihood estimate of positive infinity for the coefficient for the indicator of Republican governors. Similarly, \cite{Rauchhaus2009} (see \citealt{BellMiller2015}) finds no instances of states with nuclear weapons engaging in war with each other, leading to an estimated coefficient of negative infinity for the coefficient for the variable indicating nuclear dyads. To maximize the likelihood in these situations, the model must assign zero probability of opposition to states with Democratic governors and zero probability of war to nuclear dyads. Because the logistic regression curve lies strictly above zero, this cannot happen, though it can be approached asymptotically as the coefficient for $s_i$ goes to negative infinity. 
 
 For simplicity, this paper focuses the more common situation of quasicomplete separation with binary explanatory variables. However, the ideas apply equally well to the less common situation of complete separation and/or continuous explanatory variables.  For convenience, I say that the ``direction of the separation'' is positive if and only if $s_i = 1 \implies y_i = 1$ \underline{or} $s_i = 0 \implies y_i = 0$ and that the direction of separation is negative if and only if $s_i = 0 \implies y_i = 1$ \underline{or} $s_i = 1 \implies y_i = 0$. Thus, $\hat{\beta}^{mle} = +\infty$ when the direction of the estimate is positive, and $\hat{\beta}^{mle} = -\infty$ when the direction of the estimate is negative.
-
-%\begin{figure}[H]
-%\begin{center}
-%\includegraphics[scale = 1]{figs/illustrate-separation.pdf}
-%%\vspace{-10mm}
-%\end{center}
-%\caption{This figure illustrates overlap, complete separation, and quasicomplete separation as defined by \cite{AlbertAnderson1984}. The maximum likelihood estimates only exist under overlap. Under complete and quasicomplete separation, maximum likelihood fails, returning infinite estimates and standard errors.}\label{fig:illustrating_separation}
-%\end{figure}
-
-%\begin{table}[H]
-%\begin{center}
-%\begin{footnotesize}
-%\begin{tabular}{l c c | c c | c c }
-%\hline
-% & \multicolumn{2}{c}{Overlap}&\multicolumn{2}{c}{Complete Separation}&\multicolumn{2}{c}{Quasicomplete Separation}\\
-%               & $\epsilon = 10^{-8}$ & $\epsilon = 10^{-16}$ & $\epsilon = 10^{-8}$ & $\epsilon = 10^{-16}$ & $\epsilon = 10^{-8}$ & $\epsilon = 10^{-16}$ \\
-%\hline
-%constant    & $-17.05$ & $-17.05$ & $-739.27$     & $-739.27$     & $-19.57$    & $-26.57$     \\
-%               & $(5.79)$      & $(5.79)$      & $(139744.58)$ & $(139744.58)$ & $(1520.85)$ & $(50363.70)$ \\
-%x              & $34.19$  & $34.19$  & $1483.21$     & $1483.21$     & $18.90$     & $25.90$      \\
-%               & $(11.92)$     & $(11.92)$     & $(280801.40)$ & $(280801.40)$ & $(1520.85)$ & $(50363.70)$ \\
-%\hline
-%Log Likelihood & -9.74         & -9.74         & 0.00          & 0.00          & -32.05      & -32.05       \\
-%Num. obs.      & 100           & 100           & 100           & 100           & 100         & 100          \\
-%\hline
-%\multicolumn{7}{l}{Standard errors in parentheses.}
-%\end{tabular}
-%\caption{A table providing estimates based on the data shown in Figure \ref{fig:illustrating_separation} using the R function \texttt{glm()} varying the convergence tolerance under overlap, complete separation, and quasicomplete separation. Notice that the estimation algorithm returns estimates and standard errors arbitrarily close to infinity under both types of separation as the tolerances shrinks to zero.}
-%\label{tab:illustrating_separation}
-%\end{footnotesize}
-%\end{center}
-%\end{table}
-%
-%Perhaps more starkly, notice  that the strong pattern in the middle panel of Figure \ref{fig:illustrating_separation} does not produce statistically significant result. This is because the likelihood is essentially flat around the ``maximum'' found by the hill-climbing algorithm. As the region around the maximum flattens, the estimates of the standard errors increases. Thus, separation leads to implausible large estimates \textit{and} standard errors. Notice, for example, that while the data in the middle and right panel would almost never occur under the null hypothesis of no relationship, none of the estimates are statistically significant.
 
 \section*{Solutions to Separation}
 
@@ -217,10 +171,6 @@ p(\beta|y) = \dfrac{\overbrace{p(y|\beta)}^{\text{likelihood}}\overbrace{p(\beta
 
 \cite{Zorn2005} suggests that political scientists deal with separation by maximizing a penalized likelihood rather than the likelihood (see \citealt{HeinzeSchemper2002} as well). Zorn suggests replacing the usual likelihood function $L(\beta | y)$ with a ``penalized'' likelihood function $L^*(\beta | y)$, so that $L^*(\beta | y) = L(\beta | y)|I(\beta)|^\frac{1}{2}$. It turns out that the penalty $|I(\beta)|^\frac{1}{2}$ is equivalent to Jeffreys' (\citeyear{Jeffreys1946}) prior for the logistic regression model (\citealt{Firth1993}, \citealt{Poirier1994}). The posterior distribution can be obtained by applying Jeffreys' rule \citep{Jeffreys1946}, which requires setting the prior $p(\beta)$ to be proportional to the square root of the determinant of the information matrix, so that $p(\beta) = |I(\beta)|^\frac{1}{2}$. Then, of course, applying Bayes' rule yields the posterior distribution $p(\beta | y) \propto L(\beta | y)|I(\beta)|^\frac{1}{2}$, so that Firth's penalized likelihood is equivalent to a Bayesian approach with Jeffreys' prior. The researcher can then sample from this posterior distribution using MCMC to obtain the features of interest, such as the mean and standard deviation.
 
-%The usual method of obtaining standard errors is to assume a multivariate normal sampling distribution for the parameter vector $\beta$ and obtain the $(i, j)$ entry of the covariance matrix $\Sigma_\beta$ by calculating the curvature around the maximum likelihood using $\dfrac{\partial^2 \text{log}\,L(\beta | Y)}{\partial \beta_i \partial \beta_j}$ or posterior mode $\dfrac{\partial^2 \text{log}\,\,p(\beta | Y)}{\partial \beta_i \partial \beta_j}$. 
-
-%But \citep{HeinzeSchemper2002} and \cite{Zorn2005} point out that this asymptotic approximation of the sampling distribution as normally (symmetrically) distributed might not be appropriate under separation. As an alternative, the suggest using likelihood profiling to obtain the desired confidence interval. They suggest that analysts obtain a $(1 - \alpha)100\%$ confidence interval for the model parameter $\beta_i$ by calculating the (continuous) set of values for which the likelihood-ratio falls below the $(1 - \alpha)100$ percentile of the $\chi^2_1$ distribution \citep{HeinzeSchemper2002}.
-
 However, \cite{Firth1993} did not propose this prior to solve the separation problem. Instead, his purpose was to reduce the well-known small sample bias in logistic regression models. And while it is true that Firth's correction does provide finite estimates under separation, it remains an open question as to whether this automatic prior, designed for other purposes, provides a reasonable estimate of the uncertainty of the estimates for particular research problems.
 
 \subsection*{The Cauchy(0, 2.5) Prior}
@@ -229,15 +179,6 @@ Indeed, \cite{Gelmanetal2008} note that Firth's application of Jeffreys' prior i
 \begin{quote}
 Our key idea is that actual effects tend to fall within a limited range. For logistic regression, a change of 5 moves a probability from 0.01 to 0.5, or from 0.5 to 0.99. We rarely encounter situations where a shift in input $x$ corresponds to the probability of outcome $y$ changing from 0.01 to 0.99, hence, we are willing to assign a prior distribution that assigns low probabilities to changes of 10 on the logistic scale.
 \end{quote}
-
-%The Cauchy distribution resembles a normal distribution, but has much heavier tails (it is equivalent to a $t$ distribution with one degree of freedom), which captures the prior belief that the effect is probably smaller, but has some chance of being quite large.
-%
-%\begin{figure}[H]
-%\begin{center}
-%\includegraphics[scale = .8]{figs/illustrate-prior-density.pdf}
-%\caption{This figure compares the Normal(2.5) and Cauchy(2.5) prior distributions. Notice that the Cauchy distribution has a similar shape to a Normal distribution, but has much heavier tails. Substantively, this prior notes that the coefficient is likely close to zero (e.g. $|\beta| < 2$), but might be quite large (e.g., $|\beta| > 5$).}\label{fig:illustrate-prior-density}
-%\end{center}
-%\end{figure}
 
 As before, the posterior distribution is not easily available analytically, but one can easily use MCMC to simulate from the posterior distribution. Once a researcher has the MCMC simulations, she can obtain the point estimates and credible intervals for the parameters by summarizing the simulations. 
 
@@ -267,12 +208,6 @@ For a monotonic likelihood $p(y | \beta)$ increasing [decreasing] in $\beta_s$, 
 
 Theorem \ref{thm:impact} simply implies that for large values of $\beta_s$ the posterior distribution depends almost entirely on the researcher's \emph{choice} of prior distribution. Thus, the choice of prior matters. While the choice of prior might not affect the conclusion about the \emph{direction} of the effect, it has a large impact on the conclusion about the \emph{magnitude} of the effect. Credible intervals are crucial when discussing effect magnitudes (see \citealt{Rainey2014}, \citealt{Gross2014}, and \citealt{McCaskeyRainey2014}), and the choice of prior essentially drives the width of the credible interval.
 
-%In practice, though, researchers credible intervals and measures of location to summarizes the posterior distribution.
-%
-%\begin{quote}
-%\textsc{Practical Implication of Theorem \ref{thm:impact}:} When the direction of the separation is \emph{positive}, the prior has a small impact on the lower bound of the 90\% credible interval, a moderate impact on the measures of the location of the posterior (i.e., mean, median, and mode), and a large impact on the upper-bound of the credible interval. Similarly, when the direction of the separation is \emph{negative}, the prior has a large impact on the lower bound of the 90\% credible interval, a moderate impact on the measures of the location of the posterior (i.e., mean, median, and mode), and a small impact on the upper-bound of the credible interval.
-%\end{quote}
-
 \subsection*{The Impact of the Prior in Practice}
 
 To illustrate the impact of the prior on inferences when facing separation, I replicate results from \cite{BarrilleauxRainey2014}, who are interested in the effect of partisanship on governors' decisions to oppose the Medicaid expansion in their states under the Patient Protection and Affordable Care Act (ACA).\footnote{\cite{BarrilleauxRainey2014} use a logistic regression modeling the probability that a governor opposes the expansion using the following explanatory variables: the partisanship of the governor, the percent of the state's residents who are favorable toward the ACA, whether Republicans control the state legislature, the percent of the state that is uninsured, a measure of the fiscal health of the state, the Medicaid multiplier for the state, the percent of the state that is nonwhite, and the percent of the state that resides in a metropolitan area. See their paper for more details.} As the authors note, no Democratic governors opposed the expansion, which leads to a problem of separation. To see whether the choice of prior matters, I use MCMC to simulate from the posterior using Zorn's (\citeyear{Zorn2005}) and Gelman et al.'s (\citeyear{Gelmanetal2008}) suggested \emph{default} prior distributions. 
@@ -294,11 +229,6 @@ Figure \ref{fig:bf-posterior-density-illustrate-importance} shows the posterior 
 \caption{This figure shows the posterior distribution for the coefficient of the indicator for GOP governors in the model offered by \cite{BarrilleauxRainey2014} for different default prior distributions. The grey shading indicates the 90\% credible interval. Notice that the location and the spread of the posterior depend on the prior chosen, especially the right-hand side of the distribution, as suggested by Theorem \ref{thm:impact}.}\label{fig:bf-posterior-density-illustrate-importance}
 \end{center}
 \end{figure}
-
-%Figure \ref{fig:br-coef-illustrate-importance} shows how the choice of prior impacts the 90\% credible interval. Notice that different prior distributions lead to different conclusions about the plausible values of the effect. In particular, different priors lead to different conclusions about the upper-bound on the plausible effect sizes. For example, Jeffreys' prior, the default proposed by \cite{Zorn2005} and \cite{HeinzeSchemper2002}, suggests the effect lies in the range $\beta_{\text{GOP Gov.}} \in [0.9, 8.4]$, with a posterior mean of 3.9. On the other hand, the less informative Cauchy(2.5) prior, the default proposed by \cite{Gelmanetal2008}, suggests the effect lies in the range $\beta_{\text{GOP Gov.}} \in [1.0, 22.5]$, with a posterior mean of 7.3. A simple change from one proposed default to another more than doubles the upper bound on the 90\% credible interval and almost doubles the posterior mean. Further, the Cauchy(5) prior, a plausible prior if one believes the effect might be large, produces the upper-bound on the 90\% credible interval from is more than four times larger than the upper-bound produced by Jeffrey's prior. The posterior mean from the Cauchy(5) prior is larger falls above the upper-bound from the 90\% credible interval from Jeffrey's prior.
-
-%
-%This leads us to conclude that the choice of prior matters--it affects the inferences that we draw from the data. It is not sufficient to rely on the prior distribution designed as a default for other purposes. Instead, we must rely on prior distributions that represent actual prior information about the likely magnitude of the coefficients.
 
 \section*{Choosing an Informative Prior}
 
@@ -419,21 +349,12 @@ I now turn to the posterior distribution of the risk-ratios--the key quantity of
 
 Further, the 90\% credible interval using Zorn's (\citeyear{Zorn2005}) default is \emph{much} narrower than the informative prior, and the posterior median of Zorn's suggested default prior is even smaller than the \emph{skeptical} prior. For this particular application, Gelman's suggested default more closely matches the informative prior, though notice that the point estimate from Gelman's prior is 62\% smaller than that from the informative prior and the upper-bound of the credible interval is 13 times larger.
 
-%\begin{figure}[H]
-%\begin{center}
-%\includegraphics[scale = .8]{figs/bm-coef.pdf}
-%\caption{}\label{fig:bm-coef}
-%\end{center}
-%\end{figure}
-
 \begin{figure}[H]
 \begin{center}
 \includegraphics[scale = .8]{figs/bm-rr.pdf}
 \caption{This figure shows the posterior median and 90\% credible intervals for the risk-ratio using each of the five prior distributions \emph{on the log scale}. Notice that the choice of prior has a huge effect on the inferences about the risk-ratio. For example, the skeptical prior suggests the ratio might be as large as 31, while the enthusiastic prior suggests the ratio might be as large as 500,000. Also, notice that the posterior median from Zorn's proposed default prior is \emph{smaller} than the posterior median from the skeptical prior.}\label{fig:bm-rr}
 \end{center}
 \end{figure}
-
-%\input{tabs/bm-posterior-rr-summary.tex}
 
 Finally, I use the posterior distributions from each prior to calculate the probability that the presence of nuclear weapons make war less likely (i.e., the probability that the risk-ratios shown in Figure \ref{fig:bm-rr} are greater than one). Recall Rauchhaus' hypothesis that nuclear weapons decrease the chance of war. These probabilities can be thought of as the probability that Rauchhaus' hypothesis is correct. Following the standard of $p \leq 0.05$ as offering strong evidence against the null hypothesis, it is reasonable to take $Pr(RR > 1) \geq 0.95$ as strong evidence for the research hypothesis. Figure \ref{fig:bm-pr-hypothesis} shows the probability that the hypothesis is correct for each prior distribution. Notice that while only the enthusiastic prior falls above the 0.95 standard, the evidence for the claim is at least suggestive. Perhaps most importantly for my purposes, Zorn's suggested default leads to the \emph{least} evidence in favor of Rauchhaus' hypothesis--even the skeptical prior provides more evidence for Rauchhaus' claim.\footnote{\cite{BellMiller2015} also question Rauchhaus' (\citeyear{Rauchhaus2009}) coding of the 1999 conflict in Kargil between India and Pakistan. If this conflict is coded as a war, as Bell and Miller suggest, then separation no longer occurs. With this different coding, the data \textit{do} offer information about the likely upper-bound on the magnitude of coefficient for the indicator of nuclear dyads, and the different priors produce similar inferences.}
 
