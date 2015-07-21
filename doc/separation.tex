@@ -201,10 +201,10 @@ Pr(y_i =1) = \text{logit}^{-1}(\beta_{cons} + \beta_s s_i +  \beta_1 x_{i1} + \b
 In the general situation, the analyst is interested in computing and characterizing the posterior distribution of $\beta_s$ given the data. Using Bayes' Rule, the posterior distribution of $\beta = \langle \beta_{cons}, \beta_{s}, \beta_1, \beta_2, ..., \beta_k \rangle$ depends on the likelihood and the prior, so that $p(\beta | y) \propto p(y|\beta)p(\beta)$. In particular, the analyst might have in mind a family of priors centered at and monotonically decreasing away from zero with varying scale $\sigma$, so that $p(\beta_s) = p(\beta_s | \sigma)$, though the results below simply depend on having any proper prior distribution. The informativeness of the prior distribution depends on $\sigma$, which is chosen by the researcher and ``flattens'' the prior $p(\beta_s) = p(\beta_s | \sigma)$, such that as $\sigma$ increases, the rate at which the prior descends to zero decreases.
 
 \begin{restatable}{theorem}{impact}\label{thm:impact}
-For a monotonic likelihood $p(y | \beta)$ increasing [decreasing] in $\beta_s$, proper prior distribution $p(\beta | \sigma)$, and large positive [negative] $\beta_s$, the posterior distribution of $\beta_s$ is proportional to the prior distribution for $\beta_s$, so that $p(\beta_s | y) \propto p(\beta_s | \sigma)$.
+For a monotonic likelihood $p(y | \beta)$ increasing [decreasing] in $\beta_s$, proper prior distribution $p(\beta | \sigma)$, and large positive [negative] $\beta_s$, the posterior distribution of $\beta_s$ is proportional to the prior distribution for $\beta_s$, so that $p(\beta_s | y) \propto p(\beta_s | \sigma)$. More formally, $\displaystyle \lim _{\substack{\beta_s \to \infty\\ \lbrack -\infty \rbrack}} \frac{p(\beta_s | y)}{p(\beta_s | \sigma)} = k$, for postive constant $k$.
 \end{restatable}
 
-\noindent \textit{Proof:} See the Technical Appendix.
+\noindent \textit{Proof and details:} See the Technical Appendix.
 
 Theorem \ref{thm:impact} simply implies that for large values of $\beta_s$ the posterior distribution depends almost entirely on the researcher's \emph{choice} of prior distribution. Thus, the choice of prior matters. While the choice of prior might not affect the conclusion about the \emph{direction} of the effect, it has a large impact on the conclusion about the \emph{magnitude} of the effect. Credible intervals are crucial when discussing effect magnitudes (see \citealt{Rainey2014}, \citealt{Gross2014}, and \citealt{McCaskeyRainey2014}), and the choice of prior essentially drives the width of the credible interval.
 
@@ -379,7 +379,7 @@ Second, the applications examining the effect of nuclear weapons and the effect 
 
 When facing separation, researchers must \emph{carefully} choose a prior distribution to rule out implausibly large effects. This paper introduces the concept of a partial prior predictive distribution and the associated computational tools to help researchers choose a prior distribution that represents actual prior information for their particular research problem. By presenting results using several prior distributions, including an informative prior, researchers can increase the transparency, credibility, and accuracy of their inferences when dealing with separation.
 
-\clearpage
+%\clearpage
 \bibliographystyle{apsr_fs}
 \bibliography{/Users/carlislerainey/Dropbox/papers/bibliography/bibliography.bib}
 
