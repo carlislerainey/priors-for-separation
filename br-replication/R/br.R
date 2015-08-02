@@ -84,7 +84,7 @@ par(mfrow = c(1,1), mar = c(4,1,1,1), oma = c(0,0,0,0))
 eplot(xlim = c(-15, 0), ylim = c(0.55, 2.5),
 			anny = FALSE,
 			xlabpos = 2.5,
-			xlab = "Posterior Median and 90% HPD for\nCoefficient of Democrat Governor Indicator")
+			xlab = "Posterior Median and 90% HPD for\nCoefficient of Democratic Governor Indicator")
 abline(v = 0, col = "grey80")
 sumry(post_jeffreys$mcmc[, "dem_governor"], 2, "Zorn's Default Jeffreys' Prior")
 sumry(post_gelman$mcmc[, "dem_governor"], 1, "Gelman et al.'s Default Cauchy(0, 2.5) Prior")
@@ -98,7 +98,7 @@ pdf("doc/figs/br-posterior-density-illustrate-importance.pdf", height = 2.75, wi
 par(mfrow = c(1, 2), mar = c(1,1,1,1), oma = c(2,3,1,1))
 eplot(xlim = c(-20, 0), 
 			mm(c(d.jeffreys$y, d.gelman$y)),
-			xlab = "Coefficient for Democrat Governor Indicator",
+			xlab = "Coefficient for Democratic Governor Indicator",
 			ylab = "Posterior Density",
 			ylabpos = 2.5,
 			main = "Zorn's Default Jeffreys' Prior")
