@@ -101,11 +101,11 @@ rownames(pretty.Q) <- rownames(Q)
 colnames(pretty.Q) <- colnames(Q)
 library(xtable)
 tab <- xtable(pretty.Q, align = c("|", rep("c", ncol(Q) + 1), "|"),
-              caption = "This table provides the deciles prior predictive distribution for the 
-                  risk-ratio of war in nonnuclear and nuclear dyads. The risk-ratio is 
+              caption = "This table provides the deciles of the prior predictive distribution for the 
+                  risk-ratio of war in nonnuclear and nuclear dyads. The risk-ratio 
                   tells us how many times more likely war is in non-nuclear dyads compared 
-                  to nuclear dyads. Notice that that the, informative prior suggests a median 
-                  risk-ratio of about 20, which is a large, but plausible effect. The skeptical prior suggests a median 
+                  to nuclear dyads. Notice that the informative prior suggests a median 
+                  risk-ratio of about 20, which is a large, but plausible, effect. The skeptical prior suggests a median 
                   ratio of about 4 and the enthusiastic prior suggests a median ratio of over 
                   200.",
               label = "tab:bm-pppd-deciles")

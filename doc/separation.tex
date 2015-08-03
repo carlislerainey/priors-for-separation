@@ -119,14 +119,14 @@ To help researchers assess the amount of information injected by the prior distr
 \newpage
 \doublespace
 
-Separation, in which an explanatory variable perfectly predicts some binary observations, remains a problem in political science research (e.g., \citealt{BellMiller2015}; \citealt{Mares2015}; \citealt{ViningWilhelmCollens2015}; \citealt{BrownKaplow2014}; \citealt{BarrilleauxRainey2014};  \citealt{LeemanMares2014}; \citealt{Reiter2014}; \citealt{Weisiger2014}; \citealt{MinozziVolden2013}; \citealt{CedermeanGleditschHug2013}; \citealt{Fuhrmann2012}; \citealt{RoccaSanchezMorin2011}; \citealt{PetersonDrury2011}; \citealt{CoxKousserMcCubbins2010}; \citealt{Ahlquist2010}; \citealt{Rauchhaus2009}; \citealt{SmithFridkin2008}; \citealt{Casellas2008}; \citealt{DesposatoScheiner2008}; \citealt{HellerMershon2008}; \citealt{DeRouenBercovitch2008}).
+Separation, in which an explanatory variable perfectly predicts some binary observations, remains a hurdle in political science research (e.g., \citealt{BellMiller2015}; \citealt{Mares2015}; \citealt{ViningWilhelmCollens2015}; \citealt{BrownKaplow2014}; \citealt{BarrilleauxRainey2014};  \citealt{LeemanMares2014}; \citealt{Reiter2014}; \citealt{Weisiger2014}; \citealt{MinozziVolden2013}; \citealt{CedermeanGleditschHug2013}; \citealt{Fuhrmann2012}; \citealt{RoccaSanchezMorin2011}; \citealt{PetersonDrury2011}; \citealt{CoxKousserMcCubbins2010}; \citealt{Ahlquist2010}; \citealt{Rauchhaus2009}; \citealt{SmithFridkin2008}; \citealt{Casellas2008}; \citealt{DesposatoScheiner2008}; \citealt{HellerMershon2008}; \citealt{DeRouenBercovitch2008}).
 \cite{Zorn2005} offers the most principled solution to the problem of separation, suggesting that researchers maximize a penalized version of the usual likelihood function. 
 Zorn's approach has the advantage of being automatic and easy for researchers to use.
 
 However, when implementing Zorn's approach, substantive researchers face two major problems. 
 First, the usual asymptotic confidence intervals and $p$-values do not work well. 
 While a good method exists for finding confidence intervals and $p$-values for the model coefficients, this method does not extend to the typical quantities of interest, such as first differences. 
-Researchers must still rely on the (poor) asymptotic approximation to simulate these quantities \citep{KingTomzWittenberg2000}.  
+Researchers must still rely on the poor asymptotic approximation to simulate these quantities \citep{KingTomzWittenberg2000}.  
 Secondly, and perhaps most importantly, while the penalty suggested by Zorn has the attractive property of bias reduction in logistic regression models \citep{Firth1993}, it does not necessarily approximate a researcher's prior information. 
 Some shrinkage toward zero is required to obtain finite estimates, but the appropriate amount of shrinkage depends on the substantive problem and the prior information. 
 To address these two problems, I suggest that researchers use a range of priors, focusing on an informative prior, and use MCMC to simulate directly from the posterior.
@@ -135,7 +135,7 @@ In this paper, I introduce conceptual and computational tools that help research
 I make three specific contributions. 
 First, I use statistical theory and two applied examples to demonstrate the importance of choosing a prior distribution that represents actual prior information and conducting robustness checks using a variety of prior distributions. 
 Second, I introduce the concept of a partial prior predictive distribution, a powerful tool in understanding and choosing a prior when facing separation. 
-Third, I introduce new software that make it easy for researchers to choose an informative prior distribution, simulate directly from the posterior distribution, and summarize the inferences.\footnote{
+Third, I introduce new software that makes it easy for researchers to choose an informative prior distribution, simulate directly from the posterior distribution, and summarize the inferences.\footnote{
 The R package \texttt{separation} (currently version 0.1, alpha pre-release) implements the procedures discussed in the paper and is available at \href{https://github.com/carlislerainey/separation}{github.com/carlislerainey/separation}. 
 See the \href{https://github.com/carlislerainey/separation/blob/master/README.md}{README} for instructions on downloading and usage.}
 
@@ -154,7 +154,7 @@ Using this model, it is straightforward to calculate the likelihood function
 \begin{equation}\nonumber
 \text{Pr}(y | \beta) = L(\beta | y) = \displaystyle \prod_{i = 1}^n \left[\left( \dfrac{1}{1 + e^{-X_i\beta}}\right)^{y_i}\left(1 - \dfrac{1}{1 + e^{-X_i\beta}}\right)^{1 - y_i}\right]\text{.}
 \end{equation}
-Researchers routinely obtain the maximum likelihood estimate $\hat{\beta}^{mle}$ of the coefficient vector $\beta$ by finding the vector $\beta$ that maximizes $L$ (i.e., maximizing the likelihood of the observed data). 
+Researchers routinely obtain the maximum likelihood estimate $\hat{\beta}^{mle}$ of the coefficient vector $\beta$ by finding the coefficient vector that maximizes $L$ (i.e., maximizing the likelihood of the observed data). 
 While this approach works quite well in most applications, it fails in a situation known as separation \citep{Zorn2005}.
 
 \section*{Separation}
@@ -162,38 +162,38 @@ While this approach works quite well in most applications, it fails in a situati
 Separation occurs in models of binary outcome data when one explanatory variable perfectly predicts zeros, ones, or both.\footnote{
 Separation can also occur when a \emph{combination} of explanatory variables perfectly predicts zeros, ones, or both, see \cite{LesaffreAlbert1989}. 
 See \cite{Geyer2009} for a much more general view of the concept of separation.} 
-For a binary explanatory variable $s_i$ (for \underline{s}eparating explanatory variable), \textit{complete separation} occurs when $s_i$ perfectly predicts both zeros \emph{and} ones.\footnote{
-For simplicity, I describe complete and quasicomplete separation for a \textit{binary} explanatory variable, which is less general, but more explicable than the general case considered by \cite{AlbertAnderson1984}. 
+For a binary explanatory variable $s_i$ (for \underline{s}eparating explanatory variable), \textit{complete separation} occurs when $s_i$ perfectly predicts \emph{both} zeros \emph{and} ones.\footnote{
+For simplicity, I describe complete and quasicomplete separation for a \textit{binary} explanatory variable, which is more explicable than the general case considered by \cite{AlbertAnderson1984}. 
 My approach also follows the convention of \cite{HeinzeSchemper2002} and \cite{Zorn2005}. 
 Indeed, in social science problems, binary explanatory variables more commonly lead to separation, so little is lost.} 
-\textit{Quasicomplete separation} occurs when $s_i$ perfectly predicts either zeros \emph{or} ones, but not both (\citealt{AlbertAnderson1984} and \citealt{Zorn2005}). 
+\textit{Quasicomplete separation} occurs when $s_i$ perfectly predicts \emph{either} zeros \emph{or} ones, but not both (\citealt{AlbertAnderson1984} and \citealt{Zorn2005}). 
 \textit{Overlap}, the ideal case, occurs when there is no such $s_i$. 
-When the data overlap, the usual maximum likelihood estimates exist and provide reasonable estimates of parameters. 
+With overlap, the usual maximum likelihood estimates exist and provide reasonable estimates of parameters. 
 However, under complete or quasicomplete separation, finite maximum likelihood estimates do not exist and the usual method of calculating standard errors fails (\citealt{AlbertAnderson1984} and \citealt{Zorn2005}).
 
 For the binary explanatory variable $s_i$, complete separation occurs when $s_i$ perfectly predicts \emph{both} zeros \emph{and} ones.\footnote{
 \citet[p. 38]{AlbertAnderson1984} write that complete separation occurs when ``there is a vector [of coefficients] that correctly allocates all observations to their group.''} 
-For example, suppose $s_i$ , such that $y_i = 0$ for $s_i = 0$ and $y_i = 1$ for $s_i = 1$. 
+For example, suppose $s_i$, such that $y_i = 0$ for $s_i = 0$ and $y_i = 1$ for $s_i = 1$. 
 To maximize the likelihood of the observed data, the ``S''-shaped logistic regression curve must assign $\text{Pr}(y_i) = \frac{1}{1 + e^{-X_i\beta}} = 0$ when $s_i  = 0$ and $\text{Pr}(y_i) = \frac{1}{1 + e^{-X_i\beta}} = 1$ when $s_i = 1$. 
 Since the logistic regression curve lies strictly between zero and one, this likelihood cannot be achieved, only approached asymptotically as the coefficient $\beta_s$ for $s_i$ approaches infinity. 
 Thus, the likelihood function under complete separation is monotonic, which implies that a finite maximum likelihood estimate does not exist.\footnote{
 Although coefficient estimates under separation are infinite \emph{in theory}, the hill-climbing algorithms approximate the infinite estimates with large, finite values \emph{in practice}. 
 These approximations increase with the precision of the algorithm. 
-See \cite{Zorn2005} for an illustration using software in Stata and R.}
+See \cite{Zorn2005} for illustrations using Stata and R.}
 
 Quasicomplete separation occurs when $s_i$ perfectly predicts \emph{either} zeros \emph{or} ones.\footnote{
 According to Albert and Anderson's (\citeyear{AlbertAnderson1984}) general definition, quasicomplete separation occurs when all cases are perfectly predicted except at a single value $x^*$ of an explanatory (separating) variable $x_i$. 
 For the binary case, $x^*$ must be either zero or one. 
 Thus, for a binary $x_i$, quasicomplete separation occurs when $x_i$ perfectly predicts \emph{either} zeros \emph{or} ones.} 
-For example, suppose that, when $s_i = 0$, sometimes $y_i = 1$ and other times $y_i = 0$, but $y_i = 1$ \emph{always} when $s_i = 1$. 
+For example, suppose that when $s_i = 0$, sometimes $y_i = 1$ and other times $y_i = 0$, but when $s_i = 1$, $y_i = 1$ \emph{always}. 
 To maximize the likelihood of the observed data, the ``S''-shaped logistic regression curve must assign $\text{Pr}(y_i) = \frac{1}{1 + e^{-X_i\beta}} \in (0, 1)$ when $s_i  = 0$ and $\text{Pr}(y_i) = \frac{1}{1 + e^{-X_i\beta}} = 1$ when $s_i = 1$. 
 Again, since the logistic regression curve lies strictly between zero and one, this likelihood cannot be achieved, only approached asymptotically. 
-Thus, the likelihood function under quasicomplete separation also monotonically increases as the coefficient for $s_i$ increases, which again implies that the maximum likelihood estimate does not exist.
+Thus, the likelihood function under quasicomplete separation also monotonically increases as the coefficient of $s_i$ increases, which again implies that the maximum likelihood estimate does not exist.
 
-For example, \cite{BarrilleauxRainey2014} find that no Democratic governors opposed the Medicaid expansion under the Affordable Care Act, leading to a maximum likelihood estimate of negative infinity for the coefficient for the indicator of Democratic governors. 
-Similarly, \cite{Rauchhaus2009} (see \citealt{BellMiller2015}) finds no instances of states with nuclear weapons engaging in war with each other, leading to an estimated coefficient of negative infinity for the coefficient for the variable indicating nuclear dyads. 
-To maximize the likelihood in these situations, the model must assign zero probability of opposition to states with Democratic governors and zero probability of war to nuclear dyads. 
-Because the logistic regression curve lies strictly above zero, this cannot happen, though it can be approached asymptotically as the coefficient for $s_i$ goes to negative infinity. 
+For example, \cite{BarrilleauxRainey2014} find that no Democratic governors opposed the Medicaid expansion under the Affordable Care Act, leading to a maximum likelihood estimate of negative infinity for the coefficient of the indicator of Democratic governors. 
+Similarly, \cite{Rauchhaus2009} (see \citealt{BellMiller2015}) finds no instances of states with nuclear weapons engaging in war with each other, leading to an estimated coefficient of negative infinity for the coefficient of the variable indicating nuclear dyads. 
+To maximize the likelihood in these situations, the model must assign zero probability of opposition to Democratic governors and zero probability of war to nuclear dyads. 
+Because the logistic regression curve lies strictly above zero, this cannot happen, though it can be approached asymptotically as the coefficient of $s_i$ goes to negative infinity. 
 
 For convenience, I say that the ``direction of the separation'' is positive if and only if $s_i = 1 \implies y_i = 1$ \underline{or} $s_i = 0 \implies y_i = 0$ and that the direction of separation is negative if and only if $s_i = 0 \implies y_i = 1$ \underline{or} $s_i = 1 \implies y_i = 0$. 
 Thus, $\hat{\beta}^{mle} = +\infty$ when the direction of the separation is positive, and $\hat{\beta}^{mle} = -\infty$ when the direction of the separation is negative.
@@ -202,7 +202,7 @@ Thus, $\hat{\beta}^{mle} = +\infty$ when the direction of the separation is posi
 
 The maximum likelihood (ML) framework requires the researcher to find the parameter vector that ``maximizes the likelihood of the observed data.'' 
 Of course, infinite coefficients \textit{always} generate separated data, while finite coefficients only \emph{sometimes} generate separation. 
-Thus, under separation, the ML can only produce infinite estimates.
+Thus, under separation, ML can only produce infinite estimates.
 
 Before addressing potential solutions to this problem, let me mention two unsatisfactory ``solutions'' found in applied work. 
 In some cases, researchers simply ignore the problem of separation and interpret the large estimates and standard errors as though these are reasonable. 
@@ -224,7 +224,7 @@ One principled solution is to build prior information $p(\beta)$--the same prior
 \begin{equation}\nonumber
 p(\beta|y) = \dfrac{\overbrace{p(y|\beta)}^{\text{likelihood}}\overbrace{p(\beta)}^{\text{prior}}}{\int p(y|\beta)p(\beta) d\beta}~\text{.}
 \end{equation}
-\noindent In this case, the estimate switches to from the maximum likelihood estimate to a summary of the location of the posterior distribution, such as the posterior median. 
+\noindent In this case, the estimate switches from the maximum likelihood estimate to a summary of the location of the posterior distribution, such as the posterior median. 
 The current literature on dealing with separation suggests researcher take an automatic approach by using a default prior distribution, such as Jeffreys' invariant prior distribution (\citealt{Jeffreys1946} and \citealt{Zorn2005}) or a heavy-tailed Cauchy(0, 2.5) prior distribution \citep{Gelmanetal2008}.
 
 \subsection*{Jeffreys' Invariant Prior}
@@ -243,7 +243,7 @@ In some cases, Jeffreys' prior might contain too little information. In other ca
 
 \subsection*{The Cauchy(0, 2.5) Prior}
 
-Indeed, \cite{Gelmanetal2008} note that Firth's application of Jeffreys' prior is not easily interpretable as an actual application of prior information because the prior $p(\beta) = |I(\beta)|^\frac{1}{2}$ lacks an interpretable scale and depends on the data in complex ways. 
+Indeed, \cite{Gelmanetal2008} note that Firth's application of Jeffreys' prior is not easily interpretable as actual prior information because the prior $p(\beta) = |I(\beta)|^\frac{1}{2}$ lacks an interpretable scale and depends on the data in complex ways. 
 Instead, they suggest standardizing continuous inputs to have mean zero and standard deviation one-half and simply centering binary inputs \citep{Gelman2008}. 
 Then, they suggest placing a weakly informative Cauchy(0, 2.5) prior on the coefficients for these rescaled variables that, like Jeffreys' prior, bounds the estimates away from positive and negative infinity but can also be interpreted as actual prior information.\footnote{
 \cite{Gelmanetal2008} use a Cauchy(0, 2.5) prior for the coefficients but a Cauchy(0, 10) prior for the \emph{intercept}. 
@@ -253,13 +253,13 @@ This allows the intercept to take on a \emph{much} larger range of values (e.g.,
 Our key idea is that actual effects tend to fall within a limited range. For logistic regression, a change of 5 moves a probability from 0.01 to 0.5, or from 0.5 to 0.99. We rarely encounter situations where a shift in input $x$ corresponds to the probability of outcome $y$ changing from 0.01 to 0.99, hence, we are willing to assign a prior distribution that assigns low probabilities to changes of 10 on the logistic scale.
 \end{quote}
 
-As before, the posterior distribution is not easily available analytically, but one can easily use MCMC to simulate from the posterior distribution. 
+As with Jeffreys' prior, the posterior distribution is not easily available analytically, but one can use MCMC to simulate from the posterior distribution. 
 Once a researcher has the MCMC simulations, she can obtain the point estimates and credible intervals for the coefficients or quantities of interest by summarizing the simulations. 
 
-\cite{Gelmanetal2008} design their prior distribution to be reflective of prior informative for a range of situations. 
-In many cases, their weakly informative prior supplies too little prior information. 
-In a few cases, it might supply too much. 
-In any either case, it remains an open question whether this general prior provides a reasonable estimate of the uncertainty of the estimates for \emph{particular} research problems.
+\cite{Gelmanetal2008} design their prior distribution to be reflective of prior information for a range of situations. 
+In many cases, their weakly informative prior might supply too little prior information. 
+In other cases, it might supply too much. 
+In either case, it remains an open question whether this general prior supplies appropriate information for \emph{particular} research problems.
 
 \section*{The Importance of the Prior}
 
@@ -267,15 +267,15 @@ While default priors, such as Zorn's suggested Jeffreys' prior or Gelman et al.'
 Further, whether a particular prior is reasonable depends on the particular application.
 
 In most data analyses, the data swamp the contribution of the prior, so that the choice of prior has little effect on the posterior. 
-However, in the case of separation, the prior essentially determines the shape of the posterior in the direction of the separation. 
-The likelihood has an ``S''-shape that approaches a limit as the parameter coefficient for the separating variable $s_i$ approaches infinity. 
+However, in the case of separation, the prior essentially \emph{determines} the shape of the posterior in the direction of the separation. 
+The likelihood has an ``S''-shape that approaches a limit as the coefficient of the separating variable $s_i$ approaches infinity. 
 Thus, for large values of the coefficient, the likelihood is essentially flat, which allows the prior distribution to drive the inferences. 
-The prior distribution is not an arbitrary choice made for computational convenience--but an important choice that affects the inferences. 
+When dealing with separation, then, the prior distribution is not an arbitrary choice made for computational convenience--but an important choice that affects the inferences. 
 We can see the importance in both theory and practice.
 
 \subsection*{The Impact of the Prior in Theory}
 
-Although it is intuitive that the prior drives the inferences in the direction of the separation, it is also easy to characterize the impact of the prior on a monotonic increasing likelihood in a general way. 
+Although it is intuitive that the prior drives the inferences in the direction of the separation, it is also easy to generally characterize the impact of the prior on a monotonically increasing likelihood. 
 Suppose quasicomplete separation, such that whenever an explanatory variable $s_i = 1$, a binary outcome $y_i = 1$, but when $s_i = 0$, $y_i$ might equal zero or one. 
 Suppose further that the analyst wishes to obtain plausible estimates of coefficients for the model
 \begin{equation*}
@@ -288,7 +288,7 @@ My purpose here is to characterize how this prior information impacts the poster
 In the general situation, the analyst is interested in computing and characterizing the posterior distribution of $\beta_s$ given the data. 
 Using Bayes' Rule, the posterior distribution of $\beta = \langle \beta_{cons}, \beta_{s}, \beta_1, \beta_2, ..., \beta_k \rangle$ depends on the likelihood and the prior, so that $p(\beta | y) \propto p(y|\beta)p(\beta)$. 
 In particular, the analyst might have in mind a family of priors centered at and monotonically decreasing away from zero with varying scale $\sigma$, so that $p(\beta_s) = p(\beta_s | \sigma)$, though the results below simply depend on having any proper prior distribution. 
-The informativeness of the prior distribution depends on $\sigma$, which is chosen by the researcher and ``flattens'' the prior $p(\beta_s) = p(\beta_s | \sigma)$, such that as $\sigma$ increases, the rate at which the prior descends to zero decreases.
+The informativeness of the prior distribution depends on $\sigma$, which is chosen by the researcher and ``flattens'' the prior $p(\beta_s) = p(\beta_s | \sigma)$, such that as $\sigma$ increases, the rate at which the prior descends to zero decreases. In practice, one uses $\sigma$ to control the amount of shrinkage. A small $\sigma$ produces more shrinkage; a large $\sigma$ produces less.
 
 \begin{restatable}{theorem}{impact}\label{thm:impact}
 For a monotonic likelihood $p(y | \beta)$ increasing [decreasing] in $\beta_s$, proper prior distribution $p(\beta | \sigma)$, and large positive [negative] $\beta_s$, the posterior distribution of $\beta_s$ is proportional to the prior distribution for $\beta_s$, so that $p(\beta_s | y) \propto p(\beta_s | \sigma)$. 
@@ -300,25 +300,25 @@ More formally, $\displaystyle \lim _{\substack{\beta_s \to \infty\\ \lbrack -\in
 Theorem \ref{thm:impact} simply implies that for large values of $\beta_s$ the posterior distribution depends almost entirely on the researcher's \emph{choice} of prior distribution. 
 Thus, the choice of prior matters. 
 While the choice of prior might not affect the conclusion about the \emph{direction} of the effect (i.e., one-sided credible interval), it has a large impact on the conclusion about the \emph{magnitude} of the effect (i.e., two-sided credible interval).\footnote{
-Indeed, if one is only interested in the \textit{direction} of an effect (i.e., ``sign and significance''), then the procedure suggested by \cite{Geyer2009} is a reasonable alternative to regularization with a prior and the choice of prior is not likely to make much difference.} 
+If one is only interested in the \textit{direction} of an effect (i.e., ``sign and significance''), then the procedure suggested by \cite{Geyer2009} is a reasonable alternative to regularization with a prior and the choice of prior is not likely to make much difference.} 
 Credible intervals are crucial when discussing effect magnitudes (see \citealt{KingTomzWittenberg2000}; \citealt{Rainey2014a}; and \citealt{Gross2014}), and the choice of prior essentially drives the width of the credible interval.
 
 \subsection*{The Impact of the Prior in Practice}
 
-To illustrate the impact of the prior on inferences when facing separation, I replicate results from \cite{BarrilleauxRainey2014}, who are interested in the effect of partisanship on governors' decisions to oppose the Medicaid expansion in their states under the Patient Protection and Affordable Care Act (ACA).\footnote{
-\cite{BarrilleauxRainey2014} use a logistic regression modeling the probability that a governor opposes the expansion using the following explanatory variables: the partisanship of the governor, the percent of the state's residents who are favorable toward the ACA, whether Republicans control the state legislature, the percent of the state that is uninsured, a measure of the fiscal health of the state, the Medicaid multiplier for the state, the percent of the state that is nonwhite, and the percent of the state that resides in a metropolitan area. See their paper for more details.} 
-As the authors note, no Democratic governors opposed the expansion, which leads to a problem of separation. 
+To illustrate the impact of the prior on inferences when dealing with separation, I replicate results from \cite{BarrilleauxRainey2014}, who are interested in the effect of partisanship on governors' decisions to oppose the Medicaid expansion in their states under the Patient Protection and Affordable Care Act (ACA).\footnote{
+\cite{BarrilleauxRainey2014} model the probability that a governor opposes the expansion using the following explanatory variables: the partisanship of the governor, the percent of the state's residents who are favorable toward the ACA, whether Republicans control the state legislature, the percent of the state that is uninsured, a measure of the fiscal health of the state, the Medicaid multiplier for the state, the percent of the state that is nonwhite, and the percent of the state that resides in a metropolitan area. See their paper for more details.} 
+As the authors note, no Democratic governors opposed the expansion, which leads to separation. 
 To see whether the choice of prior matters, I use MCMC to simulate from the posterior using Zorn's (\citeyear{Zorn2005}) and Gelman et al.'s (\citeyear{Gelmanetal2008}) suggested \emph{default} prior distributions. 
 
 Figure \ref{fig:br-coef-illustrate-importance} shows the posterior medians and 90\% credible interval for the two default priors.\footnote{
 The credible intervals I use throughout this paper are 90\% HDP credible intervals. 
-Obviously, one could define many intervals that have 90\% chance of containing the true parameter.
+One could define many intervals that have 90\% chance of containing the true parameter.
  However, the HPD interval is theoretically appealing because it is the \emph{shortest} of these intervals. 
  See \citet[esp. pp. 48-51]{Gill2008} and \citet[esp. p. 448]{CasellaBerger2002}. 
  An equal-tailed interval, one alternative to the HDP interval, tends to exacerbate the differences between the priors.} 
  While the choice of prior does not affect the conclusion about the \emph{direction} of the effect, it has a large impact on the conclusion about the \emph{magnitude} of the effect. 
  This can be especially important when researchers are making claims about the substantive importance of their estimated effects (see \citealt{KingTomzWittenberg2000}; \citealt{Rainey2014a}; and \citealt{Gross2014}). 
- For example, the Cauchy(0, 2.5) prior leads to a posterior median that is over 30\% larger than the posterior median from Jeffreys' prior (-4.7 compared to 3.5). 
+ For example, the Cauchy(0, 2.5) prior leads to a posterior median that is over 30\% larger than the posterior median from Jeffreys' prior (-4.7 compared to -3.5). 
  The posterior mean is more than 70\% larger using the Cauchy(0, 2.5) prior (6.8 compared to 4.0). 
  Further, the 90\% credible interval is more than twice as wide for the Cauchy(0, 2.5) prior. 
  The choice between two \emph{default} priors leads to a large change in inferences.
@@ -326,30 +326,30 @@ Obviously, one could define many intervals that have 90\% chance of containing t
 \begin{figure}[H]
 \begin{center}
 \includegraphics[scale = .8]{figs/br-coef-illustrate-importance.pdf}
-\caption{This figure provides the posterior medians and 90\% credible intervals for the coefficient of the indicator for Democratic governors in the model offered by \cite{BarrilleauxRainey2014}. 
-Notice that Jeffreys' prior, suggested by \cite{Zorn2005}, is the more informative of these priors, suggesting that a coefficient larger than about seven is quite unlikely. 
-On the other hand, the credible interval using the Cauchy(0, 2.5) prior, as suggested by \cite{Gelmanetal2008}, is about \emph{twice} as wide as the credible interval from Jeffreys' prior, suggesting that effects as large as about 15 are plausible. 
-Further, the posterior median from the Cauchy(0, 2.5) prior is about 40\% larger than the posterior median from Jeffreys' prior.}\label{fig:br-coef-illustrate-importance}
+\caption{This figure provides the posterior medians and 90\% credible intervals for the coefficient of the indicator for Democratic governors in the model used by \cite{BarrilleauxRainey2014}. 
+Notice that Jeffreys' prior injects more information, as indicated by the smaller posterior median and credible interval. 
+The credible interval using Cauchy(0, 2.5) prior is about \emph{twice} as wide as the credible interval using Jeffreys' prior. 
+Further, the posterior median using the Cauchy(0, 2.5) prior is about 40\% larger than the posterior median using Jeffreys' prior.}\label{fig:br-coef-illustrate-importance}
 \end{center}
 \end{figure}
 
-Figure \ref{fig:bf-posterior-density-illustrate-importance} shows the posterior distribution for the coefficient for the indicator of Democratic governors. 
+Figure \ref{fig:bf-posterior-density-illustrate-importance} shows the posterior distribution for the coefficient of the indicator of Democratic governors. 
 Notice that these two \emph{default} priors lead to different posterior distributions. 
 In particular, the choice of the prior has a large impact on the right-hand side of the posterior, as suggested by Theorem \ref{thm:impact}. 
-The more informative Jeffreys' prior leads to a more peaked posterior distribution that nearly rules out coefficients larger than about seven. 
-The less informative Cauchy(0, 2.5) prior leads to the conclusion that much larger coefficients, such as 15, are plausible. 
+The more informative Jeffreys' prior leads to a more peaked posterior distribution that nearly rules out coefficients larger than about -7. 
+The less informative Cauchy(0, 2.5) prior leads to the conclusion that much larger coefficients, such as -15, are plausible. 
 These differences are not trivial--there are large differences in the posterior distributions, and these differences can affect the conclusions that the researchers draw about the likely magnitude of the effect.\footnote{
-But what about when the separating variable is not of direct interest? 
+But what if the separating variable is not of direct interest? 
 For example, what if the researcher simply wants to include a separating variable as a control? 
-In this case, the choice of prior still changes the estimates, but not nearly as much. 
-The substantive conclusions are not likely to depend on the choice of prior. 
-It is \textit{crucial} \cite{Zorn2005} to include the variable in the model, but the choice of prior distribution is not nearly as important as when the separating variable is of direct substantive interest.}
+In this case, the choice of prior still changes the estimates of interest, but not nearly as much. 
+The substantive conclusions are not likely to depend heavily on the choice of prior. 
+It is \textit{crucial} \citep{Zorn2005} to include the variable in the model, but the choice of prior distribution is not nearly as important as when the separating variable is of direct substantive interest.}
 
 \begin{figure}[H]
 \begin{center}
 \includegraphics[scale = .8]{figs/br-posterior-density-illustrate-importance.pdf}
 \caption{This figure shows the posterior distribution for the coefficient of the indicator for Democratic governors in the model offered by \cite{BarrilleauxRainey2014} for different default prior distributions. 
-The grey shading indicates the 90\% credible interval. Notice that the location and the spread of the posterior depend on the prior chosen, especially the right-hand side of the distribution, as suggested by Theorem \ref{thm:impact}.}\label{fig:bf-posterior-density-illustrate-importance}
+The grey shading indicates the 90\% credible interval. Notice that the location and the spread of the posterior depend on the prior chosen, especially the left-hand side of the distribution, as suggested by Theorem \ref{thm:impact}.}\label{fig:bf-posterior-density-illustrate-importance}
 \end{center}
 \end{figure}
 
@@ -359,14 +359,14 @@ While is often sufficient to rely on default priors, this is not the case if one
 Indeed, in the replication of \cite{BarrilleauxRainey2014} above, I show that the overall posterior distribution, the width of the 90\% credible interval, and the posterior median largely depend on the prior one chooses. 
 This implies that researchers relying on default priors alone risk under- or over-representing their confidence in the magnitude of the effect.
 
-Under separation, the data simply offer no information about the upper-bound of the magnitude of the coefficient for the separating variable. 
+Under separation, the data simply offer no information about the upper-bound of the magnitude of the coefficient of the separating variable. 
 Any reasonable regularization, then, must come in the form of an informative prior. 
 %\citet[p. 38]{Leamer1983} writes: ``As I see it, the fundamental problem facing econometrics is how adequately to control the whimsical character of inference, how sensibly to base inferences on opinions when facts are unavailable.'' 
-However, a researcher's prior is not simply a spur-off-the-moment feeling. 
+But a researcher's prior is not simply a spur-off-the-moment feeling. 
 Instead, we should think of the prior as representing other information relevant to the estimation. 
 This information can come from several sources, including quantitative studies of similar topics, detailed analyses of particular cases, and theoretical arguments.
 The best sources of prior information, though, depend on the substantive prior. 
-However, the judgement of substantive researcher based on their understanding of the substantive problem is unavoidable.
+The judgement of substantive researcher, based on their understanding of the substantive problem, is crucial.
 
 When facing separation, I suggest researchers use a prior distribution that satisfies three properties:
 \begin{enumerate}
@@ -377,54 +377,56 @@ In this case, a non-central prior distribution in the direction of the separatio
 For this reason, I focus on prior distributions centered at zero to conservatively shrink coefficients toward zero \citep{GelmanJakulin2007}. 
 The only choice the researcher needs to make is the amount of shrinkage appropriate for a given substantive problem.
 \item \emph{Allows plausible effects.} 
-The prior distribution should assign substantial prior probabilities to estimates that are \textit{a priori} plausible according to the researcher's prior information.
+The prior distribution should assign substantial prior probabilitiy to estimates that are \textit{a priori} plausible according to the researcher's prior information.
 \item \emph{Rules out implausibly large effects.} 
 The prior distribution should assign little prior probability to estimates that are \textit{a priori} implausible according to the researcher's prior information.\footnote{
 Because all the priors I consider have support over the real line, these priors do not strictly ``rule out'' anything. 
 However, these priors rule out large effects \textit{in practice}, by placing very little prior probability on large effects.
- Enough data will overwhelm these priors, but for typical social social data sets, these priors can essentially rule out large effects.}
+ Enough data will overwhelm these priors, but for typical social science data sets, these priors can essentially rule out large effects.}
 \end{enumerate}
 
 Different researchers will inevitably have different prior beliefs. 
-For example there is substantial disagreement among international relations theorists about the likely effects of nuclear weapons on conflict. 
+For example, there is substantial disagreement among international relations theorists about the likely effects of nuclear weapons on conflict. 
 Some optimists believe that nuclear weapons make peace much more likely. 
 \citet[p. 57]{Mearsheimer1993} argues that ``nuclear weapons are a powerful force for peace'' and observes:
 \begin{quote}
 In the pre-nuclear world of industrialized great powers, there were two world wars between 1900 and 1945 in which some 50 million Europeans died. In the nuclear age, the story is very different. Only some 15,000 Europeans were killed in minor wars between 1945 and 1990, and there was a stable peace between the superpowers that became increasingly robust over time. A principal cause of this ``long peace'' was nuclear weapons.
 \end{quote}
 \citet[p. 283]{BDMRiker1982} even theorize that the probability of conflict ``decreases to zero when all nations are nuclearly armed.'' 
+
 On the other hand, some pessimists (e.g., \citealt{Sagan1994}) believe that nuclear weapons do not deter conflict, only make it more catastrophic. 
 \citet[pp. 68-69]{Mueller1988} writes: 
 \begin{quote}
-Nuclear weapons may well have enhanced this stability--they are certainly dramatic reminders of how horrible a big war could be. But it seems highly unlikely that, in their absence, the leaders of the major powers would be so unimaginative as to need such reminding. Wars are not begun out of casual caprice or idle fancy, but because one country or another decides that it can profit from (not simply win) the war--the combination of risk, gain, and cost appears to be preferable to peace. Even allow considerably for stupidity, ineptness, miscalculation, and self-deception in these considerations, it does not appear that a large war, nuclear or otherwise, has been remotely in the interest of essentially-contended, risk-averse, escalation-anticipating powers that have dominated world affairs since 1945.
+Nuclear weapons may well have enhanced this stability--they are certainly dramatic reminders of how horrible a big war could be. But it seems highly unlikely that, in their absence, the leaders of the major powers would be so unimaginative as to need such reminding. Wars are not begun out of casual caprice or idle fancy, but because one country or another decides that it can profit from (not simply win) the war--the combination of risk, gain, and cost appears to be preferable to peace. Even allowing considerably for stupidity, ineptness, miscalculation, and self-deception in these considerations, it does not appear that a large war, nuclear or otherwise, has been remotely in the interest of essentially-contented, risk-averse, escalation-anticipating powers that have dominated world affairs since 1945.
 \end{quote}
 
 The optimists and the pessimists have different prior beliefs about the likely effects nuclear weapons. 
 These different beliefs must lead to different interpretations of the evidence because the prior distribution has such a strong impact on the posterior distribution in the direction of the separation. 
-However, researchers must clearly communicate the dependence of the inferences on the choice of prior by transparently developing an informative prior distribution and providing the inferences for alternative prior beliefs.
+Because of this, researchers must clearly communicate the dependence of the inferences on the choice of prior by transparently developing an informative prior distribution and providing the inferences for alternative prior beliefs.
 
 However, choosing a prior distribution is quite difficult, especially for multidimensional problems. 
 \cite{GillWalker2005} provide an overview of methods of choosing a prior appropriate to social science research. 
 However, the most sensible approach for choosing a prior distribution depends on the nature of the statistical model and the prior information.
 
 In general, the researcher might assess the reasonableness of the prior distribution by examining the prior predictive distribution and asking herself whether the prior and model produce a distribution for the data that matches her prior information. 
-Under the Bayesian framework, the researcher has a fully specified model $p(y_{new}|\theta)p(\theta)$ and can thus simulate hypothetical data $y_{new}$ from the model prior to observing the data. 
+Under the Bayesian framework, the researcher has a fully specified model $p(y_{new}|\theta)p(\theta)$ and can simulate hypothetical data $y_{new}$ from the model prior to observing the data. 
 The distribution of the unobserved outcome $y_{new}$ is given by $p(y_{new}) = \int p(y_{new} | \theta)p(\theta) d\theta$ \citep{Box1980}. 
-In practice, this process might involve Clarify-like simulation \citep{KingTomzWittenberg2000}, but rather than using the asymptotic posterior (e.g., $\beta_{sim} \sim N\left[\hat{\beta}^{mle}, I(\hat{\beta}^{mle})^{-1}\right]$), researchers simulate the model parameters from the prior distribution. 
+In practice, this process might involve Clarify-like simulation \citep{KingTomzWittenberg2000}.
+But rather than using the asymptotic posterior (e.g., $\beta_{sim} \sim N\left[\hat{\beta}^{mle}, I(\hat{\beta}^{mle})^{-1}\right]$), researchers simulate the coeffiicients from the prior distribution. 
 Just as a researcher can use simulation to interpret the coefficient estimates of nonlinear models, she can use simulation to interpret the prior distribution.
 
 \begin{defn}[Prior Predictive Distribution] The prior predictive distribution, denoted as $p(y_{new})$, is the prior distribution of hypothetical data, so that $p(y_{new}) = \int\limits_{-\infty}^{\infty} p(y_{new} | \beta)p(\beta)d(\beta)$.
 \end{defn}
 
 However, it is difficult to work with more than one dimension of the prior distribution. 
-Specifying the full prior distribution requires simultaneously choosing prior distributions for the $k + 1$ explanatory variables, as well as the relationships among these variables (e.g., family, location, scale, and correlations of all the parameters). 
+Specifying the full prior distribution requires simultaneously choosing prior distributions for the coefficients of the $k + 1$ explanatory variables, as well as the relationships among these coefficients (e.g., family, location, scale, and correlations of each coefficient). 
 This process is intractably tedious, as the researcher must evaluate the prior for each combination of each parameter set at a range of values. 
-Even if the researcher considers only independent normal priors and ten values for each parameter, then the researcher must examine $10^{k+1}$ prior predictive distributions. 
+Even if the researcher considers only independent normal priors centered at zero and only ten values for each scale, then the researcher must examine $10^{k+1}$ prior predictive distributions. 
 If the researcher has eight control variables, so that $k = 8$, (e.g., \citealt{BarrilleauxRainey2014}), then the researcher must evaluate one \emph{billion} prior predictive distributions.
 
 But only specific regions of the $k + 1$ dimensional prior distribution are practically important when addressing separation. 
 This allows the researcher to dramatically simplify the choice of prior. 
-In particular, the researcher can simplify the focusing in two specific ways.
+In particular, the researcher can simplify the focus in two specific ways.
 \begin{enumerate}
 \item \emph{Focus only on the separated coefficient.} 
 Since the data swamp the prior for all the model coefficients except $\beta_s$, the only relevant ``slices'' of the prior distribution are those in which all other coefficients are near their maximum likelihood estimates.
@@ -432,22 +434,21 @@ Since the data swamp the prior for all the model coefficients except $\beta_s$, 
 The likelihood also swamps the prior in the direction opposite the separation. 
 Unless the researcher has an extremely small data set (i.e., smaller than \cite{BarrilleauxRainey2014}, who have $N = 50$), then the likelihood essentially rules out values less [greater] than zero when the direction of separation is positive [negative].
 \end{enumerate}
-
-I refer to this simplified focus as the \emph{partial} prior predictive distribution.
+\noindent I refer to this simplified focus as the \emph{partial} prior predictive distribution.
 
 \begin{defn}[Partial Prior Predictive Distribution]\label{def:pppd} 
-The \underline{partial} prior predictive distribution, denoted as $p^*(y_{new})$, is the prior distribution of $y_{new}$ given that the separated coefficient lies in the direction of the separation and all other coefficients equal their maximum likelihood estimates, so that $p^*(y_{new}) = \int_{0}^{\infty} p(y_{new} | \beta_s, \hat{\beta}_{-s}^{mle})p(\beta_s | \beta_s \geq 0)d(\beta_s)$ when $\hat{\beta}_{s}^{mle} = +\infty$ and $p^*(y_{new}) = \int_{-\infty}^{0} p(y_{new} | \beta_s, \hat{\beta}_{-s}^{mle})p(\beta_s | \beta_s \leq 0)d(\beta_s)$ when $\hat{\beta}_{s}^{mle} = -\infty$.
+The \underline{partial} prior predictive distribution, denoted as $p^*(y_{new})$, is the prior distribution of $y_{new}$ given that the coefficient of the separating variable lies in the direction of the separation and all other coefficients equal their maximum likelihood estimates, so that $p^*(y_{new}) = \int_{0}^{\infty} p(y_{new} | \beta_s, \hat{\beta}_{-s}^{mle})p(\beta_s | \beta_s \geq 0)d(\beta_s)$ when $\hat{\beta}_{s}^{mle} = +\infty$ and $p^*(y_{new}) = \int_{-\infty}^{0} p(y_{new} | \beta_s, \hat{\beta}_{-s}^{mle})p(\beta_s | \beta_s \leq 0)d(\beta_s)$ when $\hat{\beta}_{s}^{mle} = -\infty$.
 \end{defn}
 
-For example, \cite{BarrilleauxRainey2014} do not need to use prior information to obtain reasonable estimates for our measures of need and public opinion. 
+For example, \cite{BarrilleauxRainey2014} do not need to use prior information to obtain reasonable estimates for their measures of need and public opinion. 
 Further, because no Democratic governors opposed the Medicaid expansion, they do not need the prior to rule out large \textit{positive} effects for Democratic partisanship. 
 In these cases, the likelihood is sufficiently informative. 
 
 However, \cite{BarrilleauxRainey2014} do need to use the prior to rule out large \textit{negative} effects for Democratic partisanship, because the likelihood cannot effectively rule out implausibly large negative effects. 
-Indeed, the likelihood is monotonically decreasing in the coefficient for the indicator of Democratic governors. 
-That is, the likelihood increases as the coefficient for Democratic partisanship becomes more negative. 
+Indeed, the likelihood is monotonically decreasing in the coefficient of the indicator of Democratic governors. 
+That is, the likelihood increases as the coefficient of Democratic partisanship becomes more negative. 
 The larger the negative effect, the more likely separation would occur. 
-The usual maximum likelihood, therefore, provides implausibly large negative estimates and unreasonable standard errors. 
+The usual maximum likelihood estimator, therefore, provides implausibly large negative estimates and unreasonable standard errors. 
 Theorem \ref{thm:impact} provides a more formal treatment of this intuition, but prior information is essential to obtain reasonable estimates and measures of uncertainty. 
 
 Choosing a prior, though, requires thoughtful effort. 
@@ -455,9 +456,9 @@ As I show above, default priors can lead to much different conclusions, so it is
 In order to choose a reasonable, informative prior distribution, researchers can use simulation to obtain the partial prior predictive distribution defined in Definition \ref{def:pppd}. 
 The following steps describe how researchers can simulate from the partial prior predictive distribution and use the simulations to check the reasonableness of the choice.
 \begin{enumerate}
-\item Estimate the model coefficients using maximum likelihood, given the coefficient vector $\hat{\beta}^{mle}$. 
+\item Estimate the model coefficients using maximum likelihood, giving the coefficient vector $\hat{\beta}^{mle}$. 
 Include the separating variable $s_i$ in the model. 
-Of course, this leads to implausible estimates for $\beta_s$, but the purpose is to choose reasonable values at which to fix the \emph{other} parameters in order to focus on a single slice of the full prior. 
+Of course, this leads to implausible estimates for $\beta_s$, but the purpose is to choose reasonable values at which to fix the \emph{other} coefficients in order to focus on a single slice of the full prior. 
 \item Choose a prior distribution $p(\beta_s)$ for the separating variable $s$ that is centered at zero. 
 One sensible choice is the scaled $t$ distribution, which has the normal and Cauchy families as special cases ($\text{df} = \infty$ and $\text{df} = 1$, respectively). 
 \item Choose a large number of simulations $n_{sims}$ to perform (e.g., $n_{sims} \geq 10,000$) and for $i$ in 1 to $n_{sims}$, do the following:
@@ -472,7 +473,7 @@ One sensible choice is the scaled $t$ distribution, which has the normal and Cau
 If the prior is inadequate, then update the prior distribution $p(\beta_s)$.
 \end{enumerate}
 
-Given that the inference can be highly dependent on the choice of prior, I recommend that the researcher choose at least three prior distributions: (1) an \emph{informative} prior distribution that represents her actual information, (2) a highly \emph{skeptical} prior distribution that suggests the effect is likely small, and (3) a highly \emph{enthusiastic} prior that represents the suggests the effect might be very large. 
+Given that the inference can be highly dependent on the choice of prior, I recommend that the researcher choose at least three prior distributions: (1) an \emph{informative} prior distribution that represents her actual information, (2) a highly \emph{skeptical} prior distribution that suggests the effect is likely small, and (3) a highly \emph{enthusiastic} prior that suggests the effect might be very large. 
 Combined with Zorn's (\citeyear{Zorn2005}) and Gelman et al.'s (\citeyear{Gelmanetal2008}) suggested defaults, these provide a range of prior distributions that the researcher can use to evaluate her inferences.
 
 \section*{Estimating the Full Model}
@@ -481,13 +482,13 @@ Once the researcher obtains a reasonable prior distribution as well as several t
 \cite{Zorn2005} and \cite{Gelmanetal2008} suggest variations on maximum likelihood to quickly obtain estimates and confidence intervals, but the normal approximation typically used to simulate the parameters and calculate quantities of interest \citep{KingTomzWittenberg2000} is particularly inaccurate under separation \citep{HeinzeSchemper2002}. 
 As an alternative, I recommend the researcher use MCMC to simulate directly from the posterior distribution. 
 The researcher can then use these simulations to calculate point estimates and confidence intervals for any desired quantity of interest. 
-For the informative $p_{\text{inf}}(\beta_s)$, skeptical $p_{\text{skep}}(\beta_s)$, and enthusiastic $p_{\text{opt}}(\beta_s)$ priors , I suggest the model:
+For the informative $p_{\text{inf}}(\beta_s)$, skeptical $p_{\text{skep}}(\beta_s)$, and enthusiastic $p_{\text{enth}}(\beta_s)$ priors , I suggest the model:
 
 \begin{equation*}
 Pr(y_i =1) = \text{logit}^{-1}(\beta_{cons} + \beta_s s_i +  \beta_1 x_{i1} + \beta_2 x_{i2} + ... + \beta_k x_{ik})
 \end{equation*}
 \begin{equation*}
-\beta_s \sim  p_k(\beta_s) \text{, for } k \in \{\text{inf, skep, enth}\},
+\beta_s \sim  p_m(\beta_s) \text{, for } m \in \{\text{inf, skep, enth}\},
 \end{equation*}
 with improper, constant priors on the other model coefficients.
 
@@ -500,10 +501,10 @@ Summarizing his empirical results, Rauchhaus writes:
 The hypotheses on nuclear symmetry find strong empirical support. The probability of a major war between two states is found to decrease when both states possess nuclear weapons (p. 269).
 \end{quote}
 
-Despite using the same data, \citet[p. 9]{BellMiller2015} claim that ``nonnuclear dyads are in fact no more likely to fight wars than nonnuclear dyads.'' 
+Despite using the same data, \citet[p. 9]{BellMiller2015} claim that ``symmetric nuclear dyads are not significantly less likely to go to war than are nonnuclear dyads.'' 
 Their disagreement hinges, in part, on whether and how to handle separation, because no nuclear dyad in Rauchhaus data engages in war.\footnote{
-\cite{BellMiller2015} also disagree with Rauchhaus's (\citeyear{Rauchhaus2009}) coding of the 1999 conflict in Kargil between India and Pakistan, which both possessed nuclear weapons. 
-This conflict is excluded from Rauchhaus's data set, but Bell and Miller argue that it should be included as a war between two nuclear-armed states. 
+\cite{BellMiller2015} also disagree with Rauchhaus' (\citeyear{Rauchhaus2009}) coding of the 1999 conflict in Kargil between India and Pakistan, which both possessed nuclear weapons. 
+This conflict is excluded from Rauchhaus' data set, but Bell and Miller argue that it should be included as a war between two nuclear-armed states. 
 However, that portion of their argument is less relevant to my purpose. 
 Instead, my goal is to illustrate how one might choose a reasonable prior distribution and highlight the importance of the choice of prior.} 
 \cite{Rauchhaus2009} ignores the separation and estimates that nonnuclear dyads are about 2.7 million times more likely to go to war than symmetric nuclear dyads.
@@ -522,7 +523,7 @@ This raises important questions.
 The first step in dealing with the separation in a principled manner is to choose a prior distribution that represents actual prior information. 
 To choose a reasonable prior, I follow the process above to generate a partial prior predictive distribution for the risk-ratio that \cite{BellMiller2015} emphasize. 
 I experimented with a range of prior distributions, from a variety of families, but settled on a normal distribution with mean zero and standard deviation 4.5. 
-This serves as an informative prior and represent my own prior beliefs.   
+This serves as an informative prior and represents my own prior beliefs.   
 I chose this prior distribution because it essentially rules out risk-ratios larger than 1,000--effects that I find implausibly large--and treats risk-ratios smaller than 1,000 as plausible. 
 Figure \ref{fig:bm-pppd-hist} and Table \ref{tab:bm-pppd-deciles} summarize the partial prior predictive distributions for the this normal distribution with standard deviation 4.5.
 
@@ -537,8 +538,8 @@ For convenience, Table \ref{tab:bm-pppd-deciles} provides the deciles of the PPP
 \begin{figure}[H]
 \begin{center}
 \includegraphics[scale = .8]{figs/bm-pppd-hist.pdf}
-\caption{This figure shows the partial prior predictive distribution for the risk-ratio of war in nonnuclear to nuclear dyads. 
-The risk-ratio is tells us how many times more likely war is in non-nuclear dyads compared to nuclear dyads. 
+\caption{This figure shows the partial prior predictive distribution for the risk-ratio of war in nonnuclear dyads to nuclear dyads. 
+The risk-ratio tells us how many times more likely war is in nonnuclear dyads compared to nuclear dyads. 
 Notice that the informative prior treats effects smaller than about 1,000 as plausible, but essentially rules out larger effects. 
 The skeptical prior essentially rules out effects larger than 25, while the enthusiastic prior treats effects between 1 and 100,000 as essentially equally likely.}\label{fig:bm-pppd-hist}
 \end{center}
@@ -552,7 +553,7 @@ These three prior distributions, along with the defaults suggested by \cite{Zorn
 
 \subsection*{Posterior}
 
-Figure \ref{fig:bm-posterior-density} shows the posterior distributions for the coefficient of the indictor of nuclear dyads from the informative, skeptical, enthusiastic, and two default prior distributions. 
+Figure \ref{fig:bm-posterior-density} shows the posterior distributions for the coefficient of the indicator of nuclear dyads using the informative, skeptical, enthusiastic, and two default prior distributions. 
 The areas shaded grey indicate the 90\% credible intervals. Notice that the location (e.g., peak or mode), shape, scale, and credible interval depend on the choice of prior. 
 While the magnitude of this coefficient is not easily interpretable, notice that Gelman et al.'s (\citeyear{Gelmanetal2008}) suggested default prior is somewhat similar to the informative prior, but Zorn's (\citeyear{Zorn2005}) suggested default is quite similar to the \emph{skeptical} prior. 
 Thus, these distributions illustrate that the prior is important when dealing with separation. 
@@ -561,11 +562,11 @@ Indeed, it is a critical step in obtaining reasonable inferences.
 \begin{figure}[H]
 \begin{center}
 \includegraphics[scale = .8]{figs/bm-posterior-density.pdf}
-\caption{This figure shows the posterior distribution for the logit coefficient using each of the five prior distributions.  
+\caption{This figure shows the posterior distribution for the logit coefficient of the indicator of nuclear dyads using each of the five prior distributions.  
 The grey shading indicates the 90\% credible interval. 
 Notice that the choice of prior has a large effect on the inferences. 
-For example, the enthusiastic prior suggests the coefficient might be as large as -13, while the skeptical prior suggests the coefficient is probably not larger than -4. 
-Importantly, notice the similarity between the posterior from Zorn's (\citeyear{Zorn2005}) suggested default and the skeptical prior, in terms of their peak (i.e., mode), shape, and highest posterior density.}\label{fig:bm-posterior-density}
+For example, the using the enthusiastic prior suggests the coefficient might be as large as -13, while using the skeptical prior suggests the coefficient is probably not larger than -4. 
+Importantly, notice the similarity between the posterior using Zorn's (\citeyear{Zorn2005}) suggested default prior and the skeptical prior, in terms of their peak (i.e., mode), shape, and credible interval.}\label{fig:bm-posterior-density}
 \end{center}
 \end{figure}
 
@@ -598,10 +599,7 @@ These probabilities can be thought of as the probability that Rauchhaus' hypothe
 Following the standard of $p \leq 0.05$ as offering strong evidence against the null hypothesis, it is reasonable to take $Pr(RR > 1) \geq 0.95$ as strong evidence for the research hypothesis. 
 Figure \ref{fig:bm-pr-hypothesis} shows the probability that the hypothesis is correct for each prior distribution. 
 Notice that while only the enthusiastic prior falls above the 0.95 standard, the evidence for the claim is at least suggestive. 
-Perhaps most importantly for my purposes, Zorn's suggested default leads to the \emph{least} evidence in favor of Rauchhaus' hypothesis--even the skeptical prior provides more evidence for Rauchhaus' claim.\footnote{
-\cite{BellMiller2015} also question Rauchhaus' (\citeyear{Rauchhaus2009}) coding of the 1999 conflict in Kargil between India and Pakistan. 
-If this conflict is coded as a war, as Bell and Miller suggest, then separation no longer occurs. 
-With this different coding, the data \textit{do} offer information about the likely upper-bound on the magnitude of coefficient for the indicator of nuclear dyads, and the different priors produce similar inferences.}
+Perhaps most importantly for my purposes, Zorn's suggested default leads to the \emph{least} evidence in favor of Rauchhaus' hypothesis--even the skeptical prior provides more evidence for Rauchhaus' claim.
 
 \begin{figure}[H]
 \begin{center}
@@ -619,13 +617,13 @@ It is also an unusual ``problem'' because the effects in the sample are ``too bi
 In this situation, dropping the separating variables (i.e., deliberate specification bias) or interpreting the implausible coefficients and standard errors are particularly unattractive options. 
 But even the most principled solution to date, the incorporation of prior information via default priors (\citealt{Zorn2005} and \citealt{Gelmanetal2008}), has shortcomings.
 
-First, the normal approximations necessary to simulate from these default prior distributions perform poorly. 
+First, the normal approximations necessary to simulate quantities of interest after using these methods perform poorly. 
 While it is possible to use profile likelihood methods to obtain more accurate confidence intervals for the coefficients (\citealt{Zorn2005}, \citealt{HeinzeSchemper2002}, and \citealt{McCullaghNelder1989}), it is difficult to translate these intervals into confidence intervals for quantities of interest. 
 I provide the computational tools to simulate directly from the posterior using both Zorn's (\citeyear{Zorn2005}) and Gelman et al.'s (\citeyear{Gelmanetal2008}) suggested default priors.
 
 Second, the applications examining the effect of nuclear weapons and the effect of governors' partisanship illustrate what Theorem \ref{thm:impact} proves--under separation, the choice of prior affects substantive conclusions. 
 Even the predominant default priors used to deal with separation can provide very different inferences. 
-A carefully-chosen, informative prior is an essential step in the process of obtaining reasonable inferences under separation. 
+A carefully-chosen, informative prior is an essential step in the process of obtaining reasonable inferences when dealing with separation. 
 But what does this mean for applied researchers? 
 I suggest two implications:
 \begin{enumerate}
