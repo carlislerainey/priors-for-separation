@@ -112,7 +112,7 @@ Working paper: Comments welcome!
 In this situation, maximum likelihood provides implausible estimates and the researcher might want incorporate some form of prior information into the model. 
 The most sophisticated research uses Jeffreys' invariant prior to stabilize the estimates. 
 While Jeffreys' prior has the advantage of being automatic, I show that it often provides too much prior information, producing point estimates that are too small and confidence intervals that are too narrow. 
-To help researchers assess the amount of information injected by the prior distribution, I introduce the concept of a partial prior predictive distribution and develop the tools required to compute the partial prior predictive distribution, estimate the subsequent model, and summarize the results.
+To help researchers assess the amount of information injected by the prior distribution, I introduce the concept of a partial prior distribution and develop the tools required to compute the partial prior distribution of quantities of interest, estimate the subsequent model, and summarize the results.
 \end{quote}
 
 
@@ -134,7 +134,7 @@ To address these two problems, I suggest that researchers use a range of priors,
 In this paper, I introduce conceptual and computational tools that help researchers understand the information provided by a given prior distribution and use that prior distribution to obtain meaningful point estimates and confidence intervals. 
 I make three specific contributions. 
 First, I use statistical theory and two applied examples to demonstrate the importance of choosing a prior distribution that represents actual prior information and conducting robustness checks using a variety of prior distributions. 
-Second, I introduce the concept of a partial prior predictive distribution, a powerful tool in understanding and choosing a prior when facing separation. 
+Second, I introduce the concept of a partial prior distribution, a powerful tool in understanding and choosing a prior when facing separation. 
 Third, I introduce new software that makes it easy for researchers to choose an informative prior distribution, simulate directly from the posterior distribution, and summarize the inferences.\footnote{
 The R package \texttt{separation} (currently version 0.1, alpha pre-release) implements the procedures discussed in the paper and is available at \href{https://github.com/carlislerainey/separation}{github.com/carlislerainey/separation}. 
 See the \href{https://github.com/carlislerainey/separation/blob/master/README.md}{README} for instructions on downloading and usage.}
@@ -142,7 +142,7 @@ See the \href{https://github.com/carlislerainey/separation/blob/master/README.md
 I begin with a basic overview of the logistic regression model and summary of the impact of separation on the maximum likelihood estimates. 
 I then describe two default prior distributions that researchers might use to handle separation. 
 Next, I use a theoretical result and an applied example to demonstrate the importance of choosing an informative prior. 
-I then introduce researchers to the concept of a partial prior predictive distribution, which enables researchers to understand complex prior distributions in terms of the key quantities of interest. 
+I then introduce researchers to the concept of a partial prior distribution, which enables researchers to understand complex prior distributions in terms of the key quantities of interest. 
 To illustrate how these ideas work in practice, I conclude with a replication of \cite{Rauchhaus2009} and \cite{BellMiller2015}, whose disagreement about the effect of nuclear weapons on war hinges, in part, on how to deal with separation.
 
 \section*{The Logistic Regression Model}
@@ -408,21 +408,17 @@ However, choosing a prior distribution is quite difficult, especially for multid
 \cite{GillWalker2005} provide an overview of methods of choosing a prior appropriate to social science research. 
 However, the most sensible approach for choosing a prior distribution depends on the nature of the statistical model and the prior information.
 
-In general, the researcher might assess the reasonableness of the prior distribution by examining the prior predictive distribution and asking herself whether the prior and model produce a distribution for the data that matches her prior information. 
-Under the Bayesian framework, the researcher has a fully specified model $p(y_{new}|\theta)p(\theta)$ and can simulate hypothetical data $y_{new}$ from the model prior to observing the data. 
-The distribution of the unobserved outcome $y_{new}$ is given by $p(y_{new}) = \int p(y_{new} | \theta)p(\theta) d\theta$ \citep{Box1980}. 
-In practice, this process might involve Clarify-like simulation \citep{KingTomzWittenberg2000}.
-But rather than using the asymptotic posterior (e.g., $\beta_{sim} \sim N\left[\hat{\beta}^{mle}, I(\hat{\beta}^{mle})^{-1}\right]$), researchers simulate the coeffiicients from the prior distribution. 
+In general, the researcher might assess the reasonableness of the prior distribution by examining the prior distribution and asking herself whether the prior and model produce a distribution for the quantities of interest that matches her prior information. 
+Under the Bayesian framework, the researcher has a fully specified model $\pi_{new} = p(y_{new}|\beta)p(\beta)$ and can simulate the quantity of interest $q_{new} = q(\pi_{new})$ from the model prior to observing the data. 
+This works much like the Clarify algorithm \citep{KingTomzWittenberg2000}.
+By repeatedly simulating from the prior distribution $\tilde{\beta} \sim p(\beta)$, calculating $\tilde{\pi}_{new} = p(y_{new}|\tilde{\beta})$, and calculating $\tilde{q}_new = q(\tilde{\pi}_{new})$, the researcher can recover the transformed prior distribution of $q_{new}$.
 Just as a researcher can use simulation to interpret the coefficient estimates of nonlinear models, she can use simulation to interpret the prior distribution.
-
-\begin{defn}[Prior Predictive Distribution] The prior predictive distribution, denoted as $p(y_{new})$, is the prior distribution of hypothetical data, so that $p(y_{new}) = \int\limits_{-\infty}^{\infty} p(y_{new} | \beta)p(\beta)d(\beta)$.
-\end{defn}
 
 However, it is difficult to work with more than one dimension of the prior distribution. 
 Specifying the full prior distribution requires simultaneously choosing prior distributions for the coefficients of the $k + 1$ explanatory variables, as well as the relationships among these coefficients (e.g., family, location, scale, and correlations of each coefficient). 
 This process is intractably tedious, as the researcher must evaluate the prior for each combination of each parameter set at a range of values. 
-Even if the researcher considers only independent normal priors centered at zero and only ten values for each scale, then the researcher must examine $10^{k+1}$ prior predictive distributions. 
-If the researcher has eight control variables, so that $k = 8$, (e.g., \citealt{BarrilleauxRainey2014}), then the researcher must evaluate one \emph{billion} prior predictive distributions.
+Even if the researcher considers only independent normal priors centered at zero and only ten values for each scale, then the researcher must examine $10^{k+1}$ prior distributions. 
+If the researcher has eight control variables, so that $k = 8$, (e.g., \citealt{BarrilleauxRainey2014}), then the researcher must evaluate one \emph{billion} prior distributions.
 
 But only specific regions of the $k + 1$ dimensional prior distribution are practically important when addressing separation. 
 This allows the researcher to dramatically simplify the choice of prior. 
@@ -434,11 +430,10 @@ Since the data swamp the prior for all the model coefficients except $\beta_s$, 
 The likelihood also swamps the prior in the direction opposite the separation. 
 Unless the researcher has an extremely small data set (i.e., smaller than \cite{BarrilleauxRainey2014}, who have $N = 50$), then the likelihood essentially rules out values less [greater] than zero when the direction of separation is positive [negative].
 \end{enumerate}
-\noindent I refer to this simplified focus as the \emph{partial} prior predictive distribution.
+\noindent I refer to this simplified focus as the \emph{partial} prior distribution. 
 
-\begin{defn}[Partial Prior Predictive Distribution]\label{def:pppd} 
-The \underline{partial} prior predictive distribution, denoted as $p^*(y_{new})$, is the prior distribution of $y_{new}$ given that the coefficient of the separating variable lies in the direction of the separation and all other coefficients equal their maximum likelihood estimates, so that $p^*(y_{new}) = \int_{0}^{\infty} p(y_{new} | \beta_s, \hat{\beta}_{-s}^{mle})p(\beta_s | \beta_s \geq 0)d(\beta_s)$ when $\hat{\beta}_{s}^{mle} = +\infty$ and $p^*(y_{new}) = \int_{-\infty}^{0} p(y_{new} | \beta_s, \hat{\beta}_{-s}^{mle})p(\beta_s | \beta_s \leq 0)d(\beta_s)$ when $\hat{\beta}_{s}^{mle} = -\infty$.
-\end{defn}
+Formally, we might write the partial prior distribution as $p^*(\beta_s | \beta_s \geq 0, \beta_{-s} = \hat{\beta}_{-s}^{mle})$ when $\hat{\beta}^{mle}_s = +\infty$ and $p^*(\beta_s | \beta_s \leq 0, \beta_{-s} = \hat{\beta}_{-s}^{mle})$ when $\hat{\beta}^{mle}_s = -\infty$
+Much like the researcher can recover the prior distribution of $q_{new}$ implied by the prior distribution, she can recover the distribution of $q_{new}$ implied by the \textit{partial} prior distribution by repeatedly simulating from the \textit{partial} prior distribution $\tilde{\beta}^* \sim p^*(\beta_s | \beta_s \leq 0, \beta_{-s} = \hat{\beta}_{-s}^{mle})$, calculating $\tilde{\pi}^*_{new} = p(y_{new}|\tilde{\beta}^*)$, and calculating $\tilde{q}^*_{new} = q(\tilde{\pi}^*_{new})$.
 
 For example, \cite{BarrilleauxRainey2014} do not need to use prior information to obtain reasonable estimates for their measures of need and public opinion. 
 Further, because no Democratic governors opposed the Medicaid expansion, they do not need the prior to rule out large \textit{positive} effects for Democratic partisanship. 
@@ -453,8 +448,8 @@ Theorem \ref{thm:impact} provides a more formal treatment of this intuition, but
 
 Choosing a prior, though, requires thoughtful effort. 
 As I show above, default priors can lead to much different conclusions, so it is essential to build actual prior information into the model. 
-In order to choose a reasonable, informative prior distribution, researchers can use simulation to obtain the partial prior predictive distribution defined in Definition \ref{def:pppd}. 
-The following steps describe how researchers can simulate from the partial prior predictive distribution and use the simulations to check the reasonableness of the choice.
+In order to choose a reasonable, informative prior distribution, researchers can use simulation to obtain the partial prior distribution of the quantity of interest.
+The following steps describe how researchers can simulate from the partial prior distribution of a quantity of interest and use the simulations to check the reasonableness of the choice.
 \begin{enumerate}
 \item Estimate the model coefficients using maximum likelihood, giving the coefficient vector $\hat{\beta}^{mle}$. 
 Include the separating variable $s_i$ in the model. 
@@ -521,24 +516,24 @@ This raises important questions.
 \subsection*{Prior}
 
 The first step in dealing with the separation in a principled manner is to choose a prior distribution that represents actual prior information. 
-To choose a reasonable prior, I follow the process above to generate a partial prior predictive distribution for the risk-ratio that \cite{BellMiller2015} emphasize. 
+To choose a reasonable prior, I follow the process above to generate a partial prior distribution for the risk-ratio that \cite{BellMiller2015} emphasize. 
 I experimented with a range of prior distributions, from a variety of families, but settled on a normal distribution with mean zero and standard deviation 4.5. 
 This serves as an informative prior and represents my own prior beliefs.   
 I chose this prior distribution because it essentially rules out risk-ratios larger than 1,000--effects that I find implausibly large--and treats risk-ratios smaller than 1,000 as plausible. 
-Figure \ref{fig:bm-pppd-hist} and Table \ref{tab:bm-pppd-deciles} summarize the partial prior predictive distributions for the this normal distribution with standard deviation 4.5.
+Figure \ref{fig:bm-pppd-hist} and Table \ref{tab:bm-pppd-deciles} summarize the partial prior distributions for the this normal distribution with standard deviation 4.5.
 
 To evaluate the robustness of any statistical claims to the choice of prior, I also selected a highly skeptical and highly enthusiastic prior. 
 I chose a normal distribution with mean zero and standard deviation two to serve as a skeptical prior that represents the belief that any pacifying effect of nuclear weapons is small (e.g., \citealt{Mueller1988}). 
 This skeptical prior distribution essentially rules out risk-ratios larger than 25 as implausibly large. 
 Finally, I selected a normal distribution with mean zero and standard deviation eight to serve as an enthusiastic prior that represents the belief that the pacifying effects of nuclear weapons might be quite large (e.g., \citealt{Mearsheimer1993}). 
 This enthusiastic prior, on the other hand, treats risk-ratios as large as 500,000 as plausible. 
-Figure \ref{fig:bm-pppd-hist} shows the partial prior predictive distributions for the informative, skeptical, and enthusiastic prior distributions. 
+Figure \ref{fig:bm-pppd-hist} shows the partial prior distributions for the informative, skeptical, and enthusiastic prior distributions. 
 For convenience, Table \ref{tab:bm-pppd-deciles} provides the deciles of the PPPDs shown in Figure \ref{fig:bm-pppd-hist}. 
 
 \begin{figure}[H]
 \begin{center}
 \includegraphics[scale = .8]{figs/bm-pppd-hist.pdf}
-\caption{This figure shows the partial prior predictive distribution for the risk-ratio of war in nonnuclear dyads to nuclear dyads. 
+\caption{This figure shows the partial prior distribution for the risk-ratio of war in nonnuclear dyads to nuclear dyads. 
 The risk-ratio tells us how many times more likely war is in nonnuclear dyads compared to nuclear dyads. 
 Notice that the informative prior treats effects smaller than about 1,000 as plausible, but essentially rules out larger effects. 
 The skeptical prior essentially rules out effects larger than 25, while the enthusiastic prior treats effects between 1 and 100,000 as essentially equally likely.}\label{fig:bm-pppd-hist}
@@ -637,7 +632,7 @@ In particular, I suggest that in addition to focusing on an informative prior, r
 \end{enumerate}
 
 When facing separation, researchers must \emph{carefully} choose a prior distribution to nearly rule out implausibly large effects. 
-This paper introduces the concept of a partial prior predictive distribution and the associated computational tools to help researchers choose a prior distribution that represents actual prior information for their particular research problem. 
+This paper introduces the concept of a partial prior distribution and the associated computational tools to help researchers choose a prior distribution that represents actual prior information for their particular research problem. 
 By presenting results using several prior distributions, including an informative prior, researchers can increase the transparency, credibility, and accuracy of their inferences when dealing with separation.
 
 %\clearpage
