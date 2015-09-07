@@ -84,7 +84,7 @@
 \begin{document}
 
 \begin{center}
-{\Large Dealing with Separation in Logistic Regression Models\symbolfootnote[1]{I thank Mark Bell and Nicholas Miller for making their data available. I thank Mark Bell, David Firth, Nicholas Miller, and Chris Zorn for helpful comments. I presented earlier versions of this paper at the University of Kansas, Texas A\&M University, and the 2015 annual meeting of The Society for Political Methodology. The analyses presented here were conducted with \texttt{R} 3.2.1 and JAGS 3.4.0. All data and computer code necessary for replication are available at \href{https://github.com/carlislerainey/priors-for-separation}{github.com/carlislerainey/priors-for-separation}. The R package \texttt{separation} (currently version 0.1, alpha pre-release) implements the procedures discussed in the paper and is available at \href{https://github.com/carlislerainey/separation}{github.com/carlislerainey/separation}. See the \href{https://github.com/carlislerainey/separation/blob/master/README.md}{README} for instructions on downloading and usage.}
+{\Large Dealing with Separation in Logistic Regression Models\symbolfootnote[1]{I thank Mark Bell and Nicholas Miller for making their data available. I thank Mark Bell, Bryce Corrigan, David Firth, Nicholas Miller, Jamie Monogan,  and Chris Zorn for helpful comments. I presented earlier versions of this paper at the University of Kansas, Texas A\&M University, and the 2015 annual meeting of The Society for Political Methodology. The analyses presented here were conducted with \texttt{R} 3.2.1 and JAGS 3.4.0. All data and computer code necessary for replication are available at \href{https://github.com/carlislerainey/priors-for-separation}{github.com/carlislerainey/priors-for-separation}. The R package \texttt{separation} (currently version 0.1, alpha pre-release) implements the procedures discussed in the paper and is available at \href{https://github.com/carlislerainey/separation}{github.com/carlislerainey/separation}. See the \href{https://github.com/carlislerainey/separation/blob/master/README.md}{README} for instructions on downloading and usage.}
 }
 
 \vspace{10mm}
@@ -111,7 +111,7 @@ Working paper: Comments welcome!
 \noindent When facing small numbers of observations or rare events, political scientists often encounter separation, in which explanatory variables perfectly predict binary events or non-events. 
 In this situation, maximum likelihood provides implausible estimates and the researcher might want incorporate some form of prior information into the model. 
 The most sophisticated research uses Jeffreys' invariant prior to stabilize the estimates. 
-While Jeffreys' prior has the advantage of being automatic, I show that it often provides too much prior information, producing point estimates that are too small and confidence intervals that are too narrow. 
+While Jeffreys' prior has the advantage of being automatic, I show that it often provides too much prior information, producing smaller point estimates and narrower confidence intervals than even highly skeptical priors. 
 To help researchers assess the amount of information injected by the prior distribution, I introduce the concept of a partial prior distribution and develop the tools required to compute the partial prior distribution of quantities of interest, estimate the subsequent model, and summarize the results.
 \end{quote}
 
@@ -127,7 +127,7 @@ However, when implementing Zorn's approach, substantive researchers face two maj
 First, the usual asymptotic confidence intervals and $p$-values do not work well. 
 While a good method exists for finding confidence intervals and $p$-values for the model coefficients, this method does not extend to the typical quantities of interest, such as first differences. 
 Researchers must still rely on the poor asymptotic approximation to simulate these quantities \citep{KingTomzWittenberg2000}.  
-Secondly, and perhaps most importantly, while the penalty suggested by Zorn has the attractive property of bias reduction in logistic regression models \citep{Firth1993}, it does not necessarily approximate a researcher's prior information. 
+Secondly, and perhaps most importantly, while the penalty suggested by Zorn has the attractive property of bias reduction in logistic regression models \citep{Firth1993}, it does not necessarily approximate a researcher's prior information \citep{WesternJackman1994}. 
 Some shrinkage toward zero is required to obtain finite estimates, but the appropriate amount of shrinkage depends on the substantive problem and the prior information. 
 To address these two problems, I suggest that researchers use a range of priors, focusing on an informative prior, and use MCMC to simulate directly from the posterior.
 
@@ -297,6 +297,15 @@ More formally, $\displaystyle \lim _{\substack{\beta_s \to \infty\\ \lbrack -\in
 
 \noindent \textit{Proof and details:} See the Technical Appendix.
 
+Figure \ref{fig:thm-1-illustrated} provides the intuition of Theorem \ref{thm:impact}. In the top panel, we can easily see that multiplying the likelihood times the prior, as required by Bayes Rule, causes the likelihood to drive the inferences in the direction opposite the separation and causes the prior to drive the inferences in the direction of the separation. Notice that the right-hand side of the posterior barely changes as the prior switches from normal to Cauchy, but the shape of the prior almost determines the shape left-hand side of the posterior distribution.
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale = .8]{figs/thm-1-illustrated.pdf}
+\caption{This figure illustrates the key idea of Theorem \ref{thm:impact}. Notice that the likelihood is highly informative about the right-hand side of the posterior distribution, but not informative about the left-hand side of the posterior distribution. The choice of normal or Cauchy prior essentially determines the shape of the posterior in the direction of the separation.}\label{fig:thm-1-illustrated}
+\end{center}
+\end{figure}
+
 Theorem \ref{thm:impact} simply implies that for large values of $\beta_s$ the posterior distribution depends almost entirely on the researcher's \emph{choice} of prior distribution. 
 Thus, the choice of prior matters. 
 While the choice of prior might not affect the conclusion about the \emph{direction} of the effect (i.e., one-sided credible interval), it has a large impact on the conclusion about the \emph{magnitude} of the effect (i.e., two-sided credible interval).\footnote{
@@ -318,8 +327,8 @@ One could define many intervals that have 90\% chance of containing the true par
  An equal-tailed interval, one alternative to the HDP interval, tends to exacerbate the differences between the priors.} 
  While the choice of prior does not affect the conclusion about the \emph{direction} of the effect, it has a large impact on the conclusion about the \emph{magnitude} of the effect. 
  This can be especially important when researchers are making claims about the substantive importance of their estimated effects (see \citealt{KingTomzWittenberg2000}; \citealt{Rainey2014a}; and \citealt{Gross2014}). 
- For example, the Cauchy(0, 2.5) prior leads to a posterior median that is over 30\% larger than the posterior median from Jeffreys' prior (-4.7 compared to -3.5). 
- The posterior mean is more than 70\% larger using the Cauchy(0, 2.5) prior (6.8 compared to 4.0). 
+ For example, the Cauchy(0, 2.5) prior leads to a posterior median that is over 30\% larger in magnitude than the posterior median from Jeffreys' prior (-4.7 compared to -3.5). 
+ The posterior mean is more than 70\% larger in magnitude using the Cauchy(0, 2.5) prior (-6.8 compared to -4.0). 
  Further, the 90\% credible interval is more than twice as wide for the Cauchy(0, 2.5) prior. 
  The choice between two \emph{default} priors leads to a large change in inferences.
 
@@ -329,15 +338,15 @@ One could define many intervals that have 90\% chance of containing the true par
 \caption{This figure provides the posterior medians and 90\% credible intervals for the coefficient of the indicator for Democratic governors in the model used by \cite{BarrilleauxRainey2014}. 
 Notice that Jeffreys' prior injects more information, as indicated by the smaller posterior median and credible interval. 
 The credible interval using Cauchy(0, 2.5) prior is about \emph{twice} as wide as the credible interval using Jeffreys' prior. 
-Further, the posterior median using the Cauchy(0, 2.5) prior is about 40\% larger than the posterior median using Jeffreys' prior.}\label{fig:br-coef-illustrate-importance}
+Further, the posterior median using the Cauchy(0, 2.5) prior is about 40\% larger in magnitude than the posterior median using Jeffreys' prior.}\label{fig:br-coef-illustrate-importance}
 \end{center}
 \end{figure}
 
 Figure \ref{fig:bf-posterior-density-illustrate-importance} shows the posterior distribution for the coefficient of the indicator of Democratic governors. 
 Notice that these two \emph{default} priors lead to different posterior distributions. 
 In particular, the choice of the prior has a large impact on the right-hand side of the posterior, as suggested by Theorem \ref{thm:impact}. 
-The more informative Jeffreys' prior leads to a more peaked posterior distribution that nearly rules out coefficients larger than about -7. 
-The less informative Cauchy(0, 2.5) prior leads to the conclusion that much larger coefficients, such as -15, are plausible. 
+The more informative Jeffreys' prior leads to a more peaked posterior distribution that nearly rules out coefficients larger in magnitude than about -7. 
+The less informative Cauchy(0, 2.5) prior leads to the conclusion that coefficients with much larger magnitudes, such as -15, are plausible. 
 These differences are not trivial--there are large differences in the posterior distributions, and these differences can affect the conclusions that the researchers draw about the likely magnitude of the effect.\footnote{
 But what if the separating variable is not of direct interest? 
 For example, what if the researcher simply wants to include a separating variable as a control? 
@@ -359,12 +368,18 @@ While is often sufficient to rely on default priors, this is not the case if one
 Indeed, in the replication of \cite{BarrilleauxRainey2014} above, I show that the overall posterior distribution, the width of the 90\% credible interval, and the posterior median largely depend on the prior one chooses. 
 This implies that researchers relying on default priors alone risk under- or over-representing their confidence in the magnitude of the effect.
 
+Data with separation fall into the category of ``weak data'' discussed by \cite{WesternJackman1994}--data that ``provide little information about parameters of statistical models.''
 Under separation, the data simply offer no information about the upper-bound of the magnitude of the coefficient of the separating variable. 
 Any reasonable regularization, then, must come in the form of an informative prior. 
 %\citet[p. 38]{Leamer1983} writes: ``As I see it, the fundamental problem facing econometrics is how adequately to control the whimsical character of inference, how sensibly to base inferences on opinions when facts are unavailable.'' 
 But a researcher's prior is not simply a spur-off-the-moment feeling. 
 Instead, we should think of the prior as representing other information relevant to the estimation. 
 This information can come from several sources, including quantitative studies of similar topics, detailed analyses of particular cases, and theoretical arguments.
+As \citet[p. 415]{WesternJackman1994} note:
+\begin{quote}
+While extra quantitative information is typically unavailable, large and substantively rich stores of qualitative information from comparative and historical studies are often present but not available in a form suitable for analysis. 
+Bayesian procedures enable weak quantitative information of comparative research to be pooled with the qualitative information to obtain sharper estimates of the regression coefficients.
+\end{quote}
 The best sources of prior information, though, depend on the substantive prior. 
 The judgement of substantive researcher, based on their understanding of the substantive problem, is crucial.
 
@@ -411,7 +426,7 @@ However, the most sensible approach for choosing a prior distribution depends on
 In general, the researcher might assess the reasonableness of the prior distribution by examining the prior distribution and asking herself whether the prior and model produce a distribution for the quantities of interest that matches her prior information. 
 Under the Bayesian framework, the researcher has a fully specified model $\pi_{new} = p(y_{new}|\beta)p(\beta)$ and can simulate the quantity of interest $q_{new} = q(\pi_{new})$ from the model prior to observing the data. 
 This works much like the Clarify algorithm \citep{KingTomzWittenberg2000}.
-By repeatedly simulating from the prior distribution $\tilde{\beta} \sim p(\beta)$, calculating $\tilde{\pi}_{new} = p(y_{new}|\tilde{\beta})$, and calculating $\tilde{q}_new = q(\tilde{\pi}_{new})$, the researcher can recover the transformed prior distribution of $q_{new}$.
+By repeatedly simulating from the prior distribution $\tilde{\beta} \sim p(\beta)$, calculating $\tilde{\pi}_{new} = p(y_{new}|\tilde{\beta})$, and calculating $\tilde{q}_{new} = q(\tilde{\pi}_{new})$, the researcher can recover the transformed prior distribution of $q_{new}$.
 Just as a researcher can use simulation to interpret the coefficient estimates of nonlinear models, she can use simulation to interpret the prior distribution.
 
 However, it is difficult to work with more than one dimension of the prior distribution. 
@@ -469,6 +484,10 @@ If the prior is inadequate, then update the prior distribution $p(\beta_s)$.
 \end{enumerate}
 
 Given that the inference can be highly dependent on the choice of prior, I recommend that the researcher choose at least three prior distributions: (1) an \emph{informative} prior distribution that represents her actual information, (2) a highly \emph{skeptical} prior distribution that suggests the effect is likely small, and (3) a highly \emph{enthusiastic} prior that suggests the effect might be very large. 
+Indeed, \citet[p. 422]{WesternJackman1994} note: 
+\begin{quote}
+Still, the subjective choice of prior is an important weakness of Bayesian practice. The consequences of this weakness can be limited by surveying the sensitivity of conclusions to a broad range of prior beliefs and to subsets of the sample.
+\end{quote}
 Combined with Zorn's (\citeyear{Zorn2005}) and Gelman et al.'s (\citeyear{Gelmanetal2008}) suggested defaults, these provide a range of prior distributions that the researcher can use to evaluate her inferences.
 
 \section*{Estimating the Full Model}
@@ -638,8 +657,8 @@ By presenting results using several prior distributions, including an informativ
 %\clearpage
 \singlespace
 \bibliographystyle{apsr_fs}
-%\bibliography{/Users/carlislerainey/Dropbox/papers/bibliography/bibliography.bib}
-\bibliography{/Users/rainey/Dropbox/papers/bibliography/bibliography.bib}
+\bibliography{/Users/carlislerainey/Dropbox/papers/bibliography/bibliography.bib}
+%\bibliography{/Users/rainey/Dropbox/papers/bibliography/bibliography.bib}
 
 \clearpage
 \doublespace
