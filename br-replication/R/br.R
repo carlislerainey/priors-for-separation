@@ -1,18 +1,3 @@
-# clear workspace
-rm(list = ls())
-set.seed(761835)
-
-# set working directory
-setwd("~/Dropbox/projects/priors-for-separation/")
-
-# load packages
-library(separation)
-library(arm)
-library(compactr)
-library(brglm)
-library(logistf)
-library(texreg)
-library(R2jags)
 
 # load data
 d <- read.csv("br-replication/data/need-rescale.csv")
@@ -24,8 +9,8 @@ f <- oppose_expansion ~ dem_governor + obama_win + gop_leg + percent_uninsured +
 	income + percent_nonwhite + percent_metro
 
 # simulate from posteriors
-post_gelman <- sim_post_gelman(f, d, n_sims = 100000, n_burnin = 10000, n_chains = 4)
-post_jeffreys <- sim_post_jeffreys(f, d, n_sims = 100000, n_burnin = 10000, n_chains = 4)
+post_gelman <- sim_post_gelman(f, d, n_sims = 100, n_burnin = 10, n_chains = 4)
+post_jeffreys <- sim_post_jeffreys(f, d, n_sims = 100, n_burnin = 10, n_chains = 4)
 post <- combine_post(post_jeffreys, post_gelman)
 
 # compare posterior locations

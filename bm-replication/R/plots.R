@@ -1,16 +1,3 @@
-# set working directory
-setwd("~/Dropbox/projects/priors-for-separation")
-
-# clear working directory
-# rm(list = ls())
-
-# load packages
-library(coda)
-library(arm)
-library(devtools)
-#install_github("carlislerainey/compactr")
-library(compactr)
-
 
 # create functions
 ## find median and 90% hpd and add to plot
@@ -69,19 +56,18 @@ simulate.qi <- function(x.hi, x.lo, mcmc) {
 }
 
 # load mcmc simulations
-load("safe/cauchy1.RData"); m.gelman <- m.cauchy.mcmc
-load("safe/firth1.RData"); m.zorn <- m.firth.mcmc
-load("safe/m-me.RData"); m.inf <- m.me
-load("safe/m-skep.RData")
-load("safe/m-enth.RData")
-rm(m.cauchy.mcmc, m.firth.mcmc, m.me)
+load("output/m-gelman.RData")
+load("output/m-zorn.RData")
+load("output/m-me.RData")
+load("output/m-skep.RData")
+load("output/m-enth.RData")
 
 # pull out twonukedyad coefficients
-inf.sims <- m.inf$mcmc[, "c.twonukedyad"]
+inf.sims <- m.me$mcmc[, "c.twonukedyad"]
 skep.sims <- m.skep$mcmc[, "c.twonukedyad"]
 enth.sims <- m.enth$mcmc[, "c.twonukedyad"]
-zorn.sims <- m.zorn[, 3]
-gelman.sims <- m.gelman[, 3]
+zorn.sims <- m.zorn$mcmc[, "c.twonukedyad"]
+gelman.sims <- m.gelman$mcmc[, "c.twonukedyad"]
 
 # calculate densities
 d.inf <- density(inf.sims)
@@ -119,11 +105,11 @@ X <- model.matrix(f, d)
 x.nonukes <- x.twonukes <- apply(X, 2, median)
 x.twonukes["c.twonukedyad"] <- max(d$c.twonukedyad)
 ## compute risk-ratios
-inf.rr.sims <- simulate.qi(x.nonukes, x.twonukes, m.inf$mcmc)$rr
+inf.rr.sims <- simulate.qi(x.nonukes, x.twonukes, m.me$mcmc)$rr
 skep.rr.sims <- simulate.qi(x.nonukes, x.twonukes, m.skep$mcmc)$rr
 enth.rr.sims <- simulate.qi(x.nonukes, x.twonukes, m.enth$mcmc)$rr
-gelman.rr.sims <- simulate.qi(x.nonukes, x.twonukes, m.gelman)$rr
-zorn.rr.sims <- simulate.qi(x.nonukes, x.twonukes, m.zorn)$rr
+gelman.rr.sims <- simulate.qi(x.nonukes, x.twonukes, m.gelman$mcmc)$rr
+zorn.rr.sims <- simulate.qi(x.nonukes, x.twonukes, m.zorn$mcmc)$rr
 
 # coefficient plot 
 pdf("doc/figs/bm-coef.pdf", height = 3.5, width = 6)

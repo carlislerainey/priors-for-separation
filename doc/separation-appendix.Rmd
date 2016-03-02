@@ -1,0 +1,56 @@
+---
+title: 'Technical Appendix for "Dealing with Separation in Logistic Regression Models"'
+author: "Carlisle Rainey"
+date: "March 2, 2016"
+output: pdf_document
+header-includes:
+   - \usepackage{mathrsfs}
+   - \usepackage{amsthm}
+---
+
+# Proof of Theorem 1
+
+Recall Theorem 1:
+
+> For a monotonic likelihood $p(y | \beta)$ increasing [decreasing] in $\beta_s$, proper prior distribution $p(\beta | \sigma)$, and large positive [negative] $\beta_s$, the posterior distribution of $\beta_s$ is proportional to the prior distribution for $\beta_s$, so that $p(\beta_s | y) \propto p(\beta_s | \sigma)$. 
+More formally, $\displaystyle \lim _{\substack{\beta_s \to \infty\\ \lbrack -\infty \rbrack}} \frac{p(\beta_s | y)}{p(\beta_s | \sigma)} = k$, for postive constant $k$.
+
+\begin{proof}
+Due to separation, $p(y|\beta)$ is monotonic increasing in $\beta_s$ to a limit $\underline{\mathscr{L}}$, so that $\displaystyle \lim_{\beta_s \to \infty} p(y | \beta_s) = \underline{\mathscr{L}}$. By Bayes' rule, 
+\begin{equation*}
+p(\beta | y) = \dfrac{p(y | \beta)p(\beta | \sigma)}{\int\limits_{-\infty}^{\infty}p(y | \beta)p(\beta | \sigma)d\beta} = \dfrac{p(y | \beta)p(\beta | \sigma)}{\underbrace{p(y | \sigma)}_{\text{constant w.r.t. }\beta}}. 
+\end{equation*}
+Integrating out the other parameters $\beta_{-s} = \langle \beta_{cons}, \beta_1, \beta_2, ..., \beta_k \rangle$ to obtain the posterior distribution of $\beta_s$, 
+\begin{equation}\label{eqn:int-post}
+p(\beta_s | y) = \dfrac{\int\limits_{-\infty}^{\infty}p(y | \beta)p(\beta | \sigma)d\beta_{-s}}{p(y | \sigma)}, 
+\end{equation}
+and the prior distribution of $\beta_s$, 
+\begin{equation*}
+p(\beta_s | \sigma) = \int\limits_{-\infty}^{\infty}p(\beta | \sigma)d\beta_{-s}.
+\end{equation*}
+Notice that $p(\beta_s | y) \propto p(\beta_s | \sigma)$ iff $\dfrac{p(\beta_s | y)}{p(\beta_s | \sigma)} = k$, where the constant $k \neq 0$. Thus, Theorem \ref{thm:impact} implies that
+\begin{equation*}
+\lim _{\beta_s \to \infty} \dfrac{p(\beta_s | y)}{p(\beta_s | \sigma)} = k
+\end{equation*}
+Substituting in Equation \ref{eqn:int-post},
+\begin{equation*}
+\lim _{\beta_s \to \infty} \dfrac{\frac{\int\limits_{-\infty}^{\infty}p(y | \beta)p(\beta | \sigma)d\beta_{-s}}{p(y | \sigma)}}{p(\beta_s | \sigma)} = k.
+\end{equation*}
+Multiplying both sides by $p(y | \sigma)$, which is constant with respect to $\beta$, 
+\begin{equation*}
+\lim _{\beta_s \to \infty} \dfrac{\int\limits_{-\infty}^{\infty}p(y | \beta)p(\beta | \sigma)d\beta_{-s}}{p(\beta_s | \sigma)} = kp(y | \sigma).
+\end{equation*}
+Setting $\int\limits_{-\infty}^{\infty}p(y | \beta)p(\beta | \sigma)d\beta_{-s} = p(y | \beta_s) p(\beta_s | \sigma)$, 
+\begin{equation*}
+\lim _{\beta_s \to \infty} \dfrac{p(y | \beta_s) p(\beta_s | \sigma)}{ p(\beta_s | \sigma)} = kp(y | \sigma).
+\end{equation*}
+Canceling $p(\beta_s | \sigma)$ in the numerator and denominator,
+\begin{equation*}
+\lim _{\beta_s \to \infty} p(y | \beta_s) = kp(y | \sigma).
+\end{equation*}
+Recalling that $\displaystyle \lim_{\beta_s \to \infty} p(y | \beta) = \underline{\mathscr{L}}$ and substituting,
+\begin{equation*}
+\underline{\mathscr{L}}= kp(y | \sigma),
+\end{equation*}
+which implies that $k = \dfrac{p(y | \sigma)}{\underline{\mathscr{L}}}$, which is a positive constant.
+\end{proof}

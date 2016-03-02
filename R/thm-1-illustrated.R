@@ -1,12 +1,3 @@
-setwd("~/Dropbox/projects/priors-for-separation/")
-
-# load package
-library(separation)
-library(compactr)
-library(texreg)
-library(logistf)
-library(separation)
-library(arm)
 
 # load and recode data
 data(politics_and_need)  # load data set
@@ -18,13 +9,9 @@ f <- oppose_expansion ~ dem_governor + percent_favorable_aca + gop_leg +
   st_percent_uninsured + bal2012 + multiplier + percent_nonwhite + percent_metro
 
 m <- glm(f, data = d, family = binomial)
-display(m)
-screenreg(list(m), single.row = TRUE, ci.force = TRUE)
 
 
 m.tol <- glm(f, data = d, family = binomial, control = list(epsilon = 10e-100))
-screenreg(list(m.tol), single.row = TRUE, ci.force = TRUE)
-
 xtabs(~ dem_governor + oppose_expansion, data = d)
 
 m.firth <- logistf(f, d)

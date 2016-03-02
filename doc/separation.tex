@@ -84,14 +84,15 @@
 \begin{document}
 
 \begin{center}
-{\Large Dealing with Separation in Logistic Regression Models\symbolfootnote[1]{I thank Mark Bell and Nicholas Miller for making their data available.} 
-%I thank Mike Alvarez, Mark Bell, Bryce Corrigan, David Firth, Paul Johnson, Nicholas Miller, Jamie Monogan, Chris Zorn, and two anonymous reviewers for helpful comments. 
-%I presented earlier versions of this paper at the University of Kansas, Texas A\&M University, the 2015 annual meeting of The Society for Political Methodology, and the 2016 Annual Meeting of the Southern Political Science Association. The analyses presented here were conducted with \texttt{R} 3.2.1 and JAGS 3.4.0. All data and computer code necessary for replication are available at \href{https://github.com/carlislerainey/priors-for-separation}{github.com/carlislerainey/priors-for-separation}. The R package \texttt{separation} (currently version 0.1, alpha pre-release) implements the procedures discussed in the paper and is available at \href{https://github.com/carlislerainey/separation}{github.com/carlislerainey/separation}. See the \href{https://github.com/carlislerainey/separation/blob/master/README.md}{README} for instructions on downloading and usage.}
+{\Large Dealing with Separation in Logistic Regression Models\symbolfootnote[1]{I thank Mark Bell and Nicholas Miller for making their data available.
+I thank Mike Alvarez, Mark Bell, Bryce Corrigan, David Firth, Paul Johnson, Nicholas Miller, Jamie Monogan, Chris Zorn, and two anonymous reviewers for helpful comments. 
+I presented earlier versions of this paper at the University of Kansas, Texas A\&M University, the 2015 annual meeting of The Society for Political Methodology, and the 2016 Annual Meeting of the Southern Political Science Association. The analyses presented here were conducted with \texttt{R} 3.2.1 and JAGS 3.4.0. All data and computer code necessary for replication are available at \href{https://github.com/carlislerainey/priors-for-separation}{github.com/carlislerainey/priors-for-separation}. %The R package \texttt{separation} (currently version 0.1, alpha pre-release) implements the procedures discussed in the paper and is available at \href{https://github.com/carlislerainey/separation}{github.com/carlislerainey/separation}. See the \href{https://github.com/carlislerainey/separation/blob/master/README.md}{README} for instructions on downloading and usage.
+}
 }
 
 \vspace{10mm}
 
-%Carlisle Rainey\symbolfootnote[2]{Carlisle Rainey is Assistant Professor of Political Science, Texas A\&M University, 2010 Allen Building, College Station, TX, 77843 (\href{mailto:crainey@tamu.edu}{crainey@tamu.edu}).}
+Carlisle Rainey\symbolfootnote[2]{Carlisle Rainey is Assistant Professor of Political Science, Texas A\&M University, 2010 Allen Building, College Station, TX, 77843 (\href{mailto:crainey@tamu.edu}{crainey@tamu.edu}).}
 
 \end{center}
 
@@ -530,27 +531,27 @@ To choose a reasonable prior, I follow the process above to generate a partial p
 I experimented with a range of prior distributions, from a variety of families, but settled on a normal distribution with mean zero and standard deviation 4.5. 
 This serves as an informative prior and represents my own prior beliefs.   
 I chose this prior distribution because it essentially rules out risk-ratios larger than 1,000--effects that I find implausibly large--and treats risk-ratios smaller than 1,000 as plausible. 
-Figure \ref{fig:bm-pppd-hist} and Table \ref{tab:bm-pppd-deciles} summarize the partial prior distributions for the this normal distribution with standard deviation 4.5.
+Figure \ref{fig:bm-ppd-hist} and Table \ref{tab:bm-ppd-deciles} summarize the partial prior distributions for the this normal distribution with standard deviation 4.5.
 
 To evaluate the robustness of any statistical claims to the choice of prior, I also selected a highly skeptical and highly enthusiastic prior. 
 I chose a normal distribution with mean zero and standard deviation two to serve as a skeptical prior that represents the belief that any pacifying effect of nuclear weapons is small (e.g., \citealt{Mueller1988}). 
 This skeptical prior distribution essentially rules out risk-ratios larger than 25 as implausibly large. 
 Finally, I selected a normal distribution with mean zero and standard deviation eight to serve as an enthusiastic prior that represents the belief that the pacifying effects of nuclear weapons might be quite large (e.g., \citealt{Mearsheimer1993}). 
 This enthusiastic prior, on the other hand, treats risk-ratios as large as 500,000 as plausible. 
-Figure \ref{fig:bm-pppd-hist} shows the partial prior distributions for the informative, skeptical, and enthusiastic prior distributions. 
-For convenience, Table \ref{tab:bm-pppd-deciles} provides the deciles of the partial prior distributions shown in Figure \ref{fig:bm-pppd-hist}. 
+Figure \ref{fig:bm-ppd-hist} shows the partial prior distributions for the informative, skeptical, and enthusiastic prior distributions. 
+For convenience, Table \ref{tab:bm-ppd-deciles} provides the deciles of the partial prior distributions shown in Figure \ref{fig:bm-ppd-hist}. 
 
 \begin{figure}[H]
 \begin{center}
-\includegraphics[scale = .8]{figs/bm-pppd-hist.pdf}
+\includegraphics[scale = .8]{figs/bm-ppd-hist.pdf}
 \caption{This figure shows the partial prior distribution for the risk-ratio of war in nonnuclear dyads to nuclear dyads. 
 The risk-ratio tells us how many times more likely war is in nonnuclear dyads compared to nuclear dyads. 
 Notice that the informative prior treats effects smaller than about 1,000 as plausible, but essentially rules out larger effects. 
-The skeptical prior essentially rules out effects larger than 25, while the enthusiastic prior treats effects between 1 and 100,000 as essentially equally likely.}\label{fig:bm-pppd-hist}
+The skeptical prior essentially rules out effects larger than 25, while the enthusiastic prior treats effects between 1 and 100,000 as essentially equally likely.}\label{fig:bm-ppd-hist}
 \end{center}
 \end{figure}
 
-\input{tabs/bm-pppd-deciles.tex}
+\input{tabs/bm-ppd-deciles.tex}
 
 Notice that the skeptical prior suggests that risk-ratios above and below 4 are equally likely (i.e., 50th percentile of the partial prior distribution is 3.9), while the enthusiastic prior suggests that effects above and below 220 are equally likely. 
 The informative prior, on the other hand, suggests (more reasonably, in my view) that the effect is equally likely to fall above and below 20. 
@@ -650,60 +651,6 @@ By presenting results using several prior distributions, including an informativ
 \bibliography{/Users/carlislerainey/Dropbox/papers/bibliography/bibliography.bib}
 %\bibliography{/Users/rainey/Dropbox/papers/bibliography/bibliography.bib}
 
-\clearpage
-\doublespace
-\begin{appendix}
-\begin{center}
-\LARGE{\textbf{Technical Appendix}}\vspace{4mm}
-\end{center}
-
-\section*{Proof of Theorem \ref{thm:impact}}
-
-Recall Theorem \ref{thm:impact}:
-
-\impact*
-
-\begin{proof}
-Due to separation, $p(y|\beta)$ is monotonic increasing in $\beta_s$ to a limit $\underline{\mathscr{L}}$, so that $\displaystyle \lim_{\beta_s \to \infty} p(y | \beta_s) = \underline{\mathscr{L}}$. By Bayes' rule, 
-\begin{equation*}
-p(\beta | y) = \dfrac{p(y | \beta)p(\beta | \sigma)}{\int\limits_{-\infty}^{\infty}p(y | \beta)p(\beta | \sigma)d\beta} = \dfrac{p(y | \beta)p(\beta | \sigma)}{\underbrace{p(y | \sigma)}_{\text{constant w.r.t. }\beta}}. 
-\end{equation*}
-Integrating out the other parameters $\beta_{-s} = \langle \beta_{cons}, \beta_1, \beta_2, ..., \beta_k \rangle$ to obtain the posterior distribution of $\beta_s$, 
-\begin{equation}\label{eqn:int-post}
-p(\beta_s | y) = \dfrac{\int\limits_{-\infty}^{\infty}p(y | \beta)p(\beta | \sigma)d\beta_{-s}}{p(y | \sigma)}, 
-\end{equation}
-and the prior distribution of $\beta_s$, 
-\begin{equation*}
-p(\beta_s | \sigma) = \int\limits_{-\infty}^{\infty}p(\beta | \sigma)d\beta_{-s}.
-\end{equation*}
-Notice that $p(\beta_s | y) \propto p(\beta_s | \sigma)$ iff $\dfrac{p(\beta_s | y)}{p(\beta_s | \sigma)} = k$, where the constant $k \neq 0$. Thus, Theorem \ref{thm:impact} implies that
-\begin{equation*}
-\lim _{\beta_s \to \infty} \dfrac{p(\beta_s | y)}{p(\beta_s | \sigma)} = k
-\end{equation*}
-Substituting in Equation \ref{eqn:int-post},
-\begin{equation*}
-\lim _{\beta_s \to \infty} \dfrac{\frac{\int\limits_{-\infty}^{\infty}p(y | \beta)p(\beta | \sigma)d\beta_{-s}}{p(y | \sigma)}}{p(\beta_s | \sigma)} = k.
-\end{equation*}
-Multiplying both sides by $p(y | \sigma)$, which is constant with respect to $\beta$, 
-\begin{equation*}
-\lim _{\beta_s \to \infty} \dfrac{\int\limits_{-\infty}^{\infty}p(y | \beta)p(\beta | \sigma)d\beta_{-s}}{p(\beta_s | \sigma)} = kp(y | \sigma).
-\end{equation*}
-Setting $\int\limits_{-\infty}^{\infty}p(y | \beta)p(\beta | \sigma)d\beta_{-s} = p(y | \beta_s) p(\beta_s | \sigma)$, 
-\begin{equation*}
-\lim _{\beta_s \to \infty} \dfrac{p(y | \beta_s) p(\beta_s | \sigma)}{ p(\beta_s | \sigma)} = kp(y | \sigma).
-\end{equation*}
-Canceling $p(\beta_s | \sigma)$ in the numerator and denominator,
-\begin{equation*}
-\lim _{\beta_s \to \infty} p(y | \beta_s) = kp(y | \sigma).
-\end{equation*}
-Recalling that $\displaystyle \lim_{\beta_s \to \infty} p(y | \beta) = \underline{\mathscr{L}}$ and substituting,
-\begin{equation*}
-\underline{\mathscr{L}}= kp(y | \sigma),
-\end{equation*}
-which implies that $k = \dfrac{p(y | \sigma)}{\underline{\mathscr{L}}}$, which is a positive constant.
-\end{proof}
-
-\end{appendix}
 \end{document}
 
 

@@ -1,17 +1,3 @@
-# set working directory
-setwd("~/Dropbox/projects/priors-for-separation")
-
-# clear working directory
-rm(list = ls())
-
-# load packages
-library(compactr)
-library(arm)
-library(devtools)
-install_github("carlislerainey/compactr")
-
-# set seed
-# set.seed(8742570)
 
 d <- read.csv("bm-replication/data/bm.csv")
 d <- d[, c("warl2", "onenukedyad", "twonukedyad", "logCapabilityRatio", "Ally",
@@ -25,19 +11,19 @@ f <- warl2 ~ onenukedyad + twonukedyad + logCapabilityRatio +
   Contiguity + MajorPower + NIGOs
 
 # read in pppd()
-source("R/fn-pppd.R")
+source("R/fn-partial-prior.R")
 
 # my prior
 ps <- rnorm(10000, 0, 4.5)
-my.p <- pppd(f = f, d = d, prior.sims = ps, s = "twonukedyad", s.at = 0, s.at.lo = FALSE)
+my.p <- ppd(f = f, d = d, prior.sims = ps, s = "twonukedyad", s.at = 0, s.at.lo = FALSE)
 
 # skeptical prior
 ps <- rnorm(10000, 0, 2)
-skep.p <- pppd(f = f, d = d, prior.sims = ps, s = "twonukedyad", s.at = 0, s.at.lo = FALSE)
+skep.p <- ppd(f = f, d = d, prior.sims = ps, s = "twonukedyad", s.at = 0, s.at.lo = FALSE)
 
 # enthusiastic prior
 ps <- rnorm(10000, 0, 8)
-enth.p <- pppd(f = f, d = d, prior.sims = ps, s = "twonukedyad", s.at = 0, s.at.lo = FALSE)
+enth.p <- ppd(f = f, d = d, prior.sims = ps, s = "twonukedyad", s.at = 0, s.at.lo = FALSE)
 
 x.max <- 100000
 trunc.my.rr <- my.p$rr[my.p$rr < x.max]
@@ -65,10 +51,9 @@ add.arrow <- function(p) {
   text((x0 + x1)/2, ht, text, pos = 3, cex = .7)
 }
 
-library(compactr)
 xlim0 <- log(c(1, 100000))
 ylim0 <- c(0, max(c(h1$counts, h3$counts, h4$counts)))
-pdf("doc/figs/bm-pppd-hist.pdf", height = 2, width = 8)
+pdf("doc/figs/bm-ppd-hist.pdf", height = 2, width = 8)
 par(mfrow = c(1,3), mar = c(.75,.75,.75,.75), oma = c(2,3,1,1))
 eplot(xlim = xlim0, ylim = ylim0,
       xlab = "Risk-Ratio (Log Scale)",
@@ -108,7 +93,7 @@ tab <- xtable(pretty.Q, align = c("|", rep("c", ncol(Q) + 1), "|"),
                   risk-ratio of about 20, which is a large, but plausible, effect. The skeptical prior suggests a median 
                   ratio of about 4 and the enthusiastic prior suggests a median ratio of over 
                   200.",
-              label = "tab:bm-pppd-deciles")
+              label = "tab:bm-ppd-deciles")
 print(tab, table.placement = "H", size = "scriptsize",
-      file = "doc/tabs/bm-pppd-deciles.tex")
+      file = "doc/tabs/bm-ppd-deciles.tex")
 

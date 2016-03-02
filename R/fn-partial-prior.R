@@ -1,31 +1,5 @@
-# # set working directory
-# setwd("~/Dropbox/projects/priors-for-separation")
-# 
-# # clear working directory
-# rm(list = ls())
-# 
-# # set seed
-# # set.seed(8742570)
-# 
-# d <- read.csv("bm-replication/data/bm-small.csv")
-# d <- d[, c("warl2", "onenukedyad", "twonukedyad", "logCapabilityRatio", "Ally",
-#            "SmlDemocracy", "SmlDependence", "logDistance", "Contiguity",
-#            "MajorPower", "NIGOs")]
-# d <- na.omit(d)
-# 
-# # set formula (w/o twonekedyad)
-# f <- warl2 ~ onenukedyad + twonukedyad + logCapabilityRatio + 
-#   Ally + SmlDemocracy + SmlDependence + logDistance + 
-#   Contiguity + MajorPower + NIGOs
-# 
-# # parameters 
-# s <- "twonukedyad"
-# s.at <- 0
-# s.at.lo <-  FALSE
-# prior.sims <- rcauchy(10000, 0, 1)
 
-
-pppd <- function(f, d, prior.sims, s, s.at, s.at.lo = TRUE) {
+ppd <- function(f, d, prior.sims, s, s.at, s.at.lo = TRUE) {
   # f - a logitistic regression model
   # d - a data frame
   # s - the name of the separating variable
