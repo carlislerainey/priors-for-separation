@@ -2,6 +2,7 @@ setwd("~/Dropbox/projects/priors-for-separation/")
 
 # load package
 library(separation)
+library(compactr)
 library(texreg)
 library(logistf)
 library(separation)
@@ -105,7 +106,7 @@ zeros <- rep(0, length(b1))
 pdf("doc/figs/thm-1-illustrated.pdf", height = 4, width = 6)
 par(mfrow = c(2, 1), mar = c(.5, .5, .5, .5), oma = c(3, 1, 1, 1), xaxs = "r", yaxs = "r")
 eplot(xlim = 1.04*mm(b1), ylim = c(0, 1.2),
-      xlab = "Coefficient for Democratic Governor",
+      xlab = "Coefficient for Separating Variable",
       anny = FALSE)
 text(-17, 1, "Likelihood", cex = 1, pos = 3)
 polygon(c(b1, rev(b1)), c(prior2/max(prior2), zeros), col = col1a, lty = 0)
@@ -117,7 +118,7 @@ lines(b1, lik/max(lik), lwd = 5, col = "black", xpd = NA)
 
 # cauchy + lik + post
 eplot(xlim = 1.04*mm(b1), ylim = c(0, 1.2),
-      xlab = "Coefficient for Democratic Governor",
+      xlab = "Coefficient for Separating Variable",
       anny = FALSE)
 text(-17, 1, "Likelihood", cex = 1, pos = 3)
 polygon(c(b1, rev(b1)), c(prior1/max(prior1), zeros), col = col1a, lty = 0)
