@@ -84,9 +84,9 @@
 \begin{document}
 
 \begin{center}
-{\Large Dealing with Separation in Logistic Regression Models\symbolfootnote[1]{I thank Mark Bell and Nicholas Miller for making their data available.
+{\Large Dealing with Separation in Logistic Regression Models\symbolfootnote[1]{I thank Mark Bell and Nicholas Miller for making their data available \citep{bell-miller-data}.
 I thank Mike Alvarez, Mark Bell, Bryce Corrigan, David Firth, Paul Johnson, Nicholas Miller, Jamie Monogan, Chris Zorn, and two anonymous reviewers for helpful comments. 
-I presented earlier versions of this paper at the University of Kansas, Texas A\&M University, the 2015 annual meeting of The Society for Political Methodology, and the 2016 Annual Meeting of the Southern Political Science Association. The analyses presented here were conducted with \texttt{R} 3.2.1 and JAGS 3.4.0. All data and computer code necessary for replication are available at \href{https://github.com/carlislerainey/priors-for-separation}{github.com/carlislerainey/priors-for-separation}. %The R package \texttt{separation} (currently version 0.1, alpha pre-release) implements the procedures discussed in the paper and is available at \href{https://github.com/carlislerainey/separation}{github.com/carlislerainey/separation}. See the \href{https://github.com/carlislerainey/separation/blob/master/README.md}{README} for instructions on downloading and usage.
+I presented earlier versions of this paper at the University of Kansas, Texas A\&M University, the 2015 annual meeting of The Society for Political Methodology, and the 2016 Annual Meeting of the Southern Political Science Association. The analyses presented here were conducted with \texttt{R} 3.2.2. All data and computer code \citep{separation-data} necessary for replication are available at \href{https://github.com/carlislerainey/priors-for-separation}{github.com/carlislerainey/priors-for-separation} and on the Political Analysis Dataverse at \href{http://dx.doi.org/10.7910/DVN/VW7G2Q}{dx.doi.org/10.7910/DVN/VW7G2Q}. %The R package \texttt{separation} (currently version 0.1, alpha pre-release) implements the procedures discussed in the paper and is available at \href{https://github.com/carlislerainey/separation}{github.com/carlislerainey/separation}. See the \href{https://github.com/carlislerainey/separation/blob/master/README.md}{README} for instructions on downloading and usage.
 }
 }
 
@@ -305,7 +305,7 @@ Credible intervals are crucial when discussing effect magnitudes (see \citealt{K
 
 \subsection*{The Impact of the Prior in Practice}
 
-To illustrate the impact of the prior on inferences when dealing with separation, I replicate results from \cite{BarrilleauxRainey2014}, who are interested in the effect of partisanship on governors' decisions to oppose the Medicaid expansion in their states under the Patient Protection and Affordable Care Act (ACA).
+To illustrate the impact of the prior on inferences when dealing with separation, I replicate results from \cite{BarrilleauxRainey2014, barrilleaux-rainey-data}, who are interested in the effect of partisanship on governors' decisions to oppose the Medicaid expansion in their states under the Patient Protection and Affordable Care Act (ACA).
 As the authors note, no Democratic governors opposed the expansion, which leads to separation. 
 To see whether the choice of prior matters, I use MCMC to simulate from the posterior using Zorn's (\citeyear{Zorn2005}) and Gelman et al.'s (\citeyear{Gelmanetal2008}) suggested \emph{default} prior distributions. 
 
@@ -523,6 +523,7 @@ This raises important questions.
 \item First, would a reasonable, informative prior distribution support Rauchhaus' position of a meaningful effect or Bell and Miller's position of essentially no effect? 
 \item Second, how robust is the conclusion to a range of more and less informative prior distributions?
 \end{enumerate}
+To address these questions, I re-analyze these data \citep{bell-miller-data} with special attention the to the prior distribution.
 
 \subsection*{Prior}
 
