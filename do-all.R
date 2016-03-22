@@ -11,6 +11,11 @@ library(arm)
 library(coda)
 library(logistf)
 
+# install MCMCpack dependencies
+source("https://bioconductor.org/biocLite.R")
+biocLite("graph")
+biocLite("Rgraphviz")
+
 # install packages from github and load 
 devtools::install_github("carlislerainey/separation", ref = "b6a35bafe33b7850ca787e6e14a96ba961629da0")
 devtools::install_github("carlislerainey/compactr", ref = "67a0df74d497a18f36affdc54533ef141c0e2bde")
