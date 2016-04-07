@@ -54,26 +54,26 @@ ppd <- function(f, d, prior.sims, s, s.at, s.at.lo = TRUE) {
   }
   # generate plots
   plots <- list()
-  print(range(pr1))
-  plots$pr1 <- qplot(pr1,
-              xlab = "probability") + ggtitle("PPPD of Probability")
-  print(range(log(pr1)))
-  plots$log.pr1 <- qplot(pr1, log = "x",
-              xlab = "probability") + ggtitle("PPPD of Probability (Log Scale)")
-  print(range(rr))
-  plots$rr <- qplot(rr,
-              xlab = "risk-ratio") + ggtitle("PPPD of Risk-Ratio")
-  print(range(log(rr)))
-  plots$log.rr <- qplot(rr, log = "x",
-              xlab = "risk-ratio") + ggtitle("PPPD of Risk-Ratio (Log Scale)")
-  print(range(fd))
-  plots$fd <- qplot(fd,
-              xlab = "first-difference") + ggtitle("PPPD of First-Difference")
-  grid.arrange(plots$pr1, 
-               plots$log.pr1, 
-               plots$rr,
-               plots$log.rr,
-               plots$fd, ncol=2)
+#   print(range(pr1))
+#   plots$pr1 <- qplot(pr1,
+#               xlab = "probability") + ggtitle("PPPD of Probability")
+#   print(range(log(pr1)))
+#   plots$log.pr1 <- qplot(pr1, log = "x",
+#               xlab = "probability") + ggtitle("PPPD of Probability (Log Scale)")
+#   print(range(rr))
+#   plots$rr <- qplot(rr,
+#               xlab = "risk-ratio") + ggtitle("PPPD of Risk-Ratio")
+#   print(range(log(rr)))
+#   plots$log.rr <- qplot(rr, log = "x",
+#               xlab = "risk-ratio") + ggtitle("PPPD of Risk-Ratio (Log Scale)")
+#   print(range(fd))
+#   plots$fd <- qplot(fd,
+#               xlab = "first-difference") + ggtitle("PPPD of First-Difference")
+#   grid.arrange(plots$pr1, 
+#                plots$log.pr1, 
+#                plots$rr,
+#                plots$log.rr,
+#                plots$fd, ncol=2)
   # define a qt function to compute the deciles
   qt <- function(x) {
     quantile(x, 1:9/10)
@@ -83,7 +83,7 @@ ppd <- function(f, d, prior.sims, s, s.at, s.at.lo = TRUE) {
   q.fd <- qt(fd)
   Q <- cbind(q.pr, q.rr, q.fd)
   colnames(Q) <- c("probability", "risk-ratio", "first-difference")
-  print(Q, digits = 2)
+  # print(Q, digits = 2)
   # return simulations
   ret <- list(mle, mle, 
               pr0 = pr0,

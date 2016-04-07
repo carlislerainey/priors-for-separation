@@ -10,7 +10,7 @@ f <- warl2 ~ onenukedyad + twonukedyad + logCapabilityRatio +
   Ally + SmlDemocracy + SmlDependence + logDistance + 
   Contiguity + MajorPower + NIGOs
 
-# read in pppd()
+# read in ppd()
 source("R/fn-partial-prior.R")
 
 # my prior
@@ -84,7 +84,6 @@ rownames(Q) <- c("Informative Normal(0, 4.5) Prior",
 pretty.Q <- matrix(prettyNum(Q, big.mark = ",", digits = 8, format = "fg", flag = " "), nrow = nrow(Q)); pretty.Q
 rownames(pretty.Q) <- rownames(Q)
 colnames(pretty.Q) <- colnames(Q)
-library(xtable)
 tab <- xtable(pretty.Q, align = c("|", rep("c", ncol(Q) + 1), "|"),
               caption = "This table provides the deciles of the prior predictive distribution for the 
                   risk-ratio of war in nonnuclear and nuclear dyads. The risk-ratio 

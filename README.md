@@ -12,4 +12,4 @@ And here is the abstract:
 
 If you have any comments or suggestions, please [open an issue](https://github.com/carlislerainey/priors-for-separation/issues) or just [e-mail](mailto:carlislerainey@gmail.com) me.
 
-To replicate the results, you simply need to run the file `do-all.R`. For ease-of-use, I have set the number of MCMC simulations (and the length of the burnin) to small values. To replicate the results in the paper, you will need to change the `n_sims` and `n_burnin` arguments in the files `br-replication/R/br.R` and `bm-replication/R/mcmc.R` to large values, such as 100,000 and 50,000, respectively.
+To replicate the results, you simply need to run the file `do-all.R`. For ease-of-use, you may wish to set the number of MCMC simulations (and the length of the burnin) to small values. To replicate the results in the paper, you will need to change the `n_sims` and `n_burnin` arguments in the file `do-all.R` to large values, such as 200,000 and 50,000, respectively.

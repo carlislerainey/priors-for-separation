@@ -85,7 +85,7 @@
 
 \begin{center}
 {\Large Dealing with Separation in Logistic Regression Models\symbolfootnote[1]{I thank Mark Bell and Nicholas Miller for making their data available \citep{bell-miller-data}.
-I thank Mike Alvarez, Mark Bell, Bryce Corrigan, David Firth, Paul Johnson, Nicholas Miller, Jamie Monogan, Chris Zorn, and two anonymous reviewers for helpful comments. 
+I thank Mike Alvarez, Mark Bell, Bryce Corrigan, Justin Esarey, David Firth, Paul Johnson, Nicholas Miller, Jamie Monogan, Chris Zorn, and two anonymous reviewers for helpful comments. 
 I presented earlier versions of this paper at the University of Kansas, Texas A\&M University, the 2015 annual meeting of The Society for Political Methodology, and the 2016 Annual Meeting of the Southern Political Science Association. The analyses presented here were conducted with \texttt{R} 3.2.2. All data and computer code \citep{separation-data} necessary for replication are available at \href{https://github.com/carlislerainey/priors-for-separation}{github.com/carlislerainey/priors-for-separation} and on the Political Analysis Dataverse at \href{http://dx.doi.org/10.7910/DVN/VW7G2Q}{dx.doi.org/10.7910/DVN/VW7G2Q}. %The R package \texttt{separation} (currently version 0.1, alpha pre-release) implements the procedures discussed in the paper and is available at \href{https://github.com/carlislerainey/separation}{github.com/carlislerainey/separation}. See the \href{https://github.com/carlislerainey/separation/blob/master/README.md}{README} for instructions on downloading and usage.
 }
 }
@@ -499,6 +499,9 @@ Pr(y_i =1) = \text{logit}^{-1}(\beta_{cons} + \beta_s s_i +  \beta_1 x_{i1} + \b
 with improper, constant priors on the other model coefficients. 
 Because the researcher is not choosing the prior based on the desirable or undesirable features of the \textit{posterior}, inference can proceed in the usual way after the MCMC estimation.
 
+In practice, Stan \citep{stan} makes the MCMC straightforward, especially when combined with the R packages \texttt{rstan} \citep{rstan} and \texttt{rstanarm} \citep{rstanarm}.
+The MCMC using Jeffreys' prior tends to be slow and difficult to set up, so researchers may wish to omit Jeffreys' prior for convenience.
+
 
 \section*{Application: Nuclear Proliferation and War}
 
@@ -572,7 +575,7 @@ Indeed, it is a critical step in obtaining reasonable inferences.
 \caption{This figure shows the posterior distribution for the logit coefficient of the indicator of nuclear dyads using each of the five prior distributions.  
 The grey shading indicates the 90\% credible interval. 
 Notice that the choice of prior has a large effect on the inferences. 
-For example, the using the enthusiastic prior suggests the coefficient might be as large as -13, while using the skeptical prior suggests the coefficient is probably not larger than -4. 
+For example, the using the enthusiastic prior suggests the coefficient might be as large as -15, while using the skeptical prior suggests the coefficient is probably not larger than -4. 
 Importantly, notice the similarity between the posterior using Zorn's (\citeyear{Zorn2005}) suggested default prior and the skeptical prior, in terms of their peak (i.e., mode), shape, and credible interval.}\label{fig:bm-posterior-density}
 \end{center}
 \end{figure}
@@ -583,18 +586,18 @@ An initial glance at the figure shows substantial variation in the point estimat
 However, these risk-ratios and credible intervals are plotted on the log scale (otherwise the wider intervals dominate the plot), so the figure tends to \textit{understate} the variation in the inferences across priors. 
 Notice that the informative prior suggests the true risk-ratio has about a 90\% chance of falling between about 0.1 and about 2000, with a posterior median of about 25.
 The skeptical prior, on the other hand, suggests the risk-ratio has about a 90\% chance of falling between 0.1 and 30, with a posterior median of about 4. 
-The enthusiastic prior suggests the risk-ratio has about a 90\% chance of falling between 0.1 and 500,000. 
+The enthusiastic prior suggests the risk-ratio has about a 90\% chance of falling between 0.1 and 400,000. 
 The inferences from these priors are \emph{very} different. 
 
 Further, the 90\% credible interval using Zorn's (\citeyear{Zorn2005}) default is \emph{much} narrower than the informative prior, and the posterior median of Zorn's suggested default prior is even smaller than the \emph{skeptical} prior. 
-For this particular application, Gelman's suggested default more closely matches the informative prior, though notice that the point estimate from Gelman's prior is 62\% smaller than that from the informative prior and the upper-bound of the credible interval is 13 times larger.
+For this particular application, Gelman's suggested default more closely matches the informative prior, though notice that the point estimate from Gelman's prior is about half of the point estimate from the informative prior and the upper-bound of the credible interval is about 1,000 times larger.
 
 \begin{figure}[H]
 \begin{center}
 \includegraphics[scale = .8]{figs/bm-rr.pdf}
 \caption{This figure shows the posterior median and 90\% credible intervals for the risk-ratio using each of the five prior distributions \emph{on the log scale}. 
 Notice that the choice of prior has a huge effect on the inferences about the risk-ratio. 
-For example, the skeptical prior suggests the ratio might be as large as 31, while the enthusiastic prior suggests the ratio might be as large as 500,000. 
+For example, the skeptical prior suggests the ratio might be as large as about 30, while the enthusiastic prior suggests the ratio might be as large as about 400,000. 
 Also, notice that the posterior median from Zorn's proposed default prior is \emph{smaller} than the posterior median from the skeptical prior.}\label{fig:bm-rr}
 \end{center}
 \end{figure}
@@ -649,7 +652,8 @@ By presenting results using several prior distributions, including an informativ
 %\clearpage
 \singlespace
 \bibliographystyle{apsr_fs}
-\bibliography{bibliography.bib}
+%\bibliography{bibliography.bib}
+\bibliography{/Users/carlislerainey/Dropbox/papers/bibliography/bibliography.bib}
 
 \end{document}
 

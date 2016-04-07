@@ -12,10 +12,8 @@ m <- glm(f, data = d, family = binomial)
 
 
 m.tol <- glm(f, data = d, family = binomial, control = list(epsilon = 10e-100))
-xtabs(~ dem_governor + oppose_expansion, data = d)
 
 m.firth <- logistf(f, d)
-summary(m.firth)
 
 mf <- model.frame(f, data = d)
 X <- model.matrix(mf, data = d)

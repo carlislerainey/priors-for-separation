@@ -9,8 +9,8 @@ f <- oppose_expansion ~ dem_governor + obama_win + gop_leg + percent_uninsured +
 	income + percent_nonwhite + percent_metro
 
 # simulate from posteriors
-post_gelman <- sim_post_gelman(f, d, n_sims = 100, n_burnin = 10, n_chains = 4)
-post_jeffreys <- sim_post_jeffreys(f, d, n_sims = 100, n_burnin = 10, n_chains = 4)
+post_gelman <- sim_post_gelman(f, d, n_sims = n_sims, n_burnin = n_burnin, n_chains = n_chains, n_thin = 10)
+post_jeffreys <- sim_post_jeffreys(f, d, n_sims = n_sims, n_burnin = n_burnin, n_chains = n_chains, n_thin = 10)
 post <- combine_post(post_jeffreys, post_gelman)
 
 # compare posterior locations
@@ -41,11 +41,11 @@ sumry <- function(sims, ht, lab = NA) {
 	#points(post.median, ht, pch = 24, bg = "grey")
 	points(post.median, ht, pch = 21, bg = "black", cex = .7)
 	text(post.median, ht, lab, pos = 3, cex = .7)
-	print(paste("HPD = ", round(hpd, 1)))
-	print(paste("CI = ", round(q, 1)))
-	print(paste("mode = ", round(post.mode, 1)))
-	print(paste("median = ", round(post.median, 1)))
-	print(paste("mean = ", round(post.mean, 1)))
+	#print(paste("HPD = ", round(hpd, 1)))
+	#print(paste("CI = ", round(q, 1)))
+	#print(paste("mode = ", round(post.mode, 1)))
+	#print(paste("median = ", round(post.median, 1)))
+	#print(paste("mean = ", round(post.mean, 1)))
 	s <- round(c(hpd[1], post.median, hpd[2]), 1)
 	return(s)
 }
