@@ -8,7 +8,7 @@ rm(list = ls())
 install_packages <- FALSE
 n_sims <- 200000  # 200,000 in paper---use 200 as the initial run
 n_burnin <- 50000 # 50,0000 in paper---use 50 as the initial run
-n_chains <- 4  # 4 in paper
+n_chains <- 4  # 4 in paper (note: Windows users should change this to 1)
 
 # create subdirectories (if missing) to store output
 if (!file.exists("doc/figs")){
@@ -30,7 +30,7 @@ if (install_packages) {
   biocLite("graph")
   biocLite("Rgraphviz")
   # install packages from github
-  devtools::install_github("carlislerainey/separation", ref = "b6a35bafe33b7850ca787e6e14a96ba961629da0")
+  devtools::install_github("carlislerainey/separation", ref = "cbe6e1fa12ff4507465e98fbe58740ae928bc9da")
   devtools::install_github("carlislerainey/compactr", ref = "67a0df74d497a18f36affdc54533ef141c0e2bde")
 }
 
